@@ -19,10 +19,10 @@ class Database:
     session_factory: async_sessionmaker[AsyncSession]
     url: str
 
-    def __init__(self, url: str, *, debug: bool) -> None:
+    def __init__(self, url: str) -> None:
         self.engine = create_async_engine(
             url=url,
-            echo=debug,
+            echo=False,
         )
 
         self.session_factory = async_sessionmaker(
@@ -57,5 +57,4 @@ class Database:
 
 db: Database = Database(
     url=settings.db.URL,
-    debug=settings.app.state.DEBUG,
 )

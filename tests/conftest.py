@@ -27,7 +27,6 @@ def setup() -> None:
 async def db() -> AsyncGenerator[Database, None]:
     test_db: Database = Database(
         url=settings.db.URL,
-        debug=False,
     )
     await test_db.create_db(hard_rest=True)
     yield test_db

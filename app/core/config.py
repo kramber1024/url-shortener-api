@@ -15,7 +15,7 @@ class DatabaseSettings(BaseSettings):
 
 class JWTSettings(BaseSettings):
     ALGORITHM: Literal["HS256"] = "HS256"
-    SECRET: str = "SET_ME_IN_ENV"
+    SECRET: str = "CHANGE_ME_IN_ENV"
     ACCESS_TOKEN_EXPIRES_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRES_DAYS: int = 30
 
@@ -23,6 +23,7 @@ class JWTSettings(BaseSettings):
 class DevelopmentSettings(BaseSettings):
     HOST: str = "127.0.0.1"
     PORT: int = 26801
+    TEST_PORT: int = 8001
 
 
 class AppSettings(BaseSettings):

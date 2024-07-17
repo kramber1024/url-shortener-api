@@ -50,3 +50,8 @@ jobs:
         with:
           path: htmlcov
           name: coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

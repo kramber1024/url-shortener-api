@@ -1,5 +1,7 @@
 # URL Shortener API
 
+<a href="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml" target="_blank"><img src="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+
 ## Технологический стек и фичи
 
 - 🌐 [**FastAPI**](https://fastapi.tiangolo.com/) для апи сервиса.

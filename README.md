@@ -1,6 +1,8 @@
 # URL Shortener API
 
 <a href="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml" target="_blank"><img src="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+<a href="https://github.com/kramber1024/url-shortener-api/tree/main/tests" target="_blank"><img src="https://img.shields.io/codecov/c/github/kramber1024/url-shortener-api
+" alt="Coverage"></a>
 
 ## Технологический стек и фичи
 

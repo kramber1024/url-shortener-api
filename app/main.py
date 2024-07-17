@@ -15,7 +15,7 @@ from app.core.config import settings
 from app.core.database import db
 
 app: FastAPI = FastAPI(
-    title=f"{settings.app.NAME} API",
+    title=f"{settings.app.NAME} - API",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     root_path_in_servers=False,
@@ -31,8 +31,8 @@ async def main() -> None:
 
     uvicorn.run(
         "main:app",
-        host="127.0.0.1",
-        port=26800,
+        host=settings.dev.HOST,
+        port=settings.dev.PORT,
         reload=True,
     )
 

@@ -20,6 +20,11 @@ class JWTSettings(BaseSettings):
     REFRESH_TOKEN_EXPIRES_DAYS: int = 30
 
 
+class DevelopmentSettings(BaseSettings):
+    HOST: str = "127.0.0.1"
+    PORT: int = 26801
+
+
 class AppSettings(BaseSettings):
     NAME: str = ""
 
@@ -27,6 +32,7 @@ class AppSettings(BaseSettings):
 class Settings(BaseSettings):
     db: DatabaseSettings = DatabaseSettings()
     jwt: JWTSettings = JWTSettings()
+    dev: DevelopmentSettings = DevelopmentSettings()
     app: AppSettings = AppSettings()
 
     model_config = SettingsConfigDict(

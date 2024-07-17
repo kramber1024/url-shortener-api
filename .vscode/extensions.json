@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "tamasfe.even-better-toml",
+        "ms-python.mypy-type-checker",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "qwtel.sqlite-viewer",
+        "deerawan.vscode-faker"
+    ]
+}

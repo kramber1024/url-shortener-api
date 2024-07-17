@@ -85,3 +85,20 @@ exclude = [
     ".venv",
     ".vscode",
 ]
+
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+]
+concurrency = [
+    "greenlet",
+    "thread",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+    "pragma: no cover",
+]

@@ -16,9 +16,9 @@ Id = Annotated[
     str,
     Field(
         description="Unique identifier.",
-        examples=["7205649978688008192"],
-        max_length=len("7205649978688008192"),
-        min_length=len("7205649978688008192"),
+        examples=["7205626878688008192"],
+        max_length=len("7205626878688008192"),
+        min_length=len("7205626878688008192"),
     ),
 ]
 

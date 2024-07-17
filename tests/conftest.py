@@ -2,7 +2,7 @@ from asyncio import current_task
 from collections.abc import AsyncGenerator
 
 import pytest_asyncio
-from httpx import ASGITransport, AsyncClient
+from httpx import AsyncClient
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session
 
@@ -56,7 +56,7 @@ async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides[database.scoped_session] = db.scoped_session
 
     async with AsyncClient(
-        transport=ASGITransport(app=app),  # type: ignore[arg-type]
+        app=app,
         base_url="http://127.0.0.1:8000",
         headers={"Content-Type": "application/json"},
         timeout=10,

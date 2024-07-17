@@ -4,6 +4,7 @@
         "**/.mypy_cache": true,
         "**/.pytest_cache": true,
         "**/.coverage": true,
+        "**/htmlcov": true,
     },
     "python.analysis.autoImportCompletions": true,
     "python.testing.pytestEnabled": true,

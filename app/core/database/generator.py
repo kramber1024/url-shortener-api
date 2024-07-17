@@ -13,4 +13,4 @@ class IDGenerator:
         return int(next(self.__snowflake))
 
 
-gen: IDGenerator = IDGenerator(settings.db.gen.WORKER_ID)
+gen: IDGenerator = IDGenerator(settings.db.WORKER_ID)

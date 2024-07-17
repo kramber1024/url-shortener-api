@@ -1,4 +1,4 @@
-name: Test
+name: Tests
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
       - main
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
     env:
       NAME: ${{ vars.NAME }}

@@ -3,5 +3,8 @@
         "**/__pycache__": true,
         "**/.mypy_cache": true,
         "**/.pytest_cache": true,
-    }
+    },
+    "python.analysis.autoImportCompletions": true,
+    "python.testing.pytestEnabled": true,
+    "mypy-type-checker.importStrategy": "fromEnvironment",
 }

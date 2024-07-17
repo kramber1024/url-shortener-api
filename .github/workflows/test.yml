@@ -1,0 +1,52 @@
+name: Test
+
+on:
+  push:
+    paths-ignore:
+      - ".vscode/**"
+      - ".github/**"
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NAME: ${{ vars.NAME }}
+      WORKER_ID: ${{ vars.WORKER_ID }}
+      SALT_ROUND: ${{ vars.SALT_ROUNDS }}
+      SECRET: ${{ secrets.SECRET }}
+      ACCESS_TOKEN_EXPIRES_IN_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRES_IN_MINUTES }}
+      REFRESH_TOKEN_EXPIRES_IN_DAYS: ${{ vars.REFRESH_TOKEN_EXPIRES_IN_DAYS }}
+      HOST: ${{ vars.HOST }}
+      PORT: ${{ vars.PORT }}
+      TEST_PORT: ${{ vars.TEST_PORT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install poetry
+        run: pip install --upgrade poetry && poetry config virtualenvs.create false
+      
+      - name: Install dependencies
+        run: poetry install --no-root
+      
+      - name: Run tests
+        run: pytest --cov --cov-report=html
+      
+      - name: Store coverage files
+        uses: actions/upload-artifact@v4
+        with:
+          path: htmlcov
+          name: coverage

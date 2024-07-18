@@ -30,7 +30,7 @@ async def main() -> None:
     await db.create_db(hard_rest=False)
 
     uvicorn.run(
-        "main:app",
+        "app.main:app",
         host=settings.dev.HOST,
         port=settings.dev.PORT,
         reload=True,

@@ -69,4 +69,4 @@ python -m app.main
 - **http://127.0.0.1:26801/api/docs** - Swagger UI
 - **http://127.0.0.1:26801/api/redoc** - ReDoc
 
-**Документацию по тестированию, запуску в докере и переменным окружения можно найти в [DEVELOPMENT.md](./DEVELOPMENT.md)**
+**Документацию по тестированию, запуску в докере и переменным окружения можно найти в [DEVELOPMENT.md](./DEVELOPMENT.md)**.

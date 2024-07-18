@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "URL Shortener API"
+name = "FastAPI API"
 description = "API for URL shortener."
 authors = ["kramber1024 <kramber268@gmail.com>"]
 package-mode = false

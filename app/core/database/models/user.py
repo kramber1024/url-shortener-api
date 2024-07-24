@@ -9,7 +9,7 @@ from app.core.config import settings
 from .bases import IDBase
 
 if TYPE_CHECKING:
-    from app.core.database.models.link import Link
+    from app.core.database.models.url import Url
 
     from .status import Status
 
@@ -43,8 +43,8 @@ class User(IDBase):
         "Status",
         lazy="selectin",
     )
-    links: Mapped["Link"] = relationship(
-        "Link",
+    urls: Mapped["Url"] = relationship(
+        "Url",
         back_populates="author",
         lazy="selectin",
     )

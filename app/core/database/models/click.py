@@ -6,15 +6,15 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .bases import IDBase
 
 if TYPE_CHECKING:
-    from .link import Link
+    from .url import Url
 
 
 class Click(IDBase):
     __tablename__ = "Clicks"
 
-    link_id: Mapped[int] = mapped_column(
+    url_id: Mapped[int] = mapped_column(
         Integer(),
-        ForeignKey("Links.id"),
+        ForeignKey("Urls.id"),
         nullable=False,
     )
     ip: Mapped[str] = mapped_column(
@@ -26,8 +26,8 @@ class Click(IDBase):
         nullable=False,
     )
 
-    link: Mapped["Link"] = relationship(
-        "Link",
+    url: Mapped["Url"] = relationship(
+        "Url",
         back_populates="clicks",
         lazy="selectin",
     )
@@ -35,11 +35,11 @@ class Click(IDBase):
     def __init__(
         self,
         *,
-        link_id: int,
+        url_id: int,
         ip: str,
         country: str,
     ) -> None:
 
-        self.link_id = link_id
+        self.url_id = url_id
         self.ip = ip
         self.country = country

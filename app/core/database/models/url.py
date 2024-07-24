@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from .click import Click
 
 
-class Link(IDBase):
-    __tablename__ = "Links"
+class Url(IDBase):
+    __tablename__ = "Urls"
 
     user_id: Mapped[int] = mapped_column(
         Integer(),
@@ -36,12 +36,12 @@ class Link(IDBase):
 
     author: Mapped["User"] = relationship(
         "User",
-        back_populates="links",
+        back_populates="urls",
         lazy="selectin",
     )
     clicks: Mapped[list["Click"]] = relationship(
         "Click",
-        back_populates="link",
+        back_populates="url",
         lazy="selectin",
     )
 

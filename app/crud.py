@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database.models import Status, User
+from app.core.database.models import Status, Url, User
 
 if TYPE_CHECKING:
     from sqlalchemy.engine import Result
@@ -77,3 +77,23 @@ async def create_status(
     await session.commit()
     await session.refresh(status)
     return status
+
+
+async def create_url(
+    *,
+    session: AsyncSession,
+    user_id: int,
+    address: str,
+    location: str,
+) -> Url:
+
+    url: Url = Url(
+        user_id=user_id,
+        address=address,
+        location=location,
+    )
+
+    session.add(url)
+    await session.commit()
+    await session.refresh(url)
+    return url

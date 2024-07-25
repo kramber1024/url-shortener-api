@@ -1,0 +1,32 @@
+from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.core.database.models.bases import IDBase
+
+if TYPE_CHECKING:
+    from app.core.database.models import Url
+
+
+class Tag(IDBase):
+    __tablename__ = "Tags"
+
+    url_id: Mapped[int] = mapped_column(
+        Integer(),
+        ForeignKey("Urls.id"),
+        nullable=False,
+    )
+    name: Mapped[str] = mapped_column(
+        String(32),
+        nullable=False,
+    )
+
+    url: Mapped["Url"] = relationship(
+        "Url",
+        back_populates="tags",
+        lazy="selectin",
+    )
+
+    def __init__(self, *, name: str) -> None:
+        self.name = name

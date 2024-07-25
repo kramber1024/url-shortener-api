@@ -11,10 +11,7 @@ class Error(BaseModel):
     message: Annotated[
         str,
         Field(
-            description=(
-                "Error message. "
-                "Should not be used as feedback for a user."
-            ),
+            description="Error message. Should not be used as feedback for a user.",
             examples=["Password length is incorrect"],
         ),
     ]
@@ -22,8 +19,7 @@ class Error(BaseModel):
         str,
         Field(
             description=(
-                "Error type. "
-                "Should be used for frontend logic e.g. form validation."
+                "Error type. Should be used for frontend logic e.g. form validation."
             ),
             examples=["password"],
         ),

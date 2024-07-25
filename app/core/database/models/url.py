@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .bases import IDBase
 
 if TYPE_CHECKING:
-    from app.core.database.models.user import User
+    from app.core.database.models import Tag, User
 
     from .click import Click
 
@@ -48,6 +48,11 @@ class Url(IDBase):
         nullable=False,
     )
 
+    tags: Mapped[list["Tag"]] = relationship(
+        "Tag",
+        back_populates="url",
+        lazy="selectin",
+    )
     author: Mapped["User"] = relationship(
         "User",
         back_populates="urls",

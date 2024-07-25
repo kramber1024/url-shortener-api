@@ -10,6 +10,17 @@ if TYPE_CHECKING:
 
 
 class Tag(IDBase):
+    """Model for short URL tags.
+
+    Attributes
+    ----------
+        id (int): The unique identifier (See ` IDBase `).
+        url_id (int): The unique identifier of the ` Url `.
+        name (str): The tag name. Used for categorization.
+        url (Url): The ` Url ` the tag is associated with.
+
+    """
+
     __tablename__ = "Tags"
 
     url_id: Mapped[int] = mapped_column(

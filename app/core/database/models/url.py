@@ -12,6 +12,20 @@ if TYPE_CHECKING:
 
 
 class Url(IDBase):
+    """Model for short URLs.
+
+    Attributes
+    ----------
+        id (int): The unique identifier (See ` IDBase `).
+        user_id (int): The unique identifier of the ` User ` aka author.
+        address (str): The short URL address.
+        location (str): The long URL address.
+        total_clicks (int): The total number of uses of the short URL.
+        author (User): The author of the short URL.
+        clicks (list[Click]): The list of ` Click`'s on the short URL.
+
+    """
+
     __tablename__ = "Urls"
 
     user_id: Mapped[int] = mapped_column(
@@ -52,7 +66,6 @@ class Url(IDBase):
         address: str,
         location: str,
     ) -> None:
-
         self.user_id = user_id
         self.address = address
         self.location = location

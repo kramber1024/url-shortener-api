@@ -21,7 +21,6 @@ async def test_register_user(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "last_name": str(user_credentials.last_name),
@@ -64,7 +63,6 @@ async def test_register_user_no_last_name(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
@@ -106,7 +104,6 @@ async def test_register_user_uppercase(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     first_name: str = user_credentials.first_name.upper()
     last_name: str = str(user_credentials.last_name).upper()
     email: str = user_credentials.email.upper()
@@ -155,7 +152,6 @@ async def test_register_user_email_conflict(
     db_user: User,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": db_user.email,
@@ -198,7 +194,6 @@ async def test_register_user_invalid_first_name(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": "Hi",
         "email": user_credentials.email,
@@ -230,7 +225,6 @@ async def test_register_user_invalid_last_name(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "last_name": "Hi",
@@ -263,7 +257,6 @@ async def test_register_user_invalid_email(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     invalid_email: str = "a@a."
 
     json: dict[str, str] = {
@@ -297,7 +290,6 @@ async def test_register_user_invalid_password(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
@@ -329,7 +321,6 @@ async def test_register_user_invalid_terms(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
@@ -360,7 +351,6 @@ async def test_register_user_invalid_all(
     session: AsyncSession,
     client: AsyncClient,
 ) -> None:
-
     invalid_first_name: str = "26"
     invalid_last_name: str = "26"
     invalid_email: str = "26"
@@ -385,9 +375,15 @@ async def test_register_user_invalid_all(
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    assert len(response.json().get("errors", [0])) == len([
-        "first_name", "last_name", "email", "password", "terms",
-    ])
+    assert len(response.json().get("errors", [0])) == len(
+        [
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+            "terms",
+        ],
+    )
     assert utils.error_type_exists(response.json(), "first_name")
     assert utils.error_type_exists(response.json(), "last_name")
     assert utils.error_type_exists(response.json(), "email")
@@ -403,7 +399,6 @@ async def test_register_user_empty(
     session: AsyncSession,
     client: AsyncClient,
 ) -> None:
-
     email: str = ""
 
     response: Response = await client.post(
@@ -417,9 +412,14 @@ async def test_register_user_empty(
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    assert len(response.json().get("errors", [0])) == len([
-        "first_name", "email", "password", "terms",
-    ])
+    assert len(response.json().get("errors", [0])) == len(
+        [
+            "first_name",
+            "email",
+            "password",
+            "terms",
+        ],
+    )
     assert utils.error_type_exists(response.json(), "first_name")
     assert utils.error_type_exists(response.json(), "email")
     assert utils.error_type_exists(response.json(), "password")
@@ -434,7 +434,6 @@ async def test_authenticate_user(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": db_user.email,
         "password": utils.DB_USER_PASSWORD,
@@ -457,7 +456,6 @@ async def test_authenticate_user_incorrect_email(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": db_user.email + "a",
         "password": utils.DB_USER_PASSWORD,
@@ -481,7 +479,6 @@ async def test_authenticate_user_incorrect_password(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": db_user.email,
         "password": utils.DB_USER_PASSWORD[::-1],
@@ -505,7 +502,6 @@ async def test_authenticate_user_incorrect_all(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": db_user.email + "a",
         "password": utils.DB_USER_PASSWORD[::-1],
@@ -529,7 +525,6 @@ async def test_authenticate_user_invalid_email(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": "........",
         "password": user_credentials.password,
@@ -552,7 +547,6 @@ async def test_authenticate_user_invalid_password(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-
     json: dict[str, str] = {
         "email": user_credentials.email,
         "password": "12345",
@@ -574,7 +568,6 @@ async def test_authenticate_user_invalid_password(
 async def test_authenticate_user_invalid_all(
     client: AsyncClient,
 ) -> None:
-
     json: dict[str, str] = {
         "email": "...",
         "password": "...",
@@ -597,7 +590,6 @@ async def test_authenticate_user_invalid_all(
 async def test_authenticate_user_empty(
     client: AsyncClient,
 ) -> None:
-
     response: Response = await client.post(
         "api/auth/login",
         json={},
@@ -616,7 +608,6 @@ async def test_refresh_user(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     refresh_token: str = jwt_auth.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -638,7 +629,6 @@ async def test_refresh_user(
 async def test_refresh_user_incorrect_token(
     client: AsyncClient,
 ) -> None:
-
     refresh_token: str = (
         "wnce8OakjfsPgNSWvlZosGgSWkXPhR."
         "19Q5n3vX04pJorG6Ps2LYzrmZr1Xdc."
@@ -663,7 +653,6 @@ async def test_refresh_user_access_token(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     access_token: str = jwt_auth.generate_access_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -687,7 +676,6 @@ async def test_refresh_user_no_authorization(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-
     response: Response = await client.post(
         "api/auth/refresh",
     )

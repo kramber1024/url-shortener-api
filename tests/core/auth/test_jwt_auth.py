@@ -15,7 +15,6 @@ from tests import utils
 def test__encode_jwt_access(
     db_user: User,
 ) -> None:
-
     payload: dict[str, str | int] = {
         "sub": str(db_user.id),
         "email": db_user.email,
@@ -56,7 +55,6 @@ def test__encode_jwt_access(
 def test__encode_jwt_refresh(
     db_user: User,
 ) -> None:
-
     payload: dict[str, str | int] = {
         "sub": str(db_user.id),
         "email": db_user.email,
@@ -87,7 +85,7 @@ def test__encode_jwt_refresh(
     assert decoded_payload["exp"] in range(
         int(decoded_payload["iat"]),
         int(decoded_payload["iat"])
-            + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
+        + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
     )
     assert decoded_payload["iat"] in range(
         int(datetime.datetime.now(datetime.UTC).timestamp()),
@@ -98,7 +96,6 @@ def test__encode_jwt_refresh(
 def test_generate_access_token(
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_access_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -134,7 +131,6 @@ def test_generate_access_token(
 def test_generate_refresh_token(
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -160,7 +156,7 @@ def test_generate_refresh_token(
     assert decoded_payload["exp"] in range(
         int(decoded_payload["iat"]),
         int(decoded_payload["iat"])
-            + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
+        + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
     )
     assert decoded_payload["iat"] in range(
         int(datetime.datetime.now(datetime.UTC).timestamp()),
@@ -171,7 +167,6 @@ def test_generate_refresh_token(
 def test_get_token_payload_access(
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_access_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -207,7 +202,6 @@ def test_get_token_payload_access(
 def test_get_token_payload_refresh(
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -233,7 +227,7 @@ def test_get_token_payload_refresh(
     assert decoded_payload["exp"] in range(
         int(decoded_payload["iat"]),
         int(decoded_payload["iat"])
-            + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
+        + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 61,
     )
     assert decoded_payload["iat"] in range(
         int(datetime.datetime.now(datetime.UTC).timestamp()),
@@ -259,7 +253,6 @@ def test_get_token_payload_invalid_token() -> None:
 def test_get_token_payload_invalid_type(
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -307,7 +300,6 @@ async def test_get_current_user(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_access_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -331,7 +323,6 @@ async def test_get_current_user(
 async def test_get_current_user_none_token(
     session: AsyncSession,
 ) -> None:
-
     with pytest.raises(ErrorException) as exc:
         await jwt_auth.get_current_user(
             session=session,
@@ -348,7 +339,6 @@ async def test_get_current_user_none_token(
 async def test_get_current_user_no_user(
     session: AsyncSession,
 ) -> None:
-
     id_: int = 1234567890123498
     email: str = "Christina.Kuvalis@yahoo.com"
 
@@ -373,7 +363,6 @@ async def test_get_current_user_no_user(
 async def test_get_current_user_invalid_token(
     session: AsyncSession,
 ) -> None:
-
     with pytest.raises(ErrorException) as exc:
         await jwt_auth.get_current_user(
             session=session,
@@ -395,7 +384,6 @@ async def test_get_refreshed_user(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     token: str = jwt_auth.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
@@ -419,7 +407,6 @@ async def test_get_refreshed_user(
 async def test_get_refreshed_user_none_token(
     session: AsyncSession,
 ) -> None:
-
     with pytest.raises(ErrorException) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
@@ -436,7 +423,6 @@ async def test_get_refreshed_user_none_token(
 async def test_get_refreshed_user_no_token(
     session: AsyncSession,
 ) -> None:
-
     with pytest.raises(ErrorException) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
@@ -452,7 +438,6 @@ async def test_get_refreshed_user_no_token(
 async def test_get_refreshed_user_no_user(
     session: AsyncSession,
 ) -> None:
-
     id_: int = 5187728381231
     email: str = "Ettie94@gmail.com"
 
@@ -478,7 +463,6 @@ async def test_get_refreshed_user_invalid_token(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     with pytest.raises(ErrorException) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,

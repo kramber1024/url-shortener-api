@@ -10,7 +10,6 @@ from tests import utils
 async def test_create_user(
     session: AsyncSession,
 ) -> None:
-
     first_name: str = "Brenda"
     last_name: str = "Reichel"
     email: str = "Terrill90@gmail.com"
@@ -37,7 +36,6 @@ async def test_create_user(
 async def test_create_user_uppercase(
     session: AsyncSession,
 ) -> None:
-
     first_name: str = "Teagan".upper()
     last_name: str = "Reichel".upper()
     email: str = "Terrill90@gmail.com".upper()
@@ -64,7 +62,6 @@ async def test_create_user_uppercase(
 async def test_create_user_empty(
     session: AsyncSession,
 ) -> None:
-
     first_name: str = ""
     email: str = ""
     password: str = ""
@@ -91,7 +88,6 @@ async def test_get_user_by_email(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     user: User | None = await crud.get_user_by_email(
         session=session,
         email=db_user.email,
@@ -112,7 +108,6 @@ async def test_get_user_by_email_not_found(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     user: User | None = await crud.get_user_by_email(
         session=session,
         email=db_user.email[::-1],
@@ -126,7 +121,6 @@ async def test_get_user_by_id(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     user: User | None = await crud.get_user_by_id(
         session=session,
         id_=db_user.id,
@@ -147,7 +141,6 @@ async def test_get_user_by_id_not_found(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-
     user: User | None = await crud.get_user_by_id(
         session=session,
         id_=db_user.id - 1,

@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 async def test_create_status(
     session: AsyncSession,
 ) -> None:
-
     id_: int = 11231231234124
 
     status: Status = await crud.create_status(
@@ -32,7 +31,6 @@ async def test_create_status(
 async def test_create_status_inactive(
     session: AsyncSession,
 ) -> None:
-
     id_: int = 5124124124124124
 
     status: Status = await crud.create_status(
@@ -52,7 +50,6 @@ async def test_create_status_inactive(
 async def test_create_status_premium(
     session: AsyncSession,
 ) -> None:
-
     id_: int = 5124124124124124
 
     status: Status = await crud.create_status(

@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
+from app.api import responses
 from app.api.exceptions import ErrorException
 from app.api.schemes import ErrorResponse as ErrorResponseScheme
 from app.api.schemes import SuccessResponse as SuccessResponseScheme
@@ -24,66 +25,46 @@ router: APIRouter = APIRouter(prefix="/auth")
     description="Registers new user account in the system.",
     status_code=201,
     responses={
-        201: {
-            "description": "New user account registered successfully.",
-            "model": SuccessResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "message": "Account created successfully",
-                        "status": 201,
-                    },
-                },
+        status.HTTP_201_CREATED: responses.response(
+            description="New user account registered successfully.",
+            model=SuccessResponseScheme,
+            example={
+                "message": "Account created successfully",
+                "status": 201,
             },
-        },
-        409: {
-            "description": (
+        ),
+        status.HTTP_409_CONFLICT: responses.response(
+            description=(
                 "The email is already in use. "
                 "User should use a different email or login."
             ),
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [],
-                        "message": "The email is already in use",
-                        "status": 409,
-                    },
-                },
+            model=ErrorResponseScheme,
+            example={
+                "errors": [],
+                "message": "The email is already in use",
+                "status": 409,
             },
-        },
-        422: {
-            "description": (
-                "Validation error. "
-                "The email format is invalid and/or the password length is incorrect "
-                "(either too short or too long). Same goes for name fields. "
-                "Also you can get this error if "
-                "you forgot to fill in the required fields."
-            ),
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [
-                            {
-                                "message": "The last_name length is invalid",
-                                "type": "last_name",
-                            },
-                            {
-                                "message": "The email format is invalid",
-                                "type": "email",
-                            },
-                            {
-                                "message": "The password field is required",
-                                "type": "password",
-                            },
-                        ],
-                        "message": "Validation error",
-                        "status": 422,
+        ),
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
+            example={
+                "errors": [
+                    {
+                        "message": "The last_name length is invalid",
+                        "type": "last_name",
                     },
-                },
+                    {
+                        "message": "The email format is invalid",
+                        "type": "email",
+                    },
+                    {
+                        "message": "The password field is required",
+                        "type": "password",
+                    },
+                ],
+                "message": "Validation error",
+                "status": 422,
             },
-        },
+        ),
     },
 )
 async def register_user(
@@ -96,11 +77,13 @@ async def register_user(
         Depends(db.scoped_session),
     ],
 ) -> JSONResponse:
-
-    if await crud.get_user_by_email(
-        session=session,
-        email=new_user.email,
-    ) is not None:
+    if (
+        await crud.get_user_by_email(
+            session=session,
+            email=new_user.email,
+        )
+        is not None
+    ):
         raise ErrorException(
             errors=[],
             message="The email is already in use",
@@ -138,59 +121,39 @@ async def register_user(
     description="Authenticates a user in the system using email and password.",
     status_code=200,
     responses={
-        200: {
-            "description": "User authenticated successfully.",
-            "model": SuccessResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "message": "User authenticated successfully",
-                        "status": 200,
-                    },
-                },
+        status.HTTP_200_OK: responses.response(
+            description="User authenticated successfully.",
+            model=SuccessResponseScheme,
+            example={
+                "message": "User authenticated successfully",
+                "status": 200,
             },
-        },
-        401: {
-            "description": "The email or password is incorrect.",
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [],
-                        "message": "The email or password is incorrect",
-                        "status": 401,
-                    },
-                },
+        ),
+        status.HTTP_401_UNAUTHORIZED: responses.response(
+            description="The email or password is incorrect.",
+            model=ErrorResponseScheme,
+            example={
+                "errors": [],
+                "message": "The email or password is incorrect",
+                "status": 401,
             },
-        },
-        422: {
-            "description": (
-                "Validation error. "
-                "The email format is invalid and/or the password length is incorrect "
-                "(either too short or too long). "
-                "Also you can get this error if "
-                "you forgot to fill in the required fields."
-            ),
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [
-                            {
-                                "message": "The email format is invalid",
-                                "type": "email",
-                            },
-                            {
-                                "message": "The password length is invalid",
-                                "type": "password",
-                            },
-                        ],
-                        "message": "Validation error",
-                        "status": 422,
+        ),
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
+            example={
+                "errors": [
+                    {
+                        "message": "The email format is invalid",
+                        "type": "email",
                     },
-                },
+                    {
+                        "message": "The password length is invalid",
+                        "type": "password",
+                    },
+                ],
+                "message": "Validation error",
+                "status": 422,
             },
-        },
+        ),
     },
 )
 async def authenticate_user(
@@ -203,7 +166,6 @@ async def authenticate_user(
         Depends(db.scoped_session),
     ],
 ) -> JSONResponse:
-
     user: User | None = await crud.get_user_by_email(
         session=session,
         email=user_login.email,
@@ -249,57 +211,17 @@ async def authenticate_user(
     description="Refreshes the access token using the refresh token.",
     status_code=200,
     responses={
-        200: {
-            "description": "Tokens refreshed successfully.",
-            "model": SuccessResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "message": "Tokens refreshed successfully",
-                        "status": 200,
-                    },
-                },
+        status.HTTP_200_OK: responses.response(
+            description="Tokens refreshed successfully.",
+            model=SuccessResponseScheme,
+            example={
+                "message": "Tokens refreshed successfully",
+                "status": 200,
             },
-        },
-        400: {
-            "description": "Provided token is not valid.",
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [],
-                        "message": "Invalid token",
-                        "status": 400,
-                    },
-                },
-            },
-        },
-        401: {
-            "description": "Authorization required. Provide a valid token in headers.",
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [],
-                        "message": "Authorization required",
-                        "status": 401,
-                    },
-                },
-            },
-        },
-        422: {
-            "description": "Provided token is not valid.",
-            "model": ErrorResponseScheme,
-            "content": {
-                "application/json": {
-                    "example": {
-                        "errors": [],
-                        "message": "Invalid token",
-                        "status": 400,
-                    },
-                },
-            },
-        },
+        ),
+        status.HTTP_400_BAD_REQUEST: responses.INVALID_TOKEN,
+        status.HTTP_401_UNAUTHORIZED: responses.UNAUTHORIZED,
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.INVALID_TOKEN,
     },
 )
 def refresh_user(
@@ -308,7 +230,6 @@ def refresh_user(
         Depends(jwt_auth.get_refreshed_user),
     ],
 ) -> JSONResponse:
-
     success_response: SuccessResponseScheme = SuccessResponseScheme(
         message="Tokens refreshed successfully",
         status=status.HTTP_200_OK,

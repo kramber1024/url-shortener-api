@@ -31,6 +31,17 @@ def response(
     return response
 
 
+def validation_error_response(example: dict[str, Any]) -> Response:
+    return response(
+        description=(
+            "A validation error occurs when the input data provided does not meet the "
+            "required scheme or format specified by the endpoint."
+        ),
+        model=ErrorResponseScheme,
+        example=example,
+    )
+
+
 INVALID_TOKEN: Response = response(
     description="Provided token is not valid.",
     model=ErrorResponseScheme,

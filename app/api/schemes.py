@@ -2,9 +2,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
-from app.core.database.models import User as UserModel
-
-from .fields import Email, FirstName, HTTPStatus, Id, LastName, Password
+from app.api.fields import Email, FirstName, HTTPStatus, Id, LastName, Password
+from app.core.database import models
 
 
 class Error(BaseModel):
@@ -80,7 +79,7 @@ class User(BaseModel):
     email: Email
 
     @classmethod
-    def from_model(cls: type["User"], user: UserModel) -> "User":
+    def from_model(cls: type["User"], user: models.User) -> "User":
         return cls(
             id=str(user.id),
             first_name=user.first_name,

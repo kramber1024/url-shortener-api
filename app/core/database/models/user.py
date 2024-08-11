@@ -5,16 +5,13 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
-
-from .bases import IDBase
+from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
-    from app.core.database.models.url import Url
-
-    from .status import Status
+    from app.core.database.models import Status, Url
 
 
-class User(IDBase):
+class User(Base, IDMixin):
     __tablename__ = "Users"
 
     first_name: Mapped[str] = mapped_column(
@@ -57,7 +54,6 @@ class User(IDBase):
         email: str,
         password: str,
     ) -> None:
-
         super().__init__()
         self.first_name = first_name
         self.last_name = last_name
@@ -91,4 +87,4 @@ class User(IDBase):
         ).decode("utf-8")
 
     def __repr__(self) -> str:
-        return f"<User {self.first_name} {self.id}>"
+        return f"<{type(self).__name__} {self.first_name} {self.id}>"

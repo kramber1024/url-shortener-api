@@ -5,13 +5,13 @@ from app.core.database.generator import gen
 
 
 class Base(DeclarativeBase):
-    """Concrete abstract base class for models and bases."""
+    """Concrete base class for models and mixins."""
 
     __abstract__ = True
 
 
-class IDBase(Base):
-    """Abstract base class for all models that require an ` id ` column.
+class IDMixin(DeclarativeBase):
+    """Mixin for models that require an ` id ` primary column.
 
     Attributes
     ----------

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .bases import IDBase
+from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
     from app.core.database.models import Tag, User
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .click import Click
 
 
-class Url(IDBase):
+class Url(Base, IDMixin):
     """Model for short URLs.
 
     Attributes

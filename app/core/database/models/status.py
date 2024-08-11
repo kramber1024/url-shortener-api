@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .bases import Base
+from app.core.database.models.mixins import Base
 
 
 class Status(Base):
@@ -37,7 +37,6 @@ class Status(Base):
         active: bool = True,
         premium: bool = False,
     ) -> None:
-
         self.user_id = user_id
         self.email_verified = False
         self.phone_verified = False

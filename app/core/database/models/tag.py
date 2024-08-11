@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database.models.bases import IDBase
+from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
     from app.core.database.models import Url
 
 
-class Tag(IDBase):
+class Tag(Base, IDMixin):
     """Model for short URL tags.
 
     Attributes

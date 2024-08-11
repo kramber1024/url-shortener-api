@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .bases import IDBase
+from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
     from .url import Url
 
 
-class Click(IDBase):
+class Click(Base, IDMixin):
     __tablename__ = "Clicks"
 
     url_id: Mapped[int] = mapped_column(
@@ -39,7 +39,6 @@ class Click(IDBase):
         ip: str,
         country: str,
     ) -> None:
-
         self.url_id = url_id
         self.ip = ip
         self.country = country

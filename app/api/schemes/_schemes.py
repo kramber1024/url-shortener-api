@@ -2,7 +2,7 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
-from app.api.fields import Email, FirstName, HTTPStatus, Id, LastName, Password
+from app.api.schemes.fields import Email, FirstName, HTTPStatus, Id, LastName, Password
 from app.core.database import models
 
 

@@ -53,25 +53,6 @@ class SuccessResponse(BaseModel):
     status: HTTPStatus
 
 
-class UserRegistration(BaseModel):
-    first_name: FirstName
-    last_name: LastName | None = None
-    email: Email
-    password: Password
-    terms: Annotated[
-        Literal["on"],
-        Field(
-            description="User agreement to terms of use.",
-            examples=["on"],
-        ),
-    ]
-
-
-class UserLogin(BaseModel):
-    email: Email
-    password: Password
-
-
 class User(BaseModel):
     id: Id
     first_name: FirstName
@@ -86,3 +67,32 @@ class User(BaseModel):
             last_name=user.last_name,
             email=user.email,
         )
+
+
+class UserLogin(BaseModel):
+    email: Email
+    password: Password
+
+
+class UserRegistration(BaseModel):
+    first_name: FirstName
+    last_name: LastName | None = None
+    email: Email
+    password: Password
+    terms: Annotated[
+        Literal["on"],
+        Field(
+            description="User agreement to terms of use.",
+            examples=["on"],
+        ),
+    ]
+
+
+__all__ = (
+    "Error",
+    "ErrorResponse",
+    "SuccessResponse",
+    "User",
+    "UserLogin",
+    "UserRegistration",
+)

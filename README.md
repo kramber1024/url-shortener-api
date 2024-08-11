@@ -70,3 +70,7 @@ python -m app.main
 - **http://127.0.0.1:26801/api/redoc** - ReDoc
 
 **Документацию по тестированию, запуску в докере и переменным окружения можно найти в [DEVELOPMENT.md](./DEVELOPMENT.md)**.
+
+## License
+
+This project is licensed under the terms of the [**MIT license**](./LICENSE).

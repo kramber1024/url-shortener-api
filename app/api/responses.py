@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from app.api.schemes import ErrorResponse as ErrorResponseScheme
 
-type Response = dict[str, Any]
+Response = dict[str, Any]
 
 
 def response(

@@ -4,15 +4,15 @@ from pydantic import BaseModel
 
 from app.api.schemes import ErrorResponse as ErrorResponseScheme
 
-Response = dict[str, Any]
+_response = dict[str, Any]
 
 
 def response(
     description: str,
     model: type[BaseModel],
     example: dict[str, Any] | None = None,
-) -> Response:
-    response: Response = {
+) -> _response:
+    response: _response = {
         "description": description,
         "model": model,
     }
@@ -31,7 +31,7 @@ def response(
     return response
 
 
-def validation_error_response(example: dict[str, Any]) -> Response:
+def validation_error_response(example: dict[str, Any]) -> _response:
     return response(
         description=(
             "A validation error occurs when the input data provided does not meet the "
@@ -42,7 +42,7 @@ def validation_error_response(example: dict[str, Any]) -> Response:
     )
 
 
-INVALID_TOKEN: Response = response(
+INVALID_TOKEN: _response = response(
     description="Provided token is not valid.",
     model=ErrorResponseScheme,
     example={
@@ -52,7 +52,7 @@ INVALID_TOKEN: Response = response(
     },
 )
 
-INTERNAL_SERVER_ERROR: Response = response(
+INTERNAL_SERVER_ERROR: _response = response(
     description="Something went very wrong. Please report this issue.",
     model=ErrorResponseScheme,
     example={

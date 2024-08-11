@@ -1,18 +1,18 @@
-from typing import Any
+from typing import Any, TypeAlias
 
 from pydantic import BaseModel
 
 from app.api.schemes import ErrorResponse as ErrorResponseScheme
 
-_response = dict[str, Any]
+_Response: TypeAlias = dict[str, Any]
 
 
 def response(
     description: str,
     model: type[BaseModel],
     example: dict[str, Any] | None = None,
-) -> _response:
-    response: _response = {
+) -> _Response:
+    response: _Response = {
         "description": description,
         "model": model,
     }
@@ -31,7 +31,7 @@ def response(
     return response
 
 
-def validation_error_response(example: dict[str, Any]) -> _response:
+def validation_error_response(example: dict[str, Any]) -> _Response:
     return response(
         description=(
             "A validation error occurs when the input data provided does not meet the "
@@ -42,7 +42,7 @@ def validation_error_response(example: dict[str, Any]) -> _response:
     )
 
 
-UNAUTHORIZED: _response = response(
+UNAUTHORIZED: _Response = response(
     description="Authorization required. Provide a valid refresh token in cookies.",
     model=ErrorResponseScheme,
     example={
@@ -52,7 +52,7 @@ UNAUTHORIZED: _response = response(
     },
 )
 
-INVALID_TOKEN: _response = response(
+INVALID_TOKEN: _Response = response(
     description="Provided token is not valid.",
     model=ErrorResponseScheme,
     example={
@@ -62,7 +62,7 @@ INVALID_TOKEN: _response = response(
     },
 )
 
-INTERNAL_SERVER_ERROR: _response = response(
+INTERNAL_SERVER_ERROR: _Response = response(
     description="Something went very wrong. Please report this issue.",
     model=ErrorResponseScheme,
     example={

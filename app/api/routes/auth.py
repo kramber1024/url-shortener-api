@@ -5,12 +5,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
-from app.api import responses
+from app.api import responses, schemes
 from app.api.exceptions import ErrorException
-from app.api.schemes import ErrorResponse as ErrorResponseScheme
-from app.api.schemes import SuccessResponse as SuccessResponseScheme
-from app.api.schemes import UserLogin as UserLoginScheme
-from app.api.schemes import UserRegistration as UserRegistrationScheme
 from app.core.auth import jwt_auth
 from app.core.config import settings
 from app.core.database import db
@@ -27,7 +23,7 @@ router: APIRouter = APIRouter(prefix="/auth")
     responses={
         status.HTTP_201_CREATED: responses.response(
             description="New user account registered successfully.",
-            model=SuccessResponseScheme,
+            model=schemes.SuccessResponse,
             example={
                 "message": "Account created successfully",
                 "status": 201,
@@ -38,7 +34,7 @@ router: APIRouter = APIRouter(prefix="/auth")
                 "The email is already in use. "
                 "User should use a different email or login."
             ),
-            model=ErrorResponseScheme,
+            model=schemes.ErrorResponse,
             example={
                 "errors": [],
                 "message": "The email is already in use",
@@ -69,7 +65,7 @@ router: APIRouter = APIRouter(prefix="/auth")
 )
 async def register_user(
     new_user: Annotated[
-        UserRegistrationScheme,
+        schemes.UserRegistration,
         Body(),
     ],
     session: Annotated[
@@ -104,7 +100,7 @@ async def register_user(
         premium=False,
     )
 
-    success_response: SuccessResponseScheme = SuccessResponseScheme(
+    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
         message="Account created successfully",
         status=status.HTTP_201_CREATED,
     )
@@ -123,7 +119,7 @@ async def register_user(
     responses={
         status.HTTP_200_OK: responses.response(
             description="User authenticated successfully.",
-            model=SuccessResponseScheme,
+            model=schemes.SuccessResponse,
             example={
                 "message": "User authenticated successfully",
                 "status": 200,
@@ -131,7 +127,7 @@ async def register_user(
         ),
         status.HTTP_401_UNAUTHORIZED: responses.response(
             description="The email or password is incorrect.",
-            model=ErrorResponseScheme,
+            model=schemes.ErrorResponse,
             example={
                 "errors": [],
                 "message": "The email or password is incorrect",
@@ -158,7 +154,7 @@ async def register_user(
 )
 async def authenticate_user(
     user_login: Annotated[
-        UserLoginScheme,
+        schemes.UserLogin,
         Body(),
     ],
     session: Annotated[
@@ -178,7 +174,7 @@ async def authenticate_user(
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    success_response: SuccessResponseScheme = SuccessResponseScheme(
+    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
         message="User authenticated successfully",
         status=status.HTTP_200_OK,
     )
@@ -213,7 +209,7 @@ async def authenticate_user(
     responses={
         status.HTTP_200_OK: responses.response(
             description="Tokens refreshed successfully.",
-            model=SuccessResponseScheme,
+            model=schemes.SuccessResponse,
             example={
                 "message": "Tokens refreshed successfully",
                 "status": 200,
@@ -230,7 +226,7 @@ def refresh_user(
         Depends(jwt_auth.get_refreshed_user),
     ],
 ) -> JSONResponse:
-    success_response: SuccessResponseScheme = SuccessResponseScheme(
+    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
         message="Tokens refreshed successfully",
         status=status.HTTP_200_OK,
     )

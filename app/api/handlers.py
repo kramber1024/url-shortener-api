@@ -2,50 +2,39 @@ from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from app.api.exceptions import ErrorException
-from app.api.schemes import Error as ErrorScheme
-from app.api.schemes import ErrorResponse as ErrorResponseScheme
+from app.api import schemes
+from app.api.exceptions import HTTPError
 
 
-def validation_exception_handler(
+def request_validation_error_handler(
     _: Request,
-    exc: RequestValidationError | Exception,
+    exc: RequestValidationError,
 ) -> JSONResponse:
-
     errors_map: dict[str, str] = {
         "string_too_short": "The {} length is invalid",
         "string_too_long": "The {} length is invalid",
         "value_error": "The {} format is invalid",
         "missing": "The {} field is required",
         "string_type": "The {} should be a string",
-        "json_invalid":  "Request should be a valid JSON",
+        "json_invalid": "Request should be a valid JSON",
         "literal_error": "The {} value is invalid",
     }
-    errors: list[ErrorScheme] = []
+    errors: list[schemes.Error] = []
 
-    if isinstance(exc, RequestValidationError):
-        for error in exc.errors():
-            message: str = errors_map.get(
-                error["type"],
-                f"Invalid value ({error["type"]})",
-            ).format(error["loc"][1])
+    for error in exc.errors():
+        message: str = errors_map.get(
+            error["type"],
+            f"Invalid value ({error["type"]})",
+        ).format(error["loc"][1])
 
-            errors.append(
-                ErrorScheme(
-                    message=message,
-                    type=str(error["loc"][1]),
-                ),
-            )
-
-    else:
         errors.append(
-            ErrorScheme(
-                message="Iternal server error",
-                type="server",
+            schemes.Error(
+                message=message,
+                type=str(error["loc"][1]),
             ),
         )
 
-    response: ErrorResponseScheme = ErrorResponseScheme(
+    response: schemes.ErrorResponse = schemes.ErrorResponse(
         errors=errors,
         message="Validation error",
         status=422,
@@ -57,41 +46,25 @@ def validation_exception_handler(
     )
 
 
-def error_exception_handler(
+def http_error_handler(
     _: Request,
-    exc: ErrorException | Exception,
+    exc: HTTPError,
 ) -> JSONResponse:
-
-    if isinstance(exc, ErrorException):
-        return JSONResponse(
-            content=exc.response,
-            status_code=exc.status_code,
-        )
-
-    server_error: ErrorException = ErrorException(
-        errors=[],
-        message="Internal server error",
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
-
     return JSONResponse(
-        content=server_error.response,
-        status_code=server_error.status_code,
+        content=exc.response,
+        status_code=exc.status_code,
     )
 
 
-def server_error_exception_handler(
+def exception_handler(
     _: Request,
     __: Exception,
 ) -> JSONResponse:
-
-    server_error: ErrorException = ErrorException(
-        errors=[],
-        message="Internal server error",
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-    )
-
     return JSONResponse(
-        content=server_error.response,
-        status_code=server_error.status_code,
+        content=schemes.ErrorResponse(
+            errors=[],
+            message="Internal server error",
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        ).model_dump(),
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )

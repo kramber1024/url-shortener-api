@@ -5,11 +5,11 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
 from app.api import api
-from app.api.exceptions import ErrorException
+from app.api.exceptions import HTTPError
 from app.api.handlers import (
-    error_exception_handler,
-    server_error_exception_handler,
-    validation_exception_handler,
+    exception_handler,
+    http_error_handler,
+    request_validation_error_handler,
 )
 from app.core.config import settings
 from app.core.database import db
@@ -21,9 +21,9 @@ app: FastAPI = FastAPI(
     root_path_in_servers=False,
 )
 app.include_router(api)
-app.add_exception_handler(RequestValidationError, validation_exception_handler)
-app.add_exception_handler(ErrorException, error_exception_handler)
-app.add_exception_handler(Exception, server_error_exception_handler)
+app.add_exception_handler(RequestValidationError, request_validation_error_handler)  # type: ignore[arg-type]
+app.add_exception_handler(HTTPError, http_error_handler)  # type: ignore[arg-type]
+app.add_exception_handler(Exception, exception_handler)
 
 
 async def main() -> None:

@@ -1,11 +1,9 @@
-from ._schemes import (
+from .responses import (
     Error,
     ErrorResponse,
     SuccessResponse,
-    User,
-    UserLogin,
-    UserRegistration,
 )
+from .user import User, UserLogin, UserRegistration
 
 __all__ = (
     "Error",

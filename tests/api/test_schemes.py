@@ -1,5 +1,5 @@
-from app.api.schemes import User as UserScheme
-from app.core.database.models import User as UserModel
+from app.api import schemes
+from app.core.database import models
 
 
 def test_user_scheme() -> None:
@@ -8,15 +8,15 @@ def test_user_scheme() -> None:
     email: str = "Dovie87@gmail.com"
     password: str = "YzbXhViCSId_pJK"
 
-    user_model: UserModel = UserModel(
+    user_model: models.User = models.User(
         first_name=first_name,
         last_name=last_name,
         email=email,
         password=password,
     )
-    user_scheme: UserScheme = UserScheme.from_model(user_model)
+    user_scheme: schemes.User = schemes.User.from_model(user_model)
 
-    assert isinstance(user_scheme, UserScheme)
+    assert isinstance(user_scheme, schemes.User)
     assert user_scheme.id == str(user_model.id)
     assert user_scheme.first_name == user_model.first_name
     assert user_scheme.last_name == user_model.last_name

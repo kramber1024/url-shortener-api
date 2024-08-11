@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.api import responses, schemes
-from app.api.exceptions import ErrorException
+from app.api.exceptions import HTTPError
 from app.core.auth import jwt_auth
 from app.core.config import settings
 from app.core.database import db
@@ -80,7 +80,7 @@ async def register_user(
         )
         is not None
     ):
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="The email is already in use",
             status=status.HTTP_409_CONFLICT,
@@ -168,7 +168,7 @@ async def authenticate_user(
     )
 
     if user is None or not user.is_password_valid(user_login.password):
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="The email or password is incorrect",
             status=status.HTTP_401_UNAUTHORIZED,

@@ -5,7 +5,7 @@ import pytest
 from fastapi import status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.exceptions import ErrorException
+from app.api.exceptions import HTTPError
 from app.core.auth import jwt_auth
 from app.core.config import settings
 from app.core.database.models import User
@@ -323,7 +323,7 @@ async def test_get_current_user(
 async def test_get_current_user_none_token(
     session: AsyncSession,
 ) -> None:
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_current_user(
             session=session,
             access_token=None,
@@ -347,7 +347,7 @@ async def test_get_current_user_no_user(
         email=email,
     )
 
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_current_user(
             session=session,
             access_token=token,
@@ -363,7 +363,7 @@ async def test_get_current_user_no_user(
 async def test_get_current_user_invalid_token(
     session: AsyncSession,
 ) -> None:
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_current_user(
             session=session,
             access_token=(
@@ -407,7 +407,7 @@ async def test_get_refreshed_user(
 async def test_get_refreshed_user_none_token(
     session: AsyncSession,
 ) -> None:
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
             refresh_token=None,
@@ -423,7 +423,7 @@ async def test_get_refreshed_user_none_token(
 async def test_get_refreshed_user_no_token(
     session: AsyncSession,
 ) -> None:
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
         )
@@ -446,7 +446,7 @@ async def test_get_refreshed_user_no_user(
         email=email,
     )
 
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
             refresh_token=token,
@@ -463,7 +463,7 @@ async def test_get_refreshed_user_invalid_token(
     session: AsyncSession,
     db_user: User,
 ) -> None:
-    with pytest.raises(ErrorException) as exc:
+    with pytest.raises(HTTPError) as exc:
         await jwt_auth.get_refreshed_user(
             session=session,
             refresh_token=(

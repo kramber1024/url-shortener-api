@@ -7,7 +7,7 @@ from fastapi.security import APIKeyCookie
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
-from app.api.exceptions import ErrorException
+from app.api.exceptions import HTTPError
 from app.core.config import settings
 from app.core.database import db
 from app.core.database.models import User
@@ -24,7 +24,6 @@ def _encode_jwt(
     key: str = settings.jwt.SECRET,
     algorithm: str = settings.jwt.ALGORITHM,
 ) -> str:
-
     now: int = int(datetime.datetime.now(datetime.UTC).timestamp())
 
     if jwt_type == "access":
@@ -52,7 +51,6 @@ def generate_access_token(
     user_id: int,
     email: str,
 ) -> str:
-
     return _encode_jwt(
         jwt_type="access",
         payload={
@@ -66,7 +64,6 @@ def generate_refresh_token(
     user_id: int,
     email: str,
 ) -> str:
-
     return _encode_jwt(
         jwt_type="refresh",
         payload={
@@ -143,9 +140,8 @@ async def get_current_user(
         Depends(access_cookie_scheme),
     ],
 ) -> User:
-
     if access_token is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Authorization required",
             status=401,
@@ -157,7 +153,7 @@ async def get_current_user(
     )
 
     if payload is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Invalid token",
             status=400,
@@ -169,7 +165,7 @@ async def get_current_user(
     )
 
     if user is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Invalid token",
             status=400,
@@ -190,9 +186,8 @@ async def get_refreshed_user(
         ),
     ] = None,
 ) -> User:
-
     if refresh_token is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Authorization required",
             status=401,
@@ -204,7 +199,7 @@ async def get_refreshed_user(
     )
 
     if payload is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Invalid token",
             status=400,
@@ -216,7 +211,7 @@ async def get_refreshed_user(
     )
 
     if user is None:
-        raise ErrorException(
+        raise HTTPError(
             errors=[],
             message="Invalid token",
             status=400,

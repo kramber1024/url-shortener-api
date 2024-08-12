@@ -1,10 +1,11 @@
 from typing import Annotated, TypeAlias
 
-from pydantic import BaseModel, Field, HttpUrl
+import pydantic_core
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 from app.api.schemes.fields import Id
 
-Address: TypeAlias = Annotated[
+_Address: TypeAlias = Annotated[
     str,
     Field(
         min_length=1,
@@ -17,11 +18,9 @@ Address: TypeAlias = Annotated[
     ),
 ]
 
-Location: TypeAlias = Annotated[
+_Location: TypeAlias = Annotated[
     HttpUrl,
     Field(
-        min_length=1,
-        max_length=2048,
         description="Long url to be shortened.",
         examples=["https://example.com/i-am-a-very-long-url"],
     ),
@@ -40,22 +39,29 @@ class Tag(BaseModel):
     ]
 
 
-TagList: TypeAlias = Annotated[
+_TagList: TypeAlias = Annotated[
     list[Tag],
     Field(description="List of tags. Can be empty an empty list."),
 ]
 
 
 class NewUrl(BaseModel):
-    address: Address | None = None
-    location: Location
-    tags: TagList
+    address: _Address | None = None
+    location: _Location
+    tags: _TagList
+
+    @field_validator("location")
+    @classmethod
+    def validate_location_length(cls: type["NewUrl"], value: pydantic_core.Url) -> str:
+        if len(str(value)) not in range(1, 2049):
+            raise ValueError
+        return str(value)
 
 
 class Url(BaseModel):
     id: Id
-    address: Address
-    location: Location
+    address: _Address
+    location: _Location
     total_clicks: Annotated[
         int,
         Field(

@@ -6,9 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
-    from app.core.database.models import Tag, User
-
-    from .click import Click
+    from app.core.database.models import Click, Tag, User
 
 
 class Url(Base, IDMixin):
@@ -35,12 +33,12 @@ class Url(Base, IDMixin):
         nullable=False,
     )
     address: Mapped[str] = mapped_column(
-        String(128),
+        String(256),
         unique=True,
         nullable=False,
     )
     location: Mapped[str] = mapped_column(
-        String(512),
+        String(2048),
         nullable=False,
     )
     total_clicks: Mapped[int] = mapped_column(

@@ -1,12 +1,7 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy import ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database.models.mixins import Base, IDMixin
-
-if TYPE_CHECKING:
-    from app.core.database.models import Url
 
 
 class Tag(Base, IDMixin):
@@ -31,12 +26,6 @@ class Tag(Base, IDMixin):
     name: Mapped[str] = mapped_column(
         String(32),
         nullable=False,
-    )
-
-    url: Mapped["Url"] = relationship(
-        "Url",
-        back_populates="tags",
-        lazy="selectin",
     )
 
     def __init__(self, *, url_id: int, name: str) -> None:

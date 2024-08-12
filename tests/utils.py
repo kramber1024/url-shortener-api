@@ -1,7 +1,7 @@
 from typing import Any
 
 SNOWFLAKE_RANGE: range = range(10**18, 10**19)
-DB_USER_PASSWORD: str = "QKY80gAKwxebKGbWG2LPOqnSiFLanjomx8cWUzQjWuhLkueiUlhtkScUVZGdJ"
+USER_PASSWORD: str = "QKY80gAKwxebKGbWG2LPOqnSiFLanjomx8cWUzQjWuhLkueiUlhtkScUVZGdJ"
 
 
 def error_type_exists(json: dict[str, Any], error_type: str) -> bool:

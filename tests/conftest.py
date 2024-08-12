@@ -72,7 +72,7 @@ async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
         first_name="Lavon",
         last_name="Fisher",
         email="Dorris92@hotmail.com",
-        password=utils.DB_USER_PASSWORD,
+        password=utils.USER_PASSWORD,
     )
     session.add(user)
     await session.commit()

@@ -316,7 +316,7 @@ async def test_get_current_user(
     assert current_user.email == db_user.email
     assert current_user.phone is None
     assert current_user.password == db_user.password
-    assert current_user.is_password_valid(utils.DB_USER_PASSWORD)
+    assert current_user.is_password_valid(utils.USER_PASSWORD)
 
 
 @pytest.mark.asyncio
@@ -400,7 +400,7 @@ async def test_get_refreshed_user(
     assert refreshed_user.email == db_user.email
     assert refreshed_user.phone is None
     assert refreshed_user.password == db_user.password
-    assert refreshed_user.is_password_valid(utils.DB_USER_PASSWORD)
+    assert refreshed_user.is_password_valid(utils.USER_PASSWORD)
 
 
 @pytest.mark.asyncio

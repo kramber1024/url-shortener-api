@@ -25,7 +25,7 @@ async def test_register_user(
         "first_name": user_credentials.first_name,
         "last_name": str(user_credentials.last_name),
         "email": user_credentials.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -48,8 +48,8 @@ async def test_register_user(
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert user.phone is None
-    assert user.password != utils.DB_USER_PASSWORD
-    assert user.is_password_valid(utils.DB_USER_PASSWORD)
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
     assert user.status.user_id == user.id
     assert not user.status.email_verified
     assert not user.status.phone_verified
@@ -66,7 +66,7 @@ async def test_register_user_no_last_name(
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -89,8 +89,8 @@ async def test_register_user_no_last_name(
     assert user.last_name is None
     assert user.email == user_credentials.email
     assert user.phone is None
-    assert user.password != utils.DB_USER_PASSWORD
-    assert user.is_password_valid(utils.DB_USER_PASSWORD)
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
     assert user.status.user_id == user.id
     assert not user.status.email_verified
     assert not user.status.phone_verified
@@ -107,7 +107,7 @@ async def test_register_user_uppercase(
     first_name: str = user_credentials.first_name.upper()
     last_name: str = str(user_credentials.last_name).upper()
     email: str = user_credentials.email.upper()
-    password: str = utils.DB_USER_PASSWORD.upper()
+    password: str = utils.USER_PASSWORD.upper()
 
     json: dict[str, str] = {
         "first_name": first_name,
@@ -155,7 +155,7 @@ async def test_register_user_email_conflict(
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": db_user.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -179,8 +179,8 @@ async def test_register_user_email_conflict(
     assert user.last_name == db_user.last_name
     assert user.email == db_user.email
     assert user.phone is None
-    assert user.password != utils.DB_USER_PASSWORD
-    assert user.is_password_valid(utils.DB_USER_PASSWORD)
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
     assert user.status.user_id == user.id
     assert not user.status.email_verified
     assert not user.status.phone_verified
@@ -197,7 +197,7 @@ async def test_register_user_invalid_first_name(
     json: dict[str, str] = {
         "first_name": "Hi",
         "email": user_credentials.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -229,7 +229,7 @@ async def test_register_user_invalid_last_name(
         "first_name": user_credentials.first_name,
         "last_name": "Hi",
         "email": user_credentials.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -262,7 +262,7 @@ async def test_register_user_invalid_email(
     json: dict[str, str] = {
         "first_name": user_credentials.first_name,
         "email": invalid_email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -436,7 +436,7 @@ async def test_authenticate_user(
 ) -> None:
     json: dict[str, str] = {
         "email": db_user.email,
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
     }
 
     response: Response = await client.post(
@@ -458,7 +458,7 @@ async def test_authenticate_user_incorrect_email(
 ) -> None:
     json: dict[str, str] = {
         "email": db_user.email + "a",
-        "password": utils.DB_USER_PASSWORD,
+        "password": utils.USER_PASSWORD,
     }
 
     response: Response = await client.post(
@@ -481,7 +481,7 @@ async def test_authenticate_user_incorrect_password(
 ) -> None:
     json: dict[str, str] = {
         "email": db_user.email,
-        "password": utils.DB_USER_PASSWORD[::-1],
+        "password": utils.USER_PASSWORD[::-1],
     }
 
     response: Response = await client.post(
@@ -504,7 +504,7 @@ async def test_authenticate_user_incorrect_all(
 ) -> None:
     json: dict[str, str] = {
         "email": db_user.email + "a",
-        "password": utils.DB_USER_PASSWORD[::-1],
+        "password": utils.USER_PASSWORD[::-1],
     }
 
     response: Response = await client.post(

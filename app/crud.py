@@ -17,7 +17,6 @@ async def create_user(
     email: str,
     password: str,
 ) -> User:
-
     user: User = User(
         first_name=first_name,
         last_name=last_name,
@@ -36,7 +35,6 @@ async def get_user_by_email(
     session: AsyncSession,
     email: str,
 ) -> User | None:
-
     result: Result[tuple[User]] = await session.execute(
         select(User).filter(User.email == email),
     )
@@ -50,7 +48,6 @@ async def get_user_by_id(
     session: AsyncSession,
     id_: int,
 ) -> User | None:
-
     result: Result[tuple[User]] = await session.execute(
         select(User).filter(User.id == id_),
     )
@@ -66,7 +63,6 @@ async def create_status(
     active: bool = True,
     premium: bool = False,
 ) -> Status:
-
     status: Status = Status(
         user_id=user_id,
         active=active,
@@ -86,7 +82,6 @@ async def create_url(
     address: str,
     location: str,
 ) -> Url:
-
     url: Url = Url(
         user_id=user_id,
         address=address,

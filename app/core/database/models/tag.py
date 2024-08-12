@@ -39,5 +39,6 @@ class Tag(Base, IDMixin):
         lazy="selectin",
     )
 
-    def __init__(self, *, name: str) -> None:
+    def __init__(self, *, url_id: int, name: str) -> None:
+        self.url_id = url_id
         self.name = name

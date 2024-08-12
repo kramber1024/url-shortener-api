@@ -16,7 +16,7 @@ class Url(Base, IDMixin):
 
     Attributes
     ----------
-        id (int): The unique identifier (See ` IDBase `).
+        id (int): The unique identifier (See ` IDMixin `).
         user_id (int): The unique identifier of the ` User ` aka author.
         address (str): The short URL address.
         location (str): The long URL address.

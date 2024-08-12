@@ -14,7 +14,7 @@ class Tag(Base, IDMixin):
 
     Attributes
     ----------
-        id (int): The unique identifier (See ` IDBase `).
+        id (int): The unique identifier (See ` IDMixin `).
         url_id (int): The unique identifier of the ` Url `.
         name (str): The tag name. Used for categorization.
         url (Url): The ` Url ` the tag is associated with.

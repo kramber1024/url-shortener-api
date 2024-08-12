@@ -18,6 +18,7 @@ def request_validation_error_handler(
         "string_type": "The {} should be a string",
         "json_invalid": "Request should be a valid JSON",
         "literal_error": "The {} value is invalid",
+        "url_parsing": "The {} format is invalid",
     }
     errors: list[schemes.Error] = []
 

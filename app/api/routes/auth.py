@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import crud
 from app.api import responses, schemes
 from app.api.exceptions import HTTPError
-from app.core.auth import jwt_auth
+from app.core.auth import jwt_
 from app.core.config import settings
 from app.core.database import db
 from app.core.database.models import User
@@ -185,14 +185,14 @@ async def authenticate_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_auth.generate_access_token(user.id, user.email),
+        value=jwt_.generate_access_token(user.id, user.email),
         max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_auth.generate_refresh_token(user.id, user.email),
+        value=jwt_.generate_refresh_token(user.id, user.email),
         max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,
@@ -223,7 +223,7 @@ async def authenticate_user(
 def refresh_user(
     user: Annotated[
         User,
-        Depends(jwt_auth.get_refreshed_user),
+        Depends(jwt_.get_refreshed_user),
     ],
 ) -> JSONResponse:
     success_response: schemes.SuccessResponse = schemes.SuccessResponse(
@@ -237,14 +237,14 @@ def refresh_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_auth.generate_access_token(user.id, user.email),
+        value=jwt_.generate_access_token(user.id, user.email),
         max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_auth.generate_refresh_token(user.id, user.email),
+        value=jwt_.generate_refresh_token(user.id, user.email),
         max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
 from app.api import responses, schemes
-from app.core.auth import jwt_auth
+from app.core.auth import jwt_
 from app.core.database.models import User
 
 router: APIRouter = APIRouter(
@@ -39,7 +39,7 @@ router: APIRouter = APIRouter(
 def get_users_me(
     user: Annotated[
         User,
-        Depends(jwt_auth.get_current_user),
+        Depends(jwt_.get_current_user),
     ],
 ) -> JSONResponse:
     return JSONResponse(

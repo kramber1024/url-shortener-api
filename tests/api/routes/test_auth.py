@@ -6,7 +6,7 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import jwt_auth
+from app.core.auth import jwt_
 from app.core.database.models import User
 from tests import utils
 
@@ -608,7 +608,7 @@ async def test_refresh_user(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    refresh_token: str = jwt_auth.generate_refresh_token(
+    refresh_token: str = jwt_.generate_refresh_token(
         user_id=db_user.id,
         email=db_user.email,
     )
@@ -653,7 +653,7 @@ async def test_refresh_user_access_token(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    access_token: str = jwt_auth.generate_access_token(
+    access_token: str = jwt_.generate_access_token(
         user_id=db_user.id,
         email=db_user.email,
     )

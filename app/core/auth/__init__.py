@@ -1,4 +1,4 @@
-from app.core.auth.jwt_auth import (
+from app.core.auth.jwt_ import (
     generate_access_token,
     generate_refresh_token,
     get_current_user,

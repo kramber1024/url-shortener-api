@@ -1,4 +1,4 @@
-from .responses import (
+from .response import (
     Error,
     ErrorResponse,
     SuccessResponse,

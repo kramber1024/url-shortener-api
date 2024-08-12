@@ -27,5 +27,5 @@ class IDMixin:
         nullable=False,
         unique=True,
         sort_order=-1,
-        default=gen.new_id(),
+        default=gen.new_id,
     )

@@ -12,5 +12,6 @@ def user_credentials() -> User:
         email="Jaclyn.Hirthe@example.org",
         password=utils.DB_USER_PASSWORD,
     )
+    user.id = 1234567890123456789
     user.phone = "+1(234)-567-89-01"
     return user

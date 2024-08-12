@@ -73,3 +73,6 @@ class Url(Base, IDMixin):
         self.address = address
         self.location = location
         self.total_clicks = 0
+
+    def __repr__(self) -> str:
+        return f"<{type(self).__name__} /{self.address}>"

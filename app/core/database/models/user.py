@@ -87,4 +87,4 @@ class User(Base, IDMixin):
         ).decode("utf-8")
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.first_name} {self.id}>"
+        return f"<{type(self).__name__} {self.display_name}>"

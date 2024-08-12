@@ -7,9 +7,9 @@ from tests import utils
 @pytest_asyncio.fixture(scope="function")
 def user_credentials() -> User:
     user: User = User(
-        first_name="Humberto",
-        last_name="Howell",
-        email="Jaclyn.Hirthe@example.org",
+        first_name="Freddie",
+        last_name="Bosco",
+        email="Freddie.Bosco@example.com",
         password=utils.DB_USER_PASSWORD,
     )
     user.id = 1234567890123456789

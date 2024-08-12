@@ -43,7 +43,7 @@ def validation_error_response(example: dict[str, Any]) -> _Response:
 
 
 UNAUTHORIZED: _Response = response(
-    description="Authorization required. Provide a valid refresh token in cookies.",
+    description="Authorization required. Provide a valid token in cookies.",
     model=ErrorResponseScheme,
     example={
         "errors": [],

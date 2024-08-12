@@ -1,12 +1,8 @@
-from typing import TYPE_CHECKING
-
 from sqlalchemy import select
+from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.database.models import Status, Url, User
-
-if TYPE_CHECKING:
-    from sqlalchemy.engine import Result
+from app.core.database.models import User
 
 
 async def create_user(
@@ -54,41 +50,3 @@ async def get_user_by_id(
     user: User | None = result.scalars().first()
 
     return user
-
-
-async def create_status(
-    *,
-    session: AsyncSession,
-    user_id: int,
-    active: bool = True,
-    premium: bool = False,
-) -> Status:
-    status: Status = Status(
-        user_id=user_id,
-        active=active,
-        premium=premium,
-    )
-
-    session.add(status)
-    await session.commit()
-    await session.refresh(status)
-    return status
-
-
-async def create_url(
-    *,
-    session: AsyncSession,
-    user_id: int,
-    address: str,
-    location: str,
-) -> Url:
-    url: Url = Url(
-        user_id=user_id,
-        address=address,
-        location=location,
-    )
-
-    session.add(url)
-    await session.commit()
-    await session.refresh(url)
-    return url

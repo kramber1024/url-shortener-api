@@ -1,8 +1,16 @@
-from typing import Annotated
+from typing import Annotated, TypeAlias
 
 from pydantic import BaseModel, Field
 
-from app.api.schemes.fields import HTTPStatus
+HTTPStatus: TypeAlias = Annotated[
+    int,
+    Field(
+        description="HTTP status code.",
+        examples=[422],
+        ge=100,
+        le=599,
+    ),
+]
 
 
 class Error(BaseModel):
@@ -50,10 +58,3 @@ class SuccessResponse(BaseModel):
         ),
     ]
     status: HTTPStatus
-
-
-__all__ = (
-    "Error",
-    "ErrorResponse",
-    "SuccessResponse",
-)

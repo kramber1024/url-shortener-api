@@ -1,9 +1,49 @@
-from typing import Annotated, Literal
+from typing import Annotated, Literal, TypeAlias
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
-from app.api.schemes.fields import Email, FirstName, Id, LastName, Password
+from app.api.schemes.fields import Id
 from app.core.database import models
+
+FirstName: TypeAlias = Annotated[
+    str,
+    Field(
+        min_length=3,
+        max_length=16,
+        description="Used in full name and official emails",
+        examples=["John"],
+    ),
+]
+
+LastName: TypeAlias = Annotated[
+    str,
+    Field(
+        min_length=3,
+        max_length=16,
+        description="Used in full name.",
+        examples=["Doe"],
+    ),
+]
+
+Email: TypeAlias = Annotated[
+    EmailStr,
+    Field(
+        min_length=len("*@*.*"),
+        max_length=64,
+        description="Email used for authentication and notifications.",
+        examples=["email@domain.tld"],
+    ),
+]
+
+Password: TypeAlias = Annotated[
+    str,
+    Field(
+        min_length=8,
+        max_length=256,
+        description="Used for authentication.",
+        examples=["My$uper$ecretPa$$word"],
+    ),
+]
 
 
 class User(BaseModel):

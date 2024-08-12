@@ -40,7 +40,7 @@ class User(Base, IDMixin):
         "Status",
         lazy="selectin",
     )
-    urls: Mapped["Url"] = relationship(
+    urls: Mapped[list["Url"]] = relationship(
         "Url",
         back_populates="author",
         lazy="selectin",

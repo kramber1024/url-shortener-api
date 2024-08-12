@@ -48,7 +48,6 @@ class Url(Base, IDMixin):
 
     tags: Mapped[list["Tag"]] = relationship(
         "Tag",
-        back_populates="url",
         lazy="selectin",
     )
     author: Mapped["User"] = relationship(
@@ -75,4 +74,4 @@ class Url(Base, IDMixin):
         self.total_clicks = 0
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} /{self.address}>"
+        return f"<{type(self).__name__} /{self.address} -> {self.location}>"

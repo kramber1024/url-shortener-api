@@ -1,6 +1,6 @@
 from typing import Annotated, TypeAlias
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.api.schemes.fields import Id
 
@@ -47,9 +47,16 @@ TagList: TypeAlias = Annotated[
 
 
 class NewUrl(BaseModel):
-    address: Address | None
+    address: Address | None = None
     location: Location
     tags: TagList
+
+    @field_validator("location")
+    @classmethod
+    def validate_location(cls: type["NewUrl"], value: str) -> str:
+        if not value.startswith("http://") or not value.startswith("https://"):
+            raise ValueError
+        return value
 
 
 class Url(BaseModel):

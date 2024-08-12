@@ -10,6 +10,18 @@ if TYPE_CHECKING:
 
 
 class Click(Base, IDMixin):
+    """Short URL click.
+
+    Attributes
+    ----------
+        id (int): The unique identifier (See ` IDMixin `).
+        url_id (int): The unique identifier of ` Url`.
+        ip (str): The IP address of the user.
+        country (str): The country of the user.
+        url (Url): The ` Url ` the click is associated with.
+
+    """
+
     __tablename__ = "Clicks"
 
     url_id: Mapped[int] = mapped_column(

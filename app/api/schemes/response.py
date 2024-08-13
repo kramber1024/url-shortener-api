@@ -1,12 +1,13 @@
 from typing import Annotated, TypeAlias
 
+from fastapi import status
 from pydantic import BaseModel, Field
 
-HTTPStatus: TypeAlias = Annotated[
+_HTTPStatus: TypeAlias = Annotated[
     int,
     Field(
         description="HTTP status code.",
-        examples=[422],
+        examples=[status.HTTP_422_UNPROCESSABLE_ENTITY],
         ge=100,
         le=599,
     ),
@@ -46,7 +47,7 @@ class ErrorResponse(BaseModel):
             examples=["Validation error"],
         ),
     ]
-    status: HTTPStatus
+    status: _HTTPStatus
 
 
 class SuccessResponse(BaseModel):
@@ -57,4 +58,4 @@ class SuccessResponse(BaseModel):
             examples=["Operation completed successfully"],
         ),
     ]
-    status: HTTPStatus
+    status: _HTTPStatus

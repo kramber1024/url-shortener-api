@@ -31,6 +31,7 @@ class User(Base, IDMixin):
     )
     phone: Mapped[str | None] = mapped_column(
         String(settings.data.PHONE_MAX_LENGTH),
+        unique=True,
         nullable=True,
     )
     password: Mapped[str] = mapped_column(

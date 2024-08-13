@@ -81,6 +81,7 @@ warn_return_any = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 ignore_missing_imports = true
+enable_incomplete_feature = "NewGenericSyntax" # Wait for PEP 695 to be implemented by mypy
 exclude = [
     ".git",
     ".mypy_cache",

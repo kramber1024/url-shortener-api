@@ -1,7 +1,7 @@
 import datetime
 
 
-def get_current_time() -> int:
+def now() -> int:
     """Get current unix timestamp in seconds (UTC+0).
 
     Returns
@@ -10,7 +10,7 @@ def get_current_time() -> int:
 
     Examples
     --------
-    >>> get_current_unix_timestamp()
+    >>> now()
     1723566362
 
     """

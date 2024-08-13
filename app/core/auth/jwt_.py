@@ -11,7 +11,7 @@ from app.core.config import JWTAlgorithm, settings
 from app.core.database import db
 from app.core.database.models import User
 
-_TokenType: TypeAlias = Literal["access", "refresh"]
+TokenType: TypeAlias = Literal["access", "refresh"]
 
 access_cookie_scheme: APIKeyCookie = APIKeyCookie(
     name="access_token",
@@ -30,7 +30,7 @@ class _TokenPayload(TypedDict, _UserData):
 
 
 def _encode_token(
-    type_: _TokenType,
+    type_: TokenType,
     *,
     payload: _UserData,
     key: str = settings.jwt.SECRET,
@@ -108,7 +108,7 @@ def generate_refresh_token(
 
 def get_token_payload(
     token: str,
-    jwt_type: _TokenType,
+    jwt_type: TokenType,
 ) -> _TokenPayload | None:
     """Get payload from a JWT token.
 

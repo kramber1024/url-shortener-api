@@ -41,14 +41,17 @@ class Tag(BaseModel):
 
 _TagList: TypeAlias = Annotated[
     list[Tag],
-    Field(description="List of tags. Can be empty an empty list."),
+    Field(
+        description="Optional list of tags. Repeating tags will be ignored.",
+        max_length=32,
+    ),
 ]
 
 
 class NewUrl(BaseModel):
     address: _Address | None = None
     location: _Location
-    tags: _TagList
+    tags: _TagList | None = None
 
     @field_validator("location")
     @classmethod

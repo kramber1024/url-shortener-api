@@ -23,7 +23,7 @@ def format_email(email: str) -> str:
     return f"{email_splitted[0]}@{email_splitted[1].lower()}"
 
 
-def get_current_unix_timestamp() -> int:
+def get_current_time() -> int:
     """Get current unix timestamp in seconds.
 
     Returns
@@ -32,7 +32,7 @@ def get_current_unix_timestamp() -> int:
 
     Examples
     --------
-    >>> get_current_unix_timestamp()
+    >>> get_current_time()
     1723566362
 
     """

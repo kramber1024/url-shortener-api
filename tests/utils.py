@@ -1,6 +1,11 @@
 from typing import Any
 
 SNOWFLAKE_RANGE: range = range(10**18, 10**19)
+USER_ID: int = 1234567890123456789
+USER_FIRST_NAME: str = "John"
+USER_LAST_NAME: str = "Doe"
+USER_EMAIL: str = "Freddie.Bosco@exAmple.com"
+USER_PHONE: str = "1(234)-567-89-01"
 USER_PASSWORD: str = "QKY80gAKwxebKGbWG2LPOqnSiFLanjomx8cWUzQjWuhLkueiUlhtkScUVZGdJ"
 
 

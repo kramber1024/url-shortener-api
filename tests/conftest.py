@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session
 
 from app.core.config import settings
 from app.core.database import Database
-from app.core.database import db as database
+from app.core.database import db as app_db
 from app.core.database.models import Status, User
 from app.main import app
 from tests import utils
@@ -54,7 +54,7 @@ async def session(db: Database) -> AsyncGenerator[AsyncSession, None]:
 
 @pytest_asyncio.fixture(scope="function")
 async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
-    app.dependency_overrides[database.scoped_session] = db.scoped_session
+    app.dependency_overrides[app_db.scoped_session] = db.scoped_session
 
     async with AsyncClient(
         transport=ASGITransport(app),  # type: ignore[arg-type]
@@ -67,12 +67,12 @@ async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides.clear()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture
 async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
     user: User = User(
-        first_name="Lavon",
-        last_name="Fisher",
-        email="Dorris92@hotmail.com",
+        first_name=utils.USER_FIRST_NAME,
+        last_name=utils.USER_LAST_NAME,
+        email=utils.USER_EMAIL,
         password=utils.USER_PASSWORD,
     )
     session.add(user)
@@ -98,11 +98,11 @@ async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
 @pytest.fixture
 def user_credentials() -> User:
     user: User = User(
-        first_name="Freddie",
-        last_name="Bosco",
-        email="Freddie.Bosco@exAmple.com",
+        first_name=utils.USER_FIRST_NAME,
+        last_name=utils.USER_LAST_NAME,
+        email=utils.USER_EMAIL,
         password=utils.USER_PASSWORD,
     )
-    user.id = 1234567890123456789
-    user.phone = "+1(234)-567-89-01"
+    user.id = utils.USER_ID
+    user.phone = utils.USER_PHONE
     return user

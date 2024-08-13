@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from sqlalchemy.engine import Result
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user(
     session: AsyncSession,
     client: AsyncClient,
@@ -57,7 +57,7 @@ async def test_register_user(
     assert not user.status.premium
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_no_last_name(
     session: AsyncSession,
     client: AsyncClient,
@@ -98,7 +98,7 @@ async def test_register_user_no_last_name(
     assert not user.status.premium
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_uppercase(
     session: AsyncSession,
     client: AsyncClient,
@@ -145,7 +145,7 @@ async def test_register_user_uppercase(
     assert not user.status.premium
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_email_conflict(
     session: AsyncSession,
     client: AsyncClient,
@@ -188,7 +188,7 @@ async def test_register_user_email_conflict(
     assert not user.status.premium
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_first_name(
     session: AsyncSession,
     client: AsyncClient,
@@ -219,7 +219,7 @@ async def test_register_user_invalid_first_name(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_last_name(
     session: AsyncSession,
     client: AsyncClient,
@@ -251,7 +251,7 @@ async def test_register_user_invalid_last_name(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_email(
     session: AsyncSession,
     client: AsyncClient,
@@ -284,7 +284,7 @@ async def test_register_user_invalid_email(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_password(
     session: AsyncSession,
     client: AsyncClient,
@@ -315,7 +315,7 @@ async def test_register_user_invalid_password(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_terms(
     session: AsyncSession,
     client: AsyncClient,
@@ -346,7 +346,7 @@ async def test_register_user_invalid_terms(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_invalid_all(
     session: AsyncSession,
     client: AsyncClient,
@@ -394,7 +394,7 @@ async def test_register_user_invalid_all(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_register_user_empty(
     session: AsyncSession,
     client: AsyncClient,
@@ -429,7 +429,7 @@ async def test_register_user_empty(
     assert user is None
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user(
     client: AsyncClient,
     db_user: User,
@@ -451,7 +451,7 @@ async def test_authenticate_user(
     assert response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_incorrect_email(
     client: AsyncClient,
     db_user: User,
@@ -474,7 +474,7 @@ async def test_authenticate_user_incorrect_email(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_incorrect_password(
     client: AsyncClient,
     db_user: User,
@@ -497,7 +497,7 @@ async def test_authenticate_user_incorrect_password(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_incorrect_all(
     client: AsyncClient,
     db_user: User,
@@ -520,7 +520,7 @@ async def test_authenticate_user_incorrect_all(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_invalid_email(
     client: AsyncClient,
     user_credentials: User,
@@ -542,7 +542,7 @@ async def test_authenticate_user_invalid_email(
     assert response.json().get("status", 0) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_invalid_password(
     client: AsyncClient,
     user_credentials: User,
@@ -564,7 +564,7 @@ async def test_authenticate_user_invalid_password(
     assert response.json().get("status", 0) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_invalid_all(
     client: AsyncClient,
 ) -> None:
@@ -586,7 +586,7 @@ async def test_authenticate_user_invalid_all(
     assert response.json().get("status", 0) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_authenticate_user_empty(
     client: AsyncClient,
 ) -> None:
@@ -603,7 +603,7 @@ async def test_authenticate_user_empty(
     assert response.json().get("status", 0) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_refresh_user(
     client: AsyncClient,
     db_user: User,
@@ -625,7 +625,7 @@ async def test_refresh_user(
     assert response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_refresh_user_incorrect_token(
     client: AsyncClient,
 ) -> None:
@@ -648,7 +648,7 @@ async def test_refresh_user_incorrect_token(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_refresh_user_access_token(
     client: AsyncClient,
     db_user: User,
@@ -671,7 +671,7 @@ async def test_refresh_user_access_token(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_refresh_user_no_authorization(
     client: AsyncClient,
     db_user: User,

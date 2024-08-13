@@ -20,8 +20,8 @@ def test__encode_jwt_access(
         "email": db_user.email,
     }
 
-    token: str = jwt_._encode_jwt(
-        jwt_type="access",
+    token: str = jwt_._encode_token(
+        type_="access",
         payload=payload,
     )
 
@@ -60,8 +60,8 @@ def test__encode_jwt_refresh(
         "email": db_user.email,
     }
 
-    token: str = jwt_._encode_jwt(
-        jwt_type="refresh",
+    token: str = jwt_._encode_token(
+        type_="refresh",
         payload=payload,
     )
 

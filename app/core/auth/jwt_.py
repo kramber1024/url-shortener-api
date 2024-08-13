@@ -1,5 +1,5 @@
 import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Literal, TypedDict
 
 import jwt
 from fastapi import Cookie, Depends
@@ -8,9 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.api.exceptions import HTTPError
-from app.core.config import settings
+from app.core.config import JWTAlgorithm, settings
 from app.core.database import db
 from app.core.database.models import User
+
+_TokenType = Literal["access", "refresh"]
 
 access_cookie_scheme: APIKeyCookie = APIKeyCookie(
     name="access_token",
@@ -18,31 +20,42 @@ access_cookie_scheme: APIKeyCookie = APIKeyCookie(
 )
 
 
-def _encode_jwt(
-    jwt_type: Literal["access", "refresh"],
-    payload: dict[str, str | int],
+class _UserData(TypedDict):
+    sub: str
+    email: str
+
+
+class _TokenPayload(TypedDict, _UserData):
+    exp: int
+    iat: int
+
+
+def _encode_token(
+    type_: _TokenType,
+    payload: _UserData,
     key: str = settings.jwt.SECRET,
-    algorithm: str = settings.jwt.ALGORITHM,
+    algorithm: JWTAlgorithm = settings.jwt.ALGORITHM,
 ) -> str:
     now: int = int(datetime.datetime.now(datetime.UTC).timestamp())
 
-    if jwt_type == "access":
+    if type_ == "access":
         expire: int = now + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
     else:
         expire = now + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
 
-    payload.update(
-        {
-            "exp": expire,
-            "iat": now,
-        },
-    )
+    token_payload: _TokenPayload = {
+        "sub": payload.get("sub", ""),
+        "email": payload.get("email", ""),
+        "exp": expire,
+        "iat": now,
+    }
+
     return jwt.encode(
-        payload,
+        dict(token_payload),
         key,
         algorithm,
         headers={
-            "typ": jwt_type,
+            "typ": type_,
         },
     )
 
@@ -51,8 +64,8 @@ def generate_access_token(
     user_id: int,
     email: str,
 ) -> str:
-    return _encode_jwt(
-        jwt_type="access",
+    return _encode_token(
+        type_="access",
         payload={
             "sub": str(user_id),
             "email": email,
@@ -64,8 +77,8 @@ def generate_refresh_token(
     user_id: int,
     email: str,
 ) -> str:
-    return _encode_jwt(
-        jwt_type="refresh",
+    return _encode_token(
+        type_="refresh",
         payload={
             "sub": str(user_id),
             "email": email,
@@ -75,42 +88,39 @@ def generate_refresh_token(
 
 def get_token_payload(
     token: str,
-    jwt_type: Literal["access", "refresh"],
-) -> dict[str, str | int] | None:
+    jwt_type: _TokenType,
+) -> _TokenPayload | None:
     """Get payload from a JWT token.
 
     Args:
     ----
-        token: The JWT token.
-        jwt_type: The type of JWT token. Either "access" or "refresh".
+        token (str): The JWT token.
+        jwt_type ("access" | "refresh"): The type of JWT token.
+        Either "access" or "refresh".
 
     Returns:
     -------
-        dict[str, str | int] | None: The payload of the JWT token if the
+        _TokenPayload | None: The payload of the JWT token if the
         token type matches and signature is valid, otherwise None.
-
-    Raises:
-    ------
-        None
 
     Example:
     -------
-        >>> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxM\
-            jM0NTY3ODkwIiwiZW1haWwiOiJleGFtcGxlQGVtYWlsLnRsZCIsImV4cCI6MTcx\
-            OTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.SU7oI8z5-MVI4GpiOdMtv1eVB-J2bMovCyyfXsHw-Vo"
-        >>> jwt_type = "access"
-        >>> get_token_payload(token, jwt_type)
-        {"sub": "1234567890", "email": "example@email.tld",
-        "exp": 1719959972, "iat": 1719956372}
+    >>> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZ\
+    W1haWwiOiJleGFtcGxlQGVtYWlsLnRsZCIsImV4cCI6MTcxOTk1OTk3MiwiaWF0IjoxNzE5OTU2Mzcy\
+    fQ.SU7oI8z5-MVI4GpiOdMtv1eVB-J2bMovCyyfXsHw-Vo"
+    >>> jwt_type = "access"
+    >>> get_token_payload(token, jwt_type)
+    {"sub": "1234567890", "email": "example@email.tld",
+    "exp": 1719959972, "iat": 1719956372}
 
     """
     try:
         if jwt.get_unverified_header(token).get("typ", "") != jwt_type:
             return None
 
-        token_payload: dict[str, str | int] = jwt.decode(
+        token_payload: _TokenPayload = jwt.decode(
             token,
-            settings.jwt.SECRET,
+            key=settings.jwt.SECRET,
             algorithms=[settings.jwt.ALGORITHM],
             options={
                 "require": [
@@ -147,7 +157,7 @@ async def get_current_user(
             status=401,
         )
 
-    payload: dict[str, str | int] | None = get_token_payload(
+    payload: _TokenPayload | None = get_token_payload(
         access_token,
         jwt_type="access",
     )
@@ -193,7 +203,7 @@ async def get_refreshed_user(
             status=401,
         )
 
-    payload: dict[str, str | int] | None = get_token_payload(
+    payload: _TokenPayload | None = get_token_payload(
         refresh_token,
         jwt_type="refresh",
     )

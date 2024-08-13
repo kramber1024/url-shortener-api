@@ -1,9 +1,11 @@
 from pathlib import Path
-from typing import Literal
+from typing import Literal, TypeAlias
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIRERCTORY = Path(__file__).parent
+
+JWTAlgorithm: TypeAlias = Literal["HS256"]
 
 
 class DatabaseSettings(BaseSettings):
@@ -14,7 +16,7 @@ class DatabaseSettings(BaseSettings):
 
 
 class JWTSettings(BaseSettings):
-    ALGORITHM: Literal["HS256"] = "HS256"
+    ALGORITHM: JWTAlgorithm = "HS256"
     SECRET: str = "CHANGE_ME_IN_ENV"
     ACCESS_TOKEN_EXPIRES_MINUTES: int = 60
     REFRESH_TOKEN_EXPIRES_DAYS: int = 30

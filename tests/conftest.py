@@ -95,7 +95,7 @@ async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
     await session.commit()
 
 
-@pytest.fixture()
+@pytest.fixture
 def user_credentials() -> User:
     user: User = User(
         first_name=utils.USER_FIRST_NAME,

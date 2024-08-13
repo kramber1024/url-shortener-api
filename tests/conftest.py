@@ -1,6 +1,7 @@
 from asyncio import current_task
 from collections.abc import AsyncGenerator
 
+import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import delete
@@ -14,8 +15,8 @@ from app.main import app
 from tests import utils
 
 
-@pytest_asyncio.fixture(scope="session", autouse=True)
-def setup() -> None:
+@pytest.fixture(scope="session", autouse=True)
+def _setup() -> None:
     settings.db.SALT_ROUNDS = 4
     settings.db.URL = settings.db.URL.replace(
         "database.sqlite3",
@@ -92,3 +93,16 @@ async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
     await session.delete(status)
     await session.delete(user)
     await session.commit()
+
+
+@pytest.fixture
+def user_credentials() -> User:
+    user: User = User(
+        first_name="Freddie",
+        last_name="Bosco",
+        email="Freddie.Bosco@exAmple.com",
+        password=utils.USER_PASSWORD,
+    )
+    user.id = 1234567890123456789
+    user.phone = "+1(234)-567-89-01"
+    return user

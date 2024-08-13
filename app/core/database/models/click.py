@@ -9,6 +9,10 @@ if TYPE_CHECKING:
     from .url import Url
 
 
+# TODO(kramber): Update docstring and field lengths with constants from settings.data
+# 000
+
+
 class Click(Base, IDMixin):
     """Short URL click.
 

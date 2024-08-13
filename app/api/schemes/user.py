@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr, Field
 from app.api.schemes.fields import Id
 from app.core.database import models
 
-FirstName: TypeAlias = Annotated[
+_FirstName: TypeAlias = Annotated[
     str,
     Field(
         min_length=3,
@@ -15,7 +15,7 @@ FirstName: TypeAlias = Annotated[
     ),
 ]
 
-LastName: TypeAlias = Annotated[
+_LastName: TypeAlias = Annotated[
     str,
     Field(
         min_length=3,
@@ -25,7 +25,7 @@ LastName: TypeAlias = Annotated[
     ),
 ]
 
-Email: TypeAlias = Annotated[
+_Email: TypeAlias = Annotated[
     EmailStr,
     Field(
         min_length=len("*@*.*"),
@@ -35,7 +35,7 @@ Email: TypeAlias = Annotated[
     ),
 ]
 
-Password: TypeAlias = Annotated[
+_Password: TypeAlias = Annotated[
     str,
     Field(
         min_length=8,
@@ -48,9 +48,9 @@ Password: TypeAlias = Annotated[
 
 class User(BaseModel):
     id: Id
-    first_name: FirstName
-    last_name: LastName | None = None
-    email: Email
+    first_name: _FirstName
+    last_name: _LastName | None = None
+    email: _Email
 
     @classmethod
     def from_model(cls: type["User"], user: models.User) -> "User":
@@ -63,15 +63,15 @@ class User(BaseModel):
 
 
 class UserLogin(BaseModel):
-    email: Email
-    password: Password
+    email: _Email
+    password: _Password
 
 
 class UserRegistration(BaseModel):
-    first_name: FirstName
-    last_name: LastName | None = None
-    email: Email
-    password: Password
+    first_name: _FirstName
+    last_name: _LastName | None = None
+    email: _Email
+    password: _Password
     terms: Annotated[
         Literal["on"],
         Field(

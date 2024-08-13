@@ -1,5 +1,6 @@
-import datetime
-from typing import Any
+from typing import Any, Literal
+
+from app.core.config import settings
 
 SNOWFLAKE_RANGE: range = range(10**18, 10**19)
 USER_ID: int = 1234567890123456789
@@ -23,17 +24,8 @@ def format_email(email: str) -> str:
     return f"{email_splitted[0]}@{email_splitted[1].lower()}"
 
 
-def get_current_time() -> int:
-    """Get current unix timestamp in seconds.
+def get_token_exp(type_: Literal["access", "refresh"], current_time: int) -> int:
+    if type_ == "access":
+        return current_time + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
 
-    Returns
-    -------
-        int: The current unix timestamp in seconds
-
-    Examples
-    --------
-    >>> get_current_time()
-    1723566362
-
-    """
-    return int(datetime.datetime.now(datetime.UTC).timestamp())
+    return current_time + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60

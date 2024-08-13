@@ -19,14 +19,14 @@ router: APIRouter = APIRouter(prefix="/auth")
     "/register",
     summary="Create a new user account",
     description="Registers new user account in the system.",
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_201_CREATED: responses.response(
             description="New user account registered successfully.",
             model=schemes.SuccessResponse,
             example={
                 "message": "Account created successfully",
-                "status": 201,
+                "status": status.HTTP_201_CREATED,
             },
         ),
         status.HTTP_409_CONFLICT: responses.response(
@@ -38,7 +38,7 @@ router: APIRouter = APIRouter(prefix="/auth")
             example={
                 "errors": [],
                 "message": "The email is already in use",
-                "status": 409,
+                "status": status.HTTP_409_CONFLICT,
             },
         ),
         status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
@@ -58,7 +58,7 @@ router: APIRouter = APIRouter(prefix="/auth")
                     },
                 ],
                 "message": "Validation error",
-                "status": 422,
+                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
             },
         ),
     },
@@ -115,14 +115,14 @@ async def register_user(
     "/login",
     summary="Authenticate user",
     description="Authenticates a user in the system using email and password.",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
         status.HTTP_200_OK: responses.response(
             description="User authenticated successfully.",
             model=schemes.SuccessResponse,
             example={
                 "message": "User authenticated successfully",
-                "status": 200,
+                "status": status.HTTP_200_OK,
             },
         ),
         status.HTTP_401_UNAUTHORIZED: responses.response(
@@ -131,7 +131,7 @@ async def register_user(
             example={
                 "errors": [],
                 "message": "The email or password is incorrect",
-                "status": 401,
+                "status": status.HTTP_401_UNAUTHORIZED,
             },
         ),
         status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
@@ -147,7 +147,7 @@ async def register_user(
                     },
                 ],
                 "message": "Validation error",
-                "status": 422,
+                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
             },
         ),
     },
@@ -205,14 +205,14 @@ async def authenticate_user(
     "/refresh",
     summary="Refresh access token",
     description="Refreshes the access token using the refresh token.",
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     responses={
         status.HTTP_200_OK: responses.response(
             description="Tokens refreshed successfully.",
             model=schemes.SuccessResponse,
             example={
                 "message": "Tokens refreshed successfully",
-                "status": 200,
+                "status": status.HTTP_200_OK,
             },
         ),
         status.HTTP_400_BAD_REQUEST: responses.INVALID_TOKEN,

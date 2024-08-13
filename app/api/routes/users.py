@@ -21,7 +21,7 @@ router: APIRouter = APIRouter(
     summary="Get current user",
     description="Get information about the current user",
     responses={
-        200: {
+        status.HTTP_200_OK: {
             "description": "User information retrieved successfully.",
             "model": schemes.User,
             "content": {

@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.config import settings
 from app.core.database.models.mixins import Base, IDMixin
 
 
@@ -24,7 +25,7 @@ class Tag(Base, IDMixin):
         nullable=False,
     )
     name: Mapped[str] = mapped_column(
-        String(32),
+        String(settings.data.TAG_MAX_LENGTH),
         nullable=False,
     )
 

@@ -10,29 +10,31 @@ from app.core.database.models.mixins import Base, IDMixin
 if TYPE_CHECKING:
     from app.core.database.models import Status, Url
 
+_HASHED_PASSWORD_MAX_LENGTH: int = 64
+
 
 class User(Base, IDMixin):
     __tablename__ = "Users"
 
     first_name: Mapped[str] = mapped_column(
-        String(16),
+        String(settings.data.FIRST_NAME_MAX_LENGTH),
         nullable=False,
     )
     last_name: Mapped[str | None] = mapped_column(
-        String(16),
+        String(settings.data.LAST_NAME_MAX_LENGTH),
         nullable=True,
     )
     email: Mapped[str] = mapped_column(
-        String(64),
+        String(settings.data.EMAIL_MAX_LENGTH),
         nullable=False,
         unique=True,
     )
     phone: Mapped[str | None] = mapped_column(
-        String(16),
+        String(settings.data.PHONE_MAX_LENGTH),
         nullable=True,
     )
     password: Mapped[str] = mapped_column(
-        String(64),
+        String(_HASHED_PASSWORD_MAX_LENGTH),
         nullable=False,
     )
 

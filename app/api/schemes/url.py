@@ -4,12 +4,13 @@ import pydantic_core
 from pydantic import BaseModel, Field, HttpUrl, field_validator
 
 from app.api.schemes.fields import Id
+from app.core.config import settings
 
 _Address: TypeAlias = Annotated[
     str,
     Field(
-        min_length=1,
-        max_length=256,
+        min_length=settings.data.SHORT_URL_MIN_LENGTH,
+        max_length=settings.data.SHORT_URL_MAX_LENGTH,
         description=(
             "A short URL address. If not provided by the user, it will be "
             "generated automatically."
@@ -31,8 +32,8 @@ class Tag(BaseModel):
     name: Annotated[
         str,
         Field(
-            min_length=1,
-            max_length=32,
+            min_length=settings.data.TAG_MIN_LENGTH,
+            max_length=settings.data.TAG_MAX_LENGTH,
             description="Tag name.",
             examples=["python"],
         ),
@@ -43,7 +44,7 @@ _TagList: TypeAlias = Annotated[
     list[Tag],
     Field(
         description="Optional list of tags. Repeating tags will be ignored.",
-        max_length=32,
+        max_length=settings.data.SHORT_URL_MAX_TAGS_COUNT,
     ),
 ]
 
@@ -56,7 +57,10 @@ class NewUrl(BaseModel):
     @field_validator("location")
     @classmethod
     def validate_location_length(cls: type["NewUrl"], value: pydantic_core.Url) -> str:
-        if len(str(value)) not in range(1, 2049):
+        if len(str(value)) not in range(
+            settings.data.URL_MIN_LENGTH,
+            settings.data.URL_MAX_LENGTH + 1,
+        ):
             raise ValueError
         return str(value)
 

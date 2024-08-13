@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.config import settings
 from app.core.database.models.mixins import Base, IDMixin
 
 if TYPE_CHECKING:
@@ -33,12 +34,12 @@ class Url(Base, IDMixin):
         nullable=False,
     )
     address: Mapped[str] = mapped_column(
-        String(256),
+        String(settings.data.SHORT_URL_MAX_LENGTH),
         unique=True,
         nullable=False,
     )
     location: Mapped[str] = mapped_column(
-        String(2048),
+        String(settings.data.URL_MAX_LENGTH),
         nullable=False,
     )
     total_clicks: Mapped[int] = mapped_column(

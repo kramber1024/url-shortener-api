@@ -30,8 +30,29 @@ class AppSettings(BaseSettings):
     NAME: str = ""
 
 
+class DataSettings(BaseSettings):
+    FIRST_NAME_MIN_LENGTH: int = 3
+    FIRST_NAME_MAX_LENGTH: int = 16
+    LAST_NAME_MIN_LENGTH: int = 3
+    LAST_NAME_MAX_LENGTH: int = 16
+    EMAIL_MIN_LENGTH: int = len("a@b.c")
+    EMAIL_MAX_LENGTH: int = 64
+    PHONE_MIN_LENGTH: int = 7
+    PHONE_MAX_LENGTH: int = 16
+    PASSWORD_MIN_LENGTH: int = 8
+    PASSWORD_MAX_LENGTH: int = 256
+    SHORT_URL_MIN_LENGTH: int = len("a")
+    SHORT_URL_MAX_LENGTH: int = 256
+    SHORT_URL_MAX_TAGS_COUNT: int = 32
+    URL_MIN_LENGTH: int = len("http://a.b")
+    URL_MAX_LENGTH: int = 2048
+    TAG_MIN_LENGTH: int = len("a")
+    TAG_MAX_LENGTH: int = 32
+
+
 class Settings(BaseSettings):
     db: DatabaseSettings = DatabaseSettings()
+    data: DataSettings = DataSettings()
     jwt: JWTSettings = JWTSettings()
     dev: DevelopmentSettings = DevelopmentSettings()
     app: AppSettings = AppSettings()

@@ -12,10 +12,9 @@ from app import crud
 from app.api import responses, schemes
 from app.api.exceptions import HTTPError
 from app.core.auth import jwt_
+from app.core.config import settings
 from app.core.database import db
 from app.core.database.models import Url, User
-
-_MAX_RANDOM_URL_LENGTH: int = 256
 
 router: APIRouter = APIRouter(
     prefix="/url",
@@ -27,6 +26,23 @@ router: APIRouter = APIRouter(
 
 
 def _base10_to_urlsafe_base64(number: int) -> str:
+    """Convert a base 10 number to a URL safe base 64 string.
+
+    Args:
+    ----
+        number (int): The base 10 number to convert.
+
+    Returns:
+    -------
+        str: The URL safe base 64 string.
+
+    Examples:
+    --------
+    >>> url_safe_base64 = _base10_to_urlsafe_base64(123456789)
+    >>> print(url_safe_base64)
+    "B1vNFQ"
+
+    """
     byte_representation: bytes = number.to_bytes(
         (number.bit_length() + 7) // 8,
         byteorder="big",
@@ -66,7 +82,7 @@ async def _generate_url(*, session: AsyncSession) -> str:
         int(f"{int(time.time())}{secrets.randbelow(9000) + 1000}"),
     )
 
-    while len(url_string) < _MAX_RANDOM_URL_LENGTH:
+    while len(url_string) < settings.data.SHORT_URL_MAX_LENGTH:
         url: Url | None = await crud.get_url_by_address(
             session=session,
             address=url_string,
@@ -90,14 +106,14 @@ async def _generate_url(*, session: AsyncSession) -> str:
     "",
     summary="Create a new short url",
     description="Creates a new short url for the given long url.",
-    status_code=201,
+    status_code=status.HTTP_201_CREATED,
     responses={
         status.HTTP_201_CREATED: responses.response(
             description="Short url created successfully.",
             model=schemes.SuccessResponse,
             example={
                 "message": "Short url created successfully",
-                "status": 201,
+                "status": status.HTTP_201_CREATED,
             },
         ),
         status.HTTP_409_CONFLICT: responses.response(
@@ -107,14 +123,14 @@ async def _generate_url(*, session: AsyncSession) -> str:
             model=schemes.ErrorResponse,
             example={
                 "message": "Short url address already in use",
-                "status": 409,
+                "status": status.HTTP_409_CONFLICT,
             },
         ),
         status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
             example={
                 "errors": [],
                 "message": "Validation error",
-                "status": 422,
+                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
             },
         ),
     },
@@ -165,12 +181,20 @@ async def create_url(
         location=str(new_url.location),
     )
 
-    for tag in new_url.tags:
-        await crud.create_tag(
-            session=session,
-            url_id=url.id,
-            name=tag.name,
-        )
+    if new_url.tags is not None:
+        tags_created: set[str] = set()
+
+        for tag in new_url.tags:
+            if tag.name in tags_created:
+                continue
+
+            await crud.create_tag(
+                session=session,
+                url_id=url.id,
+                name=tag.name,
+            )
+
+            tags_created.add(tag.name)
 
     success_response: schemes.SuccessResponse = schemes.SuccessResponse(
         message="Url created successfully",

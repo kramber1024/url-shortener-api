@@ -1,5 +1,5 @@
 import datetime
-from typing import Annotated, Literal, TypedDict
+from typing import Annotated, Literal, TypeAlias, TypedDict
 
 import jwt
 from fastapi import Cookie, Depends
@@ -12,7 +12,7 @@ from app.core.config import JWTAlgorithm, settings
 from app.core.database import db
 from app.core.database.models import User
 
-_TokenType = Literal["access", "refresh"]
+_TokenType: TypeAlias = Literal["access", "refresh"]
 
 access_cookie_scheme: APIKeyCookie = APIKeyCookie(
     name="access_token",

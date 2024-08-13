@@ -1,4 +1,3 @@
-import datetime
 from typing import Annotated, Literal, TypeAlias, TypedDict
 
 import jwt
@@ -32,22 +31,39 @@ class _TokenPayload(TypedDict, _UserData):
 
 def _encode_token(
     type_: _TokenType,
+    *,
     payload: _UserData,
     key: str = settings.jwt.SECRET,
     algorithm: JWTAlgorithm = settings.jwt.ALGORITHM,
+    current_time: int,
 ) -> str:
-    now: int = int(datetime.datetime.now(datetime.UTC).timestamp())
+    """Generate a JWT token.
 
+    Args:
+    ----
+        type_ (_TokenType): The type of JWT token. Either "access" or "refresh".
+        payload (_UserData): The payload of the JWT token.
+        current_time (int): The current time in seconds since the epoch.
+        key (str, optional): Secret key to sign the token.\
+        Defaults to settings.jwt.SECRET.
+        algorithm (JWTAlgorithm, optional): The algorithm to use for signing the token.\
+        Defaults to settings.jwt.ALGORITHM.
+
+    Returns:
+    -------
+        str: The JWT token.
+
+    """
     if type_ == "access":
-        expire: int = now + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
+        expire: int = current_time + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
     else:
-        expire = now + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
+        expire = current_time + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
 
     token_payload: _TokenPayload = {
         "sub": payload.get("sub", ""),
         "email": payload.get("email", ""),
         "exp": expire,
-        "iat": now,
+        "iat": current_time,
     }
 
     return jwt.encode(
@@ -63,6 +79,7 @@ def _encode_token(
 def generate_access_token(
     user_id: int,
     email: str,
+    current_time: int,
 ) -> str:
     return _encode_token(
         type_="access",
@@ -70,12 +87,14 @@ def generate_access_token(
             "sub": str(user_id),
             "email": email,
         },
+        current_time=current_time,
     )
 
 
 def generate_refresh_token(
     user_id: int,
     email: str,
+    current_time: int,
 ) -> str:
     return _encode_token(
         type_="refresh",
@@ -83,6 +102,7 @@ def generate_refresh_token(
             "sub": str(user_id),
             "email": email,
         },
+        current_time=current_time,
     )
 
 

@@ -11,7 +11,7 @@ from app.core.config import JWTAlgorithm, settings
 from app.core.database import db
 from app.core.database.models import User
 
-TokenType: TypeAlias = Literal["access", "refresh"]
+_TokenType: TypeAlias = Literal["access", "refresh"]
 
 access_cookie_scheme: APIKeyCookie = APIKeyCookie(
     name="access_token",
@@ -30,7 +30,7 @@ class _TokenPayload(TypedDict, _UserData):
 
 
 def _encode_token(
-    type_: TokenType,
+    jwt_type: _TokenType,
     *,
     payload: _UserData,
     key: str = settings.jwt.SECRET,
@@ -41,7 +41,7 @@ def _encode_token(
 
     Args:
     ----
-        type_ (_TokenType): The type of JWT token. Either "access" or "refresh".
+        jwt_type (_TokenType): The type of JWT token. Either "access" or "refresh".
         payload (_UserData): The payload of the JWT token.
         current_time (int): The current time in seconds since the epoch.
         key (str, optional): Secret key to sign the token.\
@@ -54,7 +54,7 @@ def _encode_token(
         str: The JWT token.
 
     """
-    if type_ == "access":
+    if jwt_type == "access":
         expire: int = current_time + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
     else:
         expire = current_time + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
@@ -71,33 +71,44 @@ def _encode_token(
         key,
         algorithm,
         headers={
-            "typ": type_,
+            "typ": jwt_type,
         },
     )
 
 
-def generate_access_token(
+def generate_token(
+    jwt_type: _TokenType,
     user_id: int,
     email: str,
     current_time: int,
 ) -> str:
-    return _encode_token(
-        type_="access",
-        payload={
-            "sub": str(user_id),
-            "email": email,
-        },
-        current_time=current_time,
-    )
+    """Generate a JWT token.
 
+    Args:
+    ----
+        jwt_type (_TokenType): The type of JWT token. Either "access" or "refresh".
+        user_id (int): The ` User ` ID.
+        email (str): The ` User ` email.
+        current_time (int): The current time in seconds since the epoch.
 
-def generate_refresh_token(
-    user_id: int,
-    email: str,
-    current_time: int,
-) -> str:
+    Returns:
+    -------
+        str: The encoded JWT token.
+
+    Example:
+    -------
+    >>> jwt_type = "access"
+    >>> user_id = 1234567890
+    >>> email = "email@example.com"
+    >>> current_time = 1719956372
+    >>> generate_token(jwt_type, user_id, email, current_time)
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N\
+        TY3ODkwIiwiZW1haWwiOiJlbWFpbEBleGFtcGxlLmNvbSIsImV4cCI6MTcx\
+            OTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.AXEWuud-NgdLFsEV8NQ93moZZasu2zUZJF3oCIo2lBE"
+
+    """
     return _encode_token(
-        type_="refresh",
+        jwt_type=jwt_type,
         payload={
             "sub": str(user_id),
             "email": email,
@@ -108,7 +119,7 @@ def generate_refresh_token(
 
 def get_token_payload(
     token: str,
-    jwt_type: TokenType,
+    jwt_type: _TokenType,
 ) -> _TokenPayload | None:
     """Get payload from a JWT token.
 

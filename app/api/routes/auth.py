@@ -186,16 +186,22 @@ async def authenticate_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_.generate_access_token(user.id, user.email, current_time=utils.now()),
+        value=jwt_.generate_token(
+            "access",
+            user_id=user.id,
+            email=user.email,
+            current_time=utils.now(),
+        ),
         max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_.generate_refresh_token(
-            user.id,
-            user.email,
+        value=jwt_.generate_token(
+            "refresh",
+            user_id=user.id,
+            email=user.email,
             current_time=utils.now(),
         ),
         max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,
@@ -242,16 +248,22 @@ def refresh_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_.generate_access_token(user.id, user.email, current_time=utils.now()),
+        value=jwt_.generate_token(
+            "access",
+            user_id=user.id,
+            email=user.email,
+            current_time=utils.now(),
+        ),
         max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_.generate_refresh_token(
-            user.id,
-            user.email,
+        value=jwt_.generate_token(
+            "refresh",
+            user_id=user.id,
+            email=user.email,
             current_time=utils.now(),
         ),
         max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,

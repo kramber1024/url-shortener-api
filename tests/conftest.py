@@ -1,3 +1,4 @@
+import datetime
 from asyncio import current_task
 from collections.abc import AsyncGenerator
 
@@ -106,3 +107,8 @@ def user_credentials() -> User:
     user.id = utils.USER_ID
     user.phone = utils.USER_PHONE
     return user
+
+
+@pytest.fixture
+def current_time() -> int:
+    return int(datetime.datetime.now(datetime.UTC).timestamp())

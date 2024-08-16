@@ -19,7 +19,7 @@ def test_generate_token(
     current_time: int,
 ) -> None:
     token: str = jwt_.generate_token(
-        jwt_type=jwt_type,
+        jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
         current_time=current_time,

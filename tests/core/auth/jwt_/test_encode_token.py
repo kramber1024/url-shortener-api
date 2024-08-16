@@ -19,7 +19,7 @@ def test__encode_token_types(
     current_time: int,
 ) -> None:
     token: str = jwt_._encode_token(
-        jwt_type=jwt_type,
+        jwt_type,
         payload={
             "sub": str(user_credentials.id),
             "email": user_credentials.email,

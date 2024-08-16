@@ -21,7 +21,7 @@ def test_get_token_payload_access(
     current_time: int,
 ) -> None:
     token: str = jwt_.generate_token(
-        jwt_type=jwt_type,
+        jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
         current_time=current_time,
@@ -29,8 +29,8 @@ def test_get_token_payload_access(
 
     decoded_header: dict[str, Any] = jwt.get_unverified_header(token)
     decoded_payload: _DecodedPayload = jwt_.get_token_payload(
-        token=token,
-        jwt_type=jwt_type,
+        token,
+        jwt_type,
     )
 
     assert decoded_header
@@ -59,8 +59,8 @@ def test_get_token_payload_access(
 )
 def test_get_token_payload_invalid_token(token: str) -> None:
     payload: _DecodedPayload = jwt_.get_token_payload(
-        token=token,
-        jwt_type="access",
+        token,
+        "access",
     )
 
     assert not payload
@@ -80,15 +80,15 @@ def test_get_token_payload_invalid_type(
     current_time: int,
 ) -> None:
     token: str = jwt_.generate_token(
-        jwt_type=jwt_type,
+        jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
         current_time=current_time,
     )
 
     payload: _DecodedPayload = jwt_.get_token_payload(
-        token=token,
-        jwt_type=opposite_jwt_type,
+        token,
+        opposite_jwt_type,
     )
 
     assert not payload
@@ -104,15 +104,15 @@ def test_get_token_payload_exired(
     user_credentials: User,
 ) -> None:
     token: str = jwt_.generate_token(
-        jwt_type=jwt_type,
+        jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
         current_time=2 * current_time - utils.get_token_exp(jwt_type, current_time) - 1,
     )
 
     payload: _DecodedPayload = jwt_.get_token_payload(
-        token=token,
-        jwt_type=jwt_type,
+        token,
+        jwt_type,
     )
 
     assert not payload
@@ -146,8 +146,8 @@ def test_get_token_payload_invalid_signature(
     )
 
     decoded_payload: _DecodedPayload = jwt_.get_token_payload(
-        token=token,
-        jwt_type="access",
+        token,
+        "access",
     )
 
     assert not decoded_payload

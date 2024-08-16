@@ -67,7 +67,7 @@ async def test_get_current_user_no_user(
     current_time: int,
 ) -> None:
     token: str = jwt_.generate_token(
-        jwt_type="access",
+        "access",
         user_id=-1,
         email="",
         current_time=current_time,

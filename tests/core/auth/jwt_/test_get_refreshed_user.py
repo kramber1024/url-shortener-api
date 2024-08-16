@@ -85,7 +85,7 @@ async def test_get_refreshed_user_no_user(
     email: str = "Ettie94@gmail.com"
 
     token: str = jwt_.generate_token(
-        jwt_type="refresh",
+        "refresh",
         user_id=id_,
         email=email,
         current_time=current_time,

@@ -31,6 +31,7 @@ class _TokenPayload(TypedDict, _UserData):
 
 def _encode_token(
     jwt_type: _TokenType,
+    /,
     *,
     payload: _UserData,
     key: str = settings.jwt.SECRET,
@@ -78,6 +79,7 @@ def _encode_token(
 
 def generate_token(
     jwt_type: _TokenType,
+    /,
     user_id: int,
     email: str,
     current_time: int,
@@ -108,7 +110,7 @@ def generate_token(
 
     """
     return _encode_token(
-        jwt_type=jwt_type,
+        jwt_type,
         payload={
             "sub": str(user_id),
             "email": email,
@@ -120,6 +122,7 @@ def generate_token(
 def get_token_payload(
     token: str,
     jwt_type: _TokenType,
+    /,
 ) -> _TokenPayload | None:
     """Get payload from a JWT token.
 
@@ -190,7 +193,7 @@ async def get_current_user(
 
     payload: _TokenPayload | None = get_token_payload(
         access_token,
-        jwt_type="access",
+        "access",
     )
 
     if payload is None:
@@ -236,7 +239,7 @@ async def get_refreshed_user(
 
     payload: _TokenPayload | None = get_token_payload(
         refresh_token,
-        jwt_type="refresh",
+        "refresh",
     )
 
     if payload is None:

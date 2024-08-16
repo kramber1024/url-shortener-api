@@ -35,7 +35,7 @@ async def db() -> AsyncGenerator[Database, None]:
     await test_db.engine.dispose()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture
 async def session(db: Database) -> AsyncGenerator[AsyncSession, None]:
     async_session: async_scoped_session[AsyncSession] = async_scoped_session(
         session_factory=db.session_factory,
@@ -53,7 +53,7 @@ async def session(db: Database) -> AsyncGenerator[AsyncSession, None]:
         await async_session.remove()
 
 
-@pytest_asyncio.fixture(scope="function")
+@pytest_asyncio.fixture
 async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides[app_db.scoped_session] = db.scoped_session
 

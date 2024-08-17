@@ -1,7 +1,9 @@
+import string
 from typing import Annotated, TypeAlias
 
 import pydantic_core
 from pydantic import (
+    AfterValidator,
     BaseModel,
     Field,
     StringConstraints,
@@ -12,11 +14,24 @@ from pydantic import (
 from app.api.schemes.fields import Id
 from app.core.config import settings
 
+_URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
+
+
+def _address_validator(value: str) -> str:
+    if any(char not in _URL_SAFE_CHARACTERS for char in value):
+        raise ValueError
+    return value
+
+
 _Address: TypeAlias = Annotated[
     str,
-    Field(
+    StringConstraints(
+        strip_whitespace=True,
         min_length=settings.data.SHORT_URL_MIN_LENGTH,
         max_length=settings.data.SHORT_URL_MAX_LENGTH,
+    ),
+    AfterValidator(_address_validator),
+    Field(
         description=(
             "A short URL address. If not provided by the user, it will be "
             "generated automatically."

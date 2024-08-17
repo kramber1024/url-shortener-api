@@ -19,18 +19,15 @@ class HTTPError(HTTPException):
     Based on ` ErrorResponse ` from schemes.
 
     Args:
-    ----
         errors (list[_ErrorDict]): List of errors.
         message (str): Generic error message.
         status (int): HTTP status code.
         headers (dict[str, str] | None): Headers for response.
 
     Attributes:
-    ----------
-        response (_Response): Response model.
+        response (_Response): JSON response.
 
     Examples:
-    --------
     ```python
     raise HTTPError(
         errors=[

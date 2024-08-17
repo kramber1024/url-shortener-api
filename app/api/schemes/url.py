@@ -62,14 +62,17 @@ _TagList: TypeAlias = Annotated[
 ]
 
 
-class NewUrl(BaseModel):
+class CreateUrl(BaseModel):
     address: _Address | None = None
     location: _Location
     tags: _TagList | None = None
 
     @field_validator("location")
     @classmethod
-    def validate_location_length(cls: type["NewUrl"], value: pydantic_core.Url) -> str:
+    def validate_location_length(
+        cls: type["CreateUrl"],
+        value: pydantic_core.Url,
+    ) -> str:
         if len(str(value)) not in range(
             settings.data.URL_MIN_LENGTH,
             settings.data.URL_MAX_LENGTH + 1,

@@ -3,15 +3,15 @@ from .response import (
     ErrorResponse,
     SuccessResponse,
 )
-from .url import NewUrl, Tag, Url
+from .url import CreateUrl, Tag, Url
 from .user import CreateUser, LoginUser, User
 
 __all__ = (
+    "CreateUrl",
     "CreateUser",
     "Error",
     "ErrorResponse",
     "LoginUser",
-    "NewUrl",
     "SuccessResponse",
     "Tag",
     "Url",

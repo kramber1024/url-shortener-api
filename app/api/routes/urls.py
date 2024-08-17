@@ -129,8 +129,8 @@ async def create_url(
         User,
         Depends(jwt_.get_current_user),
     ],
-    new_url: Annotated[
-        schemes.NewUrl,
+    create_url: Annotated[
+        schemes.CreateUrl,
         Body(),
     ],
     session: Annotated[
@@ -138,9 +138,9 @@ async def create_url(
         Depends(db.scoped_session),
     ],
 ) -> JSONResponse:
-    if new_url.address is not None and await crud.get_url_by_address(
+    if create_url.address is not None and await crud.get_url_by_address(
         session=session,
-        address=new_url.address,
+        address=create_url.address,
     ):
         return JSONResponse(
             content={
@@ -150,7 +150,7 @@ async def create_url(
             status_code=status.HTTP_409_CONFLICT,
         )
 
-    if new_url.address is None:
+    if create_url.address is None:
         url_string: str = _generate_url(current_time=utils.now())
 
         while len(url_string) < settings.data.SHORT_URL_MAX_LENGTH:
@@ -160,7 +160,7 @@ async def create_url(
             )
 
             if existing_url is None:
-                new_url.address = url_string
+                create_url.address = url_string
                 break
 
             url_string += secrets.choice(string.ascii_letters)
@@ -177,14 +177,14 @@ async def create_url(
     url: Url = await crud.create_url(
         session=session,
         user_id=user.id,
-        address=new_url.address,
-        location=str(new_url.location),
+        address=create_url.address,
+        location=str(create_url.location),
     )
 
-    if new_url.tags is not None:
+    if create_url.tags is not None:
         tags_created: set[str] = set()
 
-        for tag in new_url.tags:
+        for tag in create_url.tags:
             if tag.name in tags_created:
                 continue
 

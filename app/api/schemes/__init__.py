@@ -4,16 +4,16 @@ from .response import (
     SuccessResponse,
 )
 from .url import NewUrl, Tag, Url
-from .user import CreateUser, User, UserLogin
+from .user import CreateUser, LoginUser, User
 
 __all__ = (
     "CreateUser",
     "Error",
     "ErrorResponse",
+    "LoginUser",
     "NewUrl",
     "SuccessResponse",
     "Tag",
     "Url",
     "User",
-    "UserLogin",
 )

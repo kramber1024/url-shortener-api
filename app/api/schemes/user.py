@@ -63,7 +63,7 @@ class User(BaseModel):
         )
 
 
-class UserLogin(BaseModel):
+class LoginUser(BaseModel):
     email: _Email
     password: _Password
 

@@ -154,8 +154,8 @@ async def create_user(
     },
 )
 async def authenticate_user(
-    user_login: Annotated[
-        schemes.UserLogin,
+    login_user: Annotated[
+        schemes.LoginUser,
         Body(),
     ],
     session: Annotated[
@@ -165,10 +165,10 @@ async def authenticate_user(
 ) -> JSONResponse:
     user: User | None = await crud.get_user_by_email(
         session=session,
-        email=user_login.email,
+        email=login_user.email,
     )
 
-    if user is None or not user.is_password_valid(user_login.password):
+    if user is None or not user.is_password_valid(login_user.password):
         raise HTTPError(
             errors=[],
             message="The email or password is incorrect",

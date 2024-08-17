@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.asyncio()
-async def test_create_user(
+async def test_register_user(
     session: AsyncSession,
     client: AsyncClient,
     user_credentials: User,
@@ -60,7 +60,7 @@ async def test_create_user(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_no_last_name(
+async def test_register_user_no_last_name(
     session: AsyncSession,
     client: AsyncClient,
     user_credentials: User,
@@ -103,7 +103,7 @@ async def test_create_user_no_last_name(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_uppercase(
+async def test_register_user_uppercase(
     session: AsyncSession,
     client: AsyncClient,
     user_credentials: User,
@@ -149,7 +149,7 @@ async def test_create_user_uppercase(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_email_conflict(
+async def test_register_user_email_conflict(
     session: AsyncSession,
     client: AsyncClient,
     db_user: User,
@@ -201,7 +201,7 @@ async def test_create_user_email_conflict(
         "a" * (settings.data.FIRST_NAME_MAX_LENGTH + 1),
     ],
 )
-async def test_create_user_invalid_first_name(
+async def test_register_user_invalid_first_name(
     first_name: str,
     session: AsyncSession,
     client: AsyncClient,
@@ -241,7 +241,7 @@ async def test_create_user_invalid_first_name(
         "a" * (settings.data.LAST_NAME_MAX_LENGTH + 1),
     ],
 )
-async def test_create_user_invalid_last_name(
+async def test_register_user_invalid_last_name(
     last_name: str,
     session: AsyncSession,
     client: AsyncClient,
@@ -285,7 +285,7 @@ async def test_create_user_invalid_last_name(
         "a" * (settings.data.EMAIL_MAX_LENGTH - len("@b.c") + 1) + "@b.c",
     ],
 )
-async def test_create_user_invalid_email(
+async def test_register_user_invalid_email(
     email: str,
     session: AsyncSession,
     client: AsyncClient,
@@ -325,7 +325,7 @@ async def test_create_user_invalid_email(
         "a" * (settings.data.PASSWORD_MAX_LENGTH + 1),
     ],
 )
-async def test_create_user_invalid_password(
+async def test_register_user_invalid_password(
     password: str,
     session: AsyncSession,
     client: AsyncClient,
@@ -357,7 +357,7 @@ async def test_create_user_invalid_password(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_invalid_terms(
+async def test_register_user_invalid_terms(
     session: AsyncSession,
     client: AsyncClient,
     user_credentials: User,
@@ -388,7 +388,7 @@ async def test_create_user_invalid_terms(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_invalid_all(
+async def test_register_user_invalid_all(
     session: AsyncSession,
     client: AsyncClient,
 ) -> None:
@@ -435,7 +435,7 @@ async def test_create_user_invalid_all(
 
 
 @pytest.mark.asyncio()
-async def test_create_user_empty(
+async def test_register_user_empty(
     session: AsyncSession,
     client: AsyncClient,
 ) -> None:

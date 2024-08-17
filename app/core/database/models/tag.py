@@ -8,11 +8,10 @@ from app.core.database.models.mixins import Base, IDMixin
 class Tag(Base, IDMixin):
     """Model for short URL tags.
 
-    Attributes
-    ----------
+    Attributes:
         id (int): The unique identifier (See ` IDMixin `).
         url_id (int): The unique identifier of the ` Url `.
-        name (str): The tag name. Used for categorization.
+        name (str): The ` Tag ` name. Used for categorization.
         url (Url): The ` Url ` the tag is associated with.
 
     """
@@ -32,3 +31,6 @@ class Tag(Base, IDMixin):
     def __init__(self, *, url_id: int, name: str) -> None:
         self.url_id = url_id
         self.name = name
+
+    def __repr__(self) -> str:
+        return f"<Tag {self.name} for Url {self.id}>"

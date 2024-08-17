@@ -65,8 +65,8 @@ router: APIRouter = APIRouter(prefix="/auth")
     },
 )
 async def create_user(
-    new_user: Annotated[
-        schemes.UserRegistration,
+    create_user: Annotated[
+        schemes.CreateUser,
         Body(),
     ],
     session: Annotated[
@@ -77,7 +77,7 @@ async def create_user(
     if (
         await crud.get_user_by_email(
             session=session,
-            email=new_user.email,
+            email=create_user.email,
         )
         is not None
     ):
@@ -89,10 +89,10 @@ async def create_user(
 
     user: User = await crud.create_user(
         session=session,
-        first_name=new_user.first_name,
-        last_name=new_user.last_name,
-        email=new_user.email,
-        password=new_user.password,
+        first_name=create_user.first_name,
+        last_name=create_user.last_name,
+        email=create_user.email,
+        password=create_user.password,
     )
     await crud.create_status(
         session=session,

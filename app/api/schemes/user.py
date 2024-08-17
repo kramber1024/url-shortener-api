@@ -68,7 +68,7 @@ class UserLogin(BaseModel):
     password: _Password
 
 
-class UserRegistration(BaseModel):
+class CreateUser(BaseModel):
     first_name: _FirstName
     last_name: _LastName | None = None
     email: _Email

@@ -4,9 +4,10 @@ from .response import (
     SuccessResponse,
 )
 from .url import NewUrl, Tag, Url
-from .user import User, UserLogin, UserRegistration
+from .user import CreateUser, User, UserLogin
 
 __all__ = (
+    "CreateUser",
     "Error",
     "ErrorResponse",
     "NewUrl",
@@ -15,5 +16,4 @@ __all__ = (
     "Url",
     "User",
     "UserLogin",
-    "UserRegistration",
 )

@@ -1,7 +1,7 @@
 from typing import Annotated, TypeAlias
 
 import pydantic_core
-from pydantic import BaseModel, Field, HttpUrl, field_validator
+from pydantic import BaseModel, Field, UrlConstraints, field_validator
 
 from app.api.schemes.fields import Id
 from app.core.config import settings
@@ -20,7 +20,11 @@ _Address: TypeAlias = Annotated[
 ]
 
 _Location: TypeAlias = Annotated[
-    HttpUrl,
+    pydantic_core.Url,
+    UrlConstraints(
+        max_length=settings.data.URL_MAX_LENGTH,
+        allowed_schemes=["http", "https"],
+    ),
     Field(
         description="Long url to be shortened.",
         examples=["https://example.com/i-am-a-very-long-url"],

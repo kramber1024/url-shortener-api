@@ -16,8 +16,7 @@ def tokens(db_user: User, current_time: int) -> _Tokens:
 
     Get access and refresh tokens using functions/methods from ` core.auth.jwt_ ` module
 
-    Returns
-    -------
+    Returns:
         _Tokens: Tuple of access and refresh tokens.
 
     """

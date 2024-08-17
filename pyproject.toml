@@ -43,6 +43,7 @@ exclude = [
     ".venv",
     ".vscode",
 ]
+pydocstyle.convention = "google"
 
 [tool.ruff.lint]
 select = ["ALL"]

@@ -1,7 +1,13 @@
 from typing import Annotated, TypeAlias
 
 import pydantic_core
-from pydantic import BaseModel, Field, UrlConstraints, field_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    StringConstraints,
+    UrlConstraints,
+    field_validator,
+)
 
 from app.api.schemes.fields import Id
 from app.core.config import settings
@@ -35,9 +41,12 @@ _Location: TypeAlias = Annotated[
 class Tag(BaseModel):
     name: Annotated[
         str,
-        Field(
+        StringConstraints(
+            strip_whitespace=True,
             min_length=settings.data.TAG_MIN_LENGTH,
             max_length=settings.data.TAG_MAX_LENGTH,
+        ),
+        Field(
             description="Tag name.",
             examples=["python"],
         ),

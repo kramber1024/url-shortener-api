@@ -64,7 +64,7 @@ router: APIRouter = APIRouter(prefix="/auth")
         ),
     },
 )
-async def create_user(
+async def register_user(
     create_user: Annotated[
         schemes.CreateUser,
         Body(),

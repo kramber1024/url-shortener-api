@@ -13,8 +13,7 @@ if TYPE_CHECKING:
 class Url(Base, IDMixin):
     """Model for short URLs.
 
-    Attributes
-    ----------
+    Attributes:
         id (int): The unique identifier (See ` IDMixin `).
         user_id (int): The unique identifier of the ` User ` aka author.
         address (str): The short URL address.

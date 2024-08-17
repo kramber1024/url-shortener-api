@@ -1,7 +1,6 @@
 import base64
 import secrets
 import string
-import time
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, status
@@ -11,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app import crud
 from app.api import responses, schemes
 from app.api.exceptions import HTTPError
+from app.core import utils
 from app.core.auth import jwt_
 from app.core.config import settings
 from app.core.database import db
@@ -29,15 +29,12 @@ def _base10_to_urlsafe_base64(number: int) -> str:
     """Convert a base 10 number to a URL safe base 64 string.
 
     Args:
-    ----
         number (int): The base 10 number to convert.
 
     Returns:
-    -------
         str: The URL safe base 64 string.
 
     Examples:
-    --------
     >>> url_safe_base64 = _base10_to_urlsafe_base64(123456789)
     >>> print(url_safe_base64)
     "B1vNFQ"
@@ -55,51 +52,30 @@ def _base10_to_urlsafe_base64(number: int) -> str:
     )
 
 
-async def _generate_url(*, session: AsyncSession) -> str:
+def _generate_url(*, current_time: int, random_number: int | None = None) -> str:
     """Generate a random short url address.
 
     Args:
-    ----
-        session (AsyncSession): SQLAlchemy session object
-
-    Raises:
-    ------
-        ValueError: Could not generate a unique short url address in a reasonable time.
-        This exception is **very** unlikely to be raised.
+        current_time (int): The current time in seconds since the epoch.
+        random_number (int | None, optional): A random number to allow for more then\
+        one short url per second. The bigger the number, the longer the address.\
+        If None, a random number will be generated automatically. Defaults to None.
 
     Returns:
-    -------
-        str: The generated short url address
+        str: Random short url address
 
     Examples:
-    --------
-    >>> short_url = await _generate_url(session=session)
+    >>> short_url = _generate_url(current_time=1620000000, random_number=123)
     >>> print(address)
-    "D6zLIi_y"
+    "AXkvhkh7"
 
     """
-    url_string: str = _base10_to_urlsafe_base64(
-        int(f"{int(time.time())}{secrets.randbelow(9000) + 1000}"),
+    if random_number is None:
+        random_number = secrets.randbelow(101)
+
+    return _base10_to_urlsafe_base64(
+        int(f"{current_time}{random_number}"),
     )
-
-    while len(url_string) < settings.data.SHORT_URL_MAX_LENGTH:
-        url: Url | None = await crud.get_url_by_address(
-            session=session,
-            address=url_string,
-        )
-
-        if url is None:
-            break
-
-        url_string += secrets.choice(string.ascii_letters)
-
-    else:
-        value_error_message: str = (
-            "Failed to generate a unique short url address in a reasonable time."
-        )
-        raise ValueError(value_error_message)
-
-    return url_string
 
 
 @router.post(
@@ -133,6 +109,19 @@ async def _generate_url(*, session: AsyncSession) -> str:
                 "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
             },
         ),
+        status.HTTP_503_SERVICE_UNAVAILABLE: responses.response(
+            description=(
+                "Failed to generate a unique short url address in a reasonable time. "
+                "This error is pretty much **impossible** to happen."
+            ),
+            model=schemes.ErrorResponse,
+            example={
+                "message": (
+                    "Failed to generate a unique short url address in a reasonable time"
+                ),
+                "status": status.HTTP_503_SERVICE_UNAVAILABLE,
+            },
+        ),
     },
 )
 async def create_url(
@@ -162,17 +151,28 @@ async def create_url(
         )
 
     if new_url.address is None:
-        try:
-            new_url.address = await _generate_url(session=session)
+        url_string: str = _generate_url(current_time=utils.now())
 
-        except ValueError as e:
+        while len(url_string) < settings.data.SHORT_URL_MAX_LENGTH:
+            existing_url: Url | None = await crud.get_url_by_address(
+                session=session,
+                address=url_string,
+            )
+
+            if existing_url is None:
+                new_url.address = url_string
+                break
+
+            url_string += secrets.choice(string.ascii_letters)
+
+        else:
             raise HTTPError(
                 errors=[],
                 message=(
                     "Failed to generate a unique short url address in a reasonable time"
                 ),
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
-            ) from e
+            )
 
     url: Url = await crud.create_url(
         session=session,

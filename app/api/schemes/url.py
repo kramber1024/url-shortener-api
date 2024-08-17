@@ -8,7 +8,6 @@ from pydantic import (
     Field,
     StringConstraints,
     UrlConstraints,
-    field_validator,
 )
 
 from app.api.schemes.fields import Id
@@ -17,7 +16,7 @@ from app.core.config import settings
 _URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
 
 
-def _address_validator(value: str) -> str:
+def _address_characters_validator(value: str) -> str:
     if any(char not in _URL_SAFE_CHARACTERS for char in value):
         raise ValueError
     return value
@@ -30,7 +29,7 @@ _Address: TypeAlias = Annotated[
         min_length=settings.data.SHORT_URL_MIN_LENGTH,
         max_length=settings.data.SHORT_URL_MAX_LENGTH,
     ),
-    AfterValidator(_address_validator),
+    AfterValidator(_address_characters_validator),
     Field(
         description=(
             "A short URL address. If not provided by the user, it will be "
@@ -40,12 +39,25 @@ _Address: TypeAlias = Annotated[
     ),
 ]
 
+
+def _location_length_validator(
+    value: pydantic_core.Url,
+) -> str:
+    if (
+        len(str(value)) < settings.data.URL_MIN_LENGTH
+        or len(str(value)) > settings.data.URL_MAX_LENGTH
+    ):
+        raise ValueError
+    return str(value)
+
+
 _Location: TypeAlias = Annotated[
     pydantic_core.Url,
     UrlConstraints(
         max_length=settings.data.URL_MAX_LENGTH,
         allowed_schemes=["http", "https"],
     ),
+    AfterValidator(_location_length_validator),
     Field(
         description="Long url to be shortened.",
         examples=["https://example.com/i-am-a-very-long-url"],
@@ -81,19 +93,6 @@ class CreateUrl(BaseModel):
     address: _Address | None = None
     location: _Location
     tags: _TagList | None = None
-
-    @field_validator("location")
-    @classmethod
-    def validate_location_length(
-        cls: type["CreateUrl"],
-        value: pydantic_core.Url,
-    ) -> str:
-        if len(str(value)) not in range(
-            settings.data.URL_MIN_LENGTH,
-            settings.data.URL_MAX_LENGTH + 1,
-        ):
-            raise ValueError
-        return str(value)
 
 
 class Url(BaseModel):

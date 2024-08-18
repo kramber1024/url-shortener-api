@@ -17,7 +17,7 @@ from app.core.database.models import Base
 class Database:
     engine: AsyncEngine
     session_factory: async_sessionmaker[AsyncSession]
-    url: str
+    _url: str
 
     def __init__(self, url: str) -> None:
         self.engine = create_async_engine(
@@ -32,7 +32,7 @@ class Database:
             expire_on_commit=False,
         )
 
-        self.url = url.split("///")[1]
+        self._url = url.split("///")[1]
 
     async def scoped_session(
         self,
@@ -47,10 +47,10 @@ class Database:
             await session.close()
 
     async def create_db(self, *, hard_rest: bool) -> None:
-        if hard_rest and Path.exists(Path(self.url)):
-            Path.unlink(Path(self.url))
+        if hard_rest and Path.exists(Path(self._url)):
+            Path.unlink(Path(self._url))
 
-        if not Path.exists(Path(self.url)):
+        if not Path.exists(Path(self._url)):
             async with self.engine.begin() as connection:
                 await connection.run_sync(Base.metadata.create_all)
 

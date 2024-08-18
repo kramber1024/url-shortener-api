@@ -43,9 +43,8 @@ _Address: TypeAlias = Annotated[
 def _location_length_validator(
     value: pydantic_core.Url,
 ) -> str:
-    if (
-        len(str(value)) < settings.data.URL_MIN_LENGTH
-        or len(str(value)) > settings.data.URL_MAX_LENGTH
+    if not (
+        settings.data.URL_MIN_LENGTH <= len(str(value)) <= settings.data.URL_MAX_LENGTH
     ):
         raise ValueError
     return str(value)

@@ -7,8 +7,7 @@ from app.core.database.generator import gen
 class Base(DeclarativeBase):
     """Concrete base class for models.
 
-    Examples
-    --------
+    Examples:
     ```python
     from app.core.database.models.mixins import Base
 
@@ -26,8 +25,7 @@ class IDMixin:
 
     Generates a unique identifier using [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID).
 
-    Attributes
-    ----------
+    Attributes:
         id (int): The unique identifier (Generated automatically).
 
     """

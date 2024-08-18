@@ -1,4 +1,4 @@
-from typing import Any
+from typing import TYPE_CHECKING
 
 import pytest
 from fastapi import status
@@ -8,13 +8,16 @@ from app.core.config import settings
 from app.core.database.models import User
 from tests import utils
 
+if TYPE_CHECKING:
+    from tests.api.types_ import Json
+
 
 @pytest.mark.asyncio()
 async def test_authenticate_user(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": db_user.email,
         "password": utils.USER_PASSWORD,
     }
@@ -36,7 +39,7 @@ async def test_authenticate_user_incorrect_email(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": db_user.email + "a",
         "password": utils.USER_PASSWORD,
     }
@@ -59,7 +62,7 @@ async def test_authenticate_user_incorrect_password(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": db_user.email,
         "password": utils.USER_PASSWORD[::-1],
     }
@@ -82,7 +85,7 @@ async def test_authenticate_user_incorrect_all(
     client: AsyncClient,
     db_user: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": db_user.email + "a",
         "password": utils.USER_PASSWORD[::-1],
     }
@@ -105,6 +108,7 @@ async def test_authenticate_user_incorrect_all(
     "email",
     [
         "",
+        "a" * (settings.data.EMAIL_MAX_LENGTH + 1),
         "@a.b",
         "a@b",
         "@a",
@@ -116,7 +120,7 @@ async def test_authenticate_user_invalid_email(
     email: str,
     client: AsyncClient,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": email,
         "password": utils.USER_PASSWORD,
     }
@@ -138,6 +142,7 @@ async def test_authenticate_user_invalid_email(
     "password",
     [
         "",
+        " " * (settings.data.PASSWORD_MAX_LENGTH + 1),
         "a" * (settings.data.PASSWORD_MIN_LENGTH - 1),
         "a" * (settings.data.PASSWORD_MAX_LENGTH + 1),
     ],
@@ -146,7 +151,7 @@ async def test_authenticate_user_invalid_password(
     password: str,
     client: AsyncClient,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": utils.USER_EMAIL,
         "password": password,
     }
@@ -167,7 +172,7 @@ async def test_authenticate_user_invalid_password(
 async def test_authenticate_user_invalid_all(
     client: AsyncClient,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "email": "a@b",
         "password": "a" * (settings.data.PASSWORD_MAX_LENGTH + 1),
     }

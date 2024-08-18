@@ -91,7 +91,7 @@ _TagList: TypeAlias = Annotated[
 class CreateUrl(BaseModel):
     address: _Address | None = None
     location: _Location
-    tags: _TagList | None = None
+    tags: _TagList
 
 
 class Url(BaseModel):
@@ -105,3 +105,4 @@ class Url(BaseModel):
             examples=[123],
         ),
     ]
+    tags: _TagList

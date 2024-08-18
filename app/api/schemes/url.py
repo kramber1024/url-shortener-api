@@ -82,7 +82,8 @@ class Tag(BaseModel):
 _TagList: TypeAlias = Annotated[
     list[Tag],
     Field(
-        description="Optional list of tags. Repeating tags will be ignored.",
+        description="Repeating tags will be ignored. Can be empty.",
+        min_length=0,
         max_length=settings.data.SHORT_URL_MAX_TAGS_COUNT,
     ),
 ]

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pytest
 from fastapi import status
@@ -14,6 +14,8 @@ if TYPE_CHECKING:
     from httpx import Response
     from sqlalchemy.engine import Result
 
+    from tests.api.types_ import Json
+
 
 @pytest.mark.asyncio()
 async def test_register_user(
@@ -21,7 +23,7 @@ async def test_register_user(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "last_name": str(user_credentials.last_name),
         "email": user_credentials.email,
@@ -60,13 +62,248 @@ async def test_register_user(
 
 
 @pytest.mark.asyncio()
-async def test_register_user_no_last_name(
+@pytest.mark.parametrize(
+    (
+        "first_name",
+        "validated_first_name",
+    ),
+    [
+        ("a" * settings.data.FIRST_NAME_MIN_LENGTH,) * 2,
+        ("a" * settings.data.FIRST_NAME_MAX_LENGTH,) * 2,
+        ("A" * settings.data.FIRST_NAME_MAX_LENGTH,) * 2,
+        ("  aaa", "aaa"),
+        ("aaa  ", "aaa"),
+        ("  aaa  ", "aaa"),
+    ],
+)
+async def test_register_user_first_name(
+    first_name: str,
+    validated_first_name: str,
     session: AsyncSession,
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
+        "first_name": first_name,
+        "last_name": user_credentials.last_name,
+        "email": user_credentials.email,
+        "password": utils.USER_PASSWORD,
+        "terms": "on",
+    }
+
+    response: Response = await client.post(
+        "/api/auth/register",
+        json=json,
+    )
+
+    result: Result[tuple[User]] = await session.execute(
+        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+    )
+    user: User | None = result.scalars().first()
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json().get("message", "")
+    assert response.json().get("status", -1) == status.HTTP_201_CREATED
+    assert user
+    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.first_name == validated_first_name
+    assert user.last_name == user_credentials.last_name
+    assert user.email == user_credentials.email
+    assert not user.phone
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.status
+    assert user.status.user_id == user.id
+    assert not user.status.email_verified
+    assert not user.status.phone_verified
+    assert user.status.active
+    assert not user.status.premium
+    assert not user.urls
+
+
+@pytest.mark.asyncio()
+@pytest.mark.parametrize(
+    (
+        "last_name",
+        "validated_last_name",
+    ),
+    [
+        ("a" * settings.data.LAST_NAME_MIN_LENGTH,) * 2,
+        ("a" * settings.data.LAST_NAME_MAX_LENGTH,) * 2,
+        ("A" * settings.data.LAST_NAME_MAX_LENGTH,) * 2,
+        ("  aaa", "aaa"),
+        ("aaa  ", "aaa"),
+        ("  aaa  ", "aaa"),
+        (None,) * 2,
+    ],
+)
+async def test_register_user_last_name(
+    last_name: str | None,
+    validated_last_name: str | None,
+    session: AsyncSession,
+    client: AsyncClient,
+    user_credentials: User,
+) -> None:
+    json: Json = {
         "first_name": user_credentials.first_name,
+        "email": user_credentials.email,
+        "password": utils.USER_PASSWORD,
+        "terms": "on",
+    }
+
+    if last_name:
+        json["last_name"] = last_name
+
+    response: Response = await client.post(
+        "/api/auth/register",
+        json=json,
+    )
+
+    result: Result[tuple[User]] = await session.execute(
+        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+    )
+    user: User | None = result.scalars().first()
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json().get("message", "")
+    assert response.json().get("status", -1) == status.HTTP_201_CREATED
+    assert user
+    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.first_name == user_credentials.first_name
+    assert user.last_name == validated_last_name
+    assert user.email == user_credentials.email
+    assert not user.phone
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.status
+    assert user.status.user_id == user.id
+    assert not user.status.email_verified
+    assert not user.status.phone_verified
+    assert user.status.active
+    assert not user.status.premium
+    assert not user.urls
+
+
+@pytest.mark.asyncio()
+@pytest.mark.parametrize(
+    (
+        "email",
+        "validated_email",
+    ),
+    [
+        ("a" * (settings.data.EMAIL_MAX_LENGTH - len("@b.c")) + "@b.c",) * 2,
+        ("A" * (settings.data.EMAIL_MAX_LENGTH - len("@b.c")) + "@b.c",) * 2,
+        ("email@EXAMPLE.COM", "email@example.com"),
+        ("a.a.a.a@b.c",) * 2,
+    ],
+)
+async def test_register_user_email(
+    email: str,
+    validated_email: str,
+    session: AsyncSession,
+    client: AsyncClient,
+    user_credentials: User,
+) -> None:
+    json: Json = {
+        "first_name": user_credentials.first_name,
+        "last_name": user_credentials.last_name,
+        "email": email,
+        "password": utils.USER_PASSWORD,
+        "terms": "on",
+    }
+
+    response: Response = await client.post(
+        "/api/auth/register",
+        json=json,
+    )
+
+    result: Result[tuple[User]] = await session.execute(
+        select(User).filter(User.email == validated_email),
+    )
+    user: User | None = result.scalars().first()
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json().get("message", "")
+    assert response.json().get("status", -1) == status.HTTP_201_CREATED
+    assert user
+    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.first_name == user_credentials.first_name
+    assert user.last_name == user_credentials.last_name
+    assert user.email == validated_email
+    assert not user.phone
+    assert user.password != utils.USER_PASSWORD
+    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.status
+    assert user.status.user_id == user.id
+    assert not user.status.email_verified
+    assert not user.status.phone_verified
+    assert user.status.active
+    assert not user.status.premium
+    assert not user.urls
+
+
+@pytest.mark.asyncio()
+@pytest.mark.parametrize(
+    "password",
+    [
+        "a" * settings.data.PASSWORD_MIN_LENGTH,
+        "a" * settings.data.PASSWORD_MAX_LENGTH,
+        "A" * settings.data.PASSWORD_MAX_LENGTH,
+    ],
+)
+async def test_register_user_password(
+    password: str,
+    session: AsyncSession,
+    client: AsyncClient,
+    user_credentials: User,
+) -> None:
+    json: Json = {
+        "first_name": user_credentials.first_name,
+        "last_name": user_credentials.last_name,
+        "email": user_credentials.email,
+        "password": password,
+        "terms": "on",
+    }
+
+    response: Response = await client.post(
+        "/api/auth/register",
+        json=json,
+    )
+
+    result: Result[tuple[User]] = await session.execute(
+        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+    )
+    user: User | None = result.scalars().first()
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json().get("message", "")
+    assert response.json().get("status", -1) == status.HTTP_201_CREATED
+    assert user
+    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.first_name == user_credentials.first_name
+    assert user.last_name == user_credentials.last_name
+    assert user.email == user_credentials.email
+    assert not user.phone
+    assert user.password != password
+    assert user.is_password_valid(password)
+    assert user.status
+    assert user.status.user_id == user.id
+    assert not user.status.email_verified
+    assert not user.status.phone_verified
+    assert user.status.active
+    assert not user.status.premium
+    assert not user.urls
+
+
+@pytest.mark.asyncio()
+async def test_register_user_terms(
+    session: AsyncSession,
+    client: AsyncClient,
+    user_credentials: User,
+) -> None:
+    json: Json = {
+        "first_name": user_credentials.first_name,
+        "last_name": user_credentials.last_name,
         "email": user_credentials.email,
         "password": utils.USER_PASSWORD,
         "terms": "on",
@@ -88,57 +325,11 @@ async def test_register_user_no_last_name(
     assert user
     assert user.id in utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
-    assert not user.last_name
+    assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
     assert user.password != utils.USER_PASSWORD
     assert user.is_password_valid(utils.USER_PASSWORD)
-    assert user.status
-    assert user.status.user_id == user.id
-    assert not user.status.email_verified
-    assert not user.status.phone_verified
-    assert user.status.active
-    assert not user.status.premium
-    assert not user.urls
-
-
-@pytest.mark.asyncio()
-async def test_register_user_uppercase(
-    session: AsyncSession,
-    client: AsyncClient,
-    user_credentials: User,
-) -> None:
-    json: dict[str, Any] = {
-        "first_name": user_credentials.first_name.upper(),
-        "last_name": str(user_credentials.last_name).upper(),
-        "email": user_credentials.email.upper(),
-        "password": utils.USER_PASSWORD.upper(),
-        "terms": "on",
-    }
-
-    response: Response = await client.post(
-        "/api/auth/register",
-        json=json,
-    )
-
-    result: Result[tuple[User]] = await session.execute(
-        select(User).filter(
-            User.email == utils.format_email(user_credentials.email.upper()),
-        ),
-    )
-    user: User | None = result.scalars().first()
-
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_201_CREATED
-    assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
-    assert user.first_name == user_credentials.first_name.upper()
-    assert user.last_name == str(user_credentials.last_name).upper()
-    assert user.email == utils.format_email(user_credentials.email.upper())
-    assert not user.phone
-    assert user.password != utils.USER_PASSWORD.upper()
-    assert user.is_password_valid(utils.USER_PASSWORD.upper())
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -155,7 +346,7 @@ async def test_register_user_email_conflict(
     db_user: User,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "email": db_user.email,
         "password": utils.USER_PASSWORD,
@@ -197,6 +388,7 @@ async def test_register_user_email_conflict(
     "first_name",
     [
         "",
+        " " * settings.data.FIRST_NAME_MIN_LENGTH,
         "a" * (settings.data.FIRST_NAME_MIN_LENGTH - 1),
         "a" * (settings.data.FIRST_NAME_MAX_LENGTH + 1),
     ],
@@ -207,7 +399,7 @@ async def test_register_user_invalid_first_name(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": first_name,
         "email": user_credentials.email,
         "password": utils.USER_PASSWORD,
@@ -237,6 +429,7 @@ async def test_register_user_invalid_first_name(
     "last_name",
     [
         "",
+        " " * settings.data.LAST_NAME_MIN_LENGTH,
         "a" * (settings.data.LAST_NAME_MIN_LENGTH - 1),
         "a" * (settings.data.LAST_NAME_MAX_LENGTH + 1),
     ],
@@ -247,7 +440,7 @@ async def test_register_user_invalid_last_name(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "last_name": last_name,
         "email": user_credentials.email,
@@ -278,6 +471,7 @@ async def test_register_user_invalid_last_name(
     "email",
     [
         "",
+        "a" * (settings.data.EMAIL_MAX_LENGTH + 1),
         "@a.b",
         "a@b",
         "@a",
@@ -291,7 +485,7 @@ async def test_register_user_invalid_email(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "email": email,
         "password": utils.USER_PASSWORD,
@@ -321,6 +515,7 @@ async def test_register_user_invalid_email(
     "password",
     [
         "",
+        " " * (settings.data.PASSWORD_MAX_LENGTH + 1),
         "a" * (settings.data.PASSWORD_MIN_LENGTH - 1),
         "a" * (settings.data.PASSWORD_MAX_LENGTH + 1),
     ],
@@ -331,7 +526,7 @@ async def test_register_user_invalid_password(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
         "password": password,
@@ -362,7 +557,7 @@ async def test_register_user_invalid_terms(
     client: AsyncClient,
     user_credentials: User,
 ) -> None:
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
         "password": user_credentials.password,
@@ -396,7 +591,7 @@ async def test_register_user_invalid_all(
         "a" * (settings.data.EMAIL_MAX_LENGTH - len("@b.c") + 1) + "@b.c"
     )
 
-    json: dict[str, Any] = {
+    json: Json = {
         "first_name": "a" * (settings.data.FIRST_NAME_MAX_LENGTH + 1),
         "last_name": "a" * (settings.data.LAST_NAME_MAX_LENGTH + 1),
         "email": invalid_email,

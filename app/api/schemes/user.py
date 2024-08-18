@@ -1,6 +1,6 @@
 from typing import Annotated, Literal, TypeAlias
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, StringConstraints
 
 from app.api.schemes.fields import Id
 from app.core.config import settings
@@ -8,9 +8,12 @@ from app.core.database import models
 
 _FirstName: TypeAlias = Annotated[
     str,
-    Field(
+    StringConstraints(
+        strip_whitespace=True,
         min_length=settings.data.FIRST_NAME_MIN_LENGTH,
         max_length=settings.data.FIRST_NAME_MAX_LENGTH,
+    ),
+    Field(
         description="Used in full name and official emails",
         examples=["John"],
     ),
@@ -18,9 +21,12 @@ _FirstName: TypeAlias = Annotated[
 
 _LastName: TypeAlias = Annotated[
     str,
-    Field(
+    StringConstraints(
+        strip_whitespace=True,
         min_length=settings.data.LAST_NAME_MIN_LENGTH,
         max_length=settings.data.LAST_NAME_MAX_LENGTH,
+    ),
+    Field(
         description="Used in full name.",
         examples=["Doe"],
     ),
@@ -28,9 +34,11 @@ _LastName: TypeAlias = Annotated[
 
 _Email: TypeAlias = Annotated[
     EmailStr,
-    Field(
+    StringConstraints(
         min_length=settings.data.EMAIL_MIN_LENGTH,
         max_length=settings.data.EMAIL_MAX_LENGTH,
+    ),
+    Field(
         description="Email used for authentication and notifications.",
         examples=["email@domain.tld"],
     ),
@@ -38,9 +46,11 @@ _Email: TypeAlias = Annotated[
 
 _Password: TypeAlias = Annotated[
     str,
-    Field(
+    StringConstraints(
         min_length=settings.data.PASSWORD_MIN_LENGTH,
         max_length=settings.data.PASSWORD_MAX_LENGTH,
+    ),
+    Field(
         description="Used for authentication.",
         examples=["My$uper$ecretPa$$word"],
     ),

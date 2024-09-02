@@ -181,20 +181,18 @@ async def create_url(
         location=str(create_url.location),
     )
 
-    if create_url.tags is not None:
-        tags_created: set[str] = set()
+    tags_created: set[str] = set()
+    for tag in create_url.tags:
+        if tag.name in tags_created:
+            continue
 
-        for tag in create_url.tags:
-            if tag.name in tags_created:
-                continue
+        await crud.create_tag(
+            session=session,
+            url_id=url.id,
+            name=tag.name,
+        )
 
-            await crud.create_tag(
-                session=session,
-                url_id=url.id,
-                name=tag.name,
-            )
-
-            tags_created.add(tag.name)
+        tags_created.add(tag.name)
 
     success_response: schemes.SuccessResponse = schemes.SuccessResponse(
         message="Url created successfully",

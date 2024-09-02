@@ -14,7 +14,6 @@
   /* Ruff */
   "ruff.enable": true,
   "ruff.importStrategy": "fromEnvironment",
-  "ruff.lint.run": "onType",
   "ruff.fixAll": true,
   /* Mypy */
   "mypy-type-checker.importStrategy": "fromEnvironment",

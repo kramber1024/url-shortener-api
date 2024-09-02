@@ -1,0 +1,93 @@
+indent-width = 4
+line-length = 88
+target-version = "py311"
+respect-gitignore = true
+
+[lint]
+select = ["ALL"]
+ignore = [
+  "D100",   # Disable check for missing docstring in public module
+  "D101",   # Disable check for missing docstring in public class
+  "D102",   # Disable check for missing docstring in public method
+  "D103",   # Disable check for missing docstring in public function
+  "D104",   # Disable check for missing docstring in public package
+  "D105",   # Disable check for missing docstring in magic method
+  "D106",   # Disable check for missing docstring in public nested class
+  "D107",   # Disable check for missing docstring in __init__
+  "ANN101", # Disable check for missing type annotation for self in method
+  "CPY001", # Disable check for copyright notice
+  "D203",   # Disable check for 1 blank line before class docstring
+  "D213",   # Disable check for 1 blank line before method/function docstring
+]
+fixable = ["ALL"]
+unfixable = ["F401"] # Disable check for unused imports
+
+[lint.per-file-ignores]
+"**test**" = [
+  "S101",   # Disable check for use of assert in tests
+  "SLF001", # Disable check for use of private members in tests
+]
+
+[lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+parametrize-names-type = "tuple"
+parametrize-values-row-type = "tuple"
+parametrize-values-type = "list"
+
+[lint.flake8-quotes]
+docstring-quotes = "double"
+inline-quotes = "double"
+multiline-quotes = "double"
+
+[lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[lint.isort]
+case-sensitive = false
+combine-as-imports = false
+default-section = "third-party"
+detect-same-package = true
+force-single-line = false
+from-first = false
+lines-after-imports = -1
+lines-between-types = 0
+no-sections = false
+order-by-type = true
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+split-on-trailing-comma = true
+
+[lint.mccabe]
+max-complexity = 3
+
+[lint.pycodestyle]
+ignore-overlong-task-comments = false
+max-doc-length = 88
+
+[lint.pylint]
+allow-magic-value-types = ["str", "bytes"]
+max-args = 5
+max-bool-expr = 5
+max-branches = 4
+max-locals = 15
+max-nested-blocks = 5
+max-positional-args = 3
+max-public-methods = 20
+max-returns = 3
+max-statements = 50
+
+[pydocstyle]
+convention = "google"
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 32
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"

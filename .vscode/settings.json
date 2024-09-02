@@ -8,13 +8,30 @@
     "**/htmlcov": true,
     "**/.coverage": true,
   },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
   /* Python */
   "python.analysis.autoImportCompletions": true,
   "python.testing.pytestEnabled": true,
-  /* Ruff */
-  "ruff.enable": true,
-  "ruff.importStrategy": "fromEnvironment",
-  "ruff.fixAll": true,
   /* Mypy */
   "mypy-type-checker.importStrategy": "fromEnvironment",
+  /* Ruff */
+  "ruff.enable": true,
+  "ruff.lint.preview": true,
+  "ruff.importStrategy": "fromEnvironment",
+  "ruff.fixAll": true,
+  "[python]": {
+    "editor.tabSize": 4,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.codeActionsOnSave": {
+      "source.ruff": "explicit",
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit",
+      "source.unusedImports": "never",
+      "source.sortImports": "explicit",
+    },
+  }
 }

@@ -18,7 +18,7 @@ def refresh_token(db_user: User, current_time: int) -> str:
     )
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_refreshed_user(
     session: AsyncSession,
     refresh_token: str,
@@ -45,7 +45,7 @@ async def test_get_refreshed_user(
     assert not refreshed_user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_refreshed_user_none_token(
     session: AsyncSession,
 ) -> None:
@@ -61,7 +61,7 @@ async def test_get_refreshed_user_none_token(
     assert exc.value.response.get("status", 0) == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_refreshed_user_no_token(
     session: AsyncSession,
 ) -> None:
@@ -76,7 +76,7 @@ async def test_get_refreshed_user_no_token(
     assert exc.value.response.get("status", 0) == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_refreshed_user_no_user(
     session: AsyncSession,
     current_time: int,
@@ -103,7 +103,7 @@ async def test_get_refreshed_user_no_user(
     assert exc.value.response.get("status", 0) == status.HTTP_400_BAD_REQUEST
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_refreshed_user_invalid_token(
     session: AsyncSession,
     user_credentials: User,

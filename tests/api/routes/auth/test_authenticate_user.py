@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from tests.api.types_ import Json
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user(
     client: AsyncClient,
     db_user: User,
@@ -34,7 +34,7 @@ async def test_authenticate_user(
     assert response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user_incorrect_email(
     client: AsyncClient,
     db_user: User,
@@ -57,7 +57,7 @@ async def test_authenticate_user_incorrect_email(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user_incorrect_password(
     client: AsyncClient,
     db_user: User,
@@ -80,7 +80,7 @@ async def test_authenticate_user_incorrect_password(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user_incorrect_all(
     client: AsyncClient,
     db_user: User,
@@ -103,7 +103,7 @@ async def test_authenticate_user_incorrect_all(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "email",
     [
@@ -137,7 +137,7 @@ async def test_authenticate_user_invalid_email(
     assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "password",
     [
@@ -168,7 +168,7 @@ async def test_authenticate_user_invalid_password(
     assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user_invalid_all(
     client: AsyncClient,
 ) -> None:
@@ -190,7 +190,7 @@ async def test_authenticate_user_invalid_all(
     assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_authenticate_user_empty(
     client: AsyncClient,
 ) -> None:

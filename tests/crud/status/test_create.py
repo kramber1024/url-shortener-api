@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from app.core.database.models import Status
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_status(
     session: AsyncSession,
     user_credentials: User,
@@ -28,7 +28,7 @@ async def test_create_status(
     assert not status.premium
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_status_inactive(
     session: AsyncSession,
     user_credentials: User,
@@ -47,7 +47,7 @@ async def test_create_status_inactive(
     assert not status.premium
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_status_premium(
     session: AsyncSession,
     user_credentials: User,

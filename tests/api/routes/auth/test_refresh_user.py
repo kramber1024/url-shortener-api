@@ -38,7 +38,7 @@ def tokens(db_user: User, current_time: int) -> _Tokens:
     return access_token, refresh_token
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_refresh_user(
     client: AsyncClient,
     tokens: _Tokens,
@@ -58,7 +58,7 @@ async def test_refresh_user(
     assert response.cookies.get("refresh_token") != tokens[1]
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_refresh_user_invalid_token(
     client: AsyncClient,
 ) -> None:
@@ -81,7 +81,7 @@ async def test_refresh_user_invalid_token(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_refresh_user_access_token(
     client: AsyncClient,
     tokens: _Tokens,
@@ -99,7 +99,7 @@ async def test_refresh_user_access_token(
     assert not response.cookies.get("refresh_token", "")
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_refresh_user_no_authorization(
     client: AsyncClient,
 ) -> None:

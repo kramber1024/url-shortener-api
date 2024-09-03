@@ -6,7 +6,7 @@ from app.core.database.models import User
 from tests import utils
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_user(
     session: AsyncSession,
     user_credentials: User,
@@ -31,7 +31,7 @@ async def test_create_user(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_user_two_in_a_row(
     session: AsyncSession,
     user_credentials: User,
@@ -74,7 +74,7 @@ async def test_create_user_two_in_a_row(
     assert not user_2.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_user_no_last_name(
     session: AsyncSession,
     user_credentials: User,
@@ -99,7 +99,7 @@ async def test_create_user_no_last_name(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_user_uppercase(
     session: AsyncSession,
     user_credentials: User,
@@ -124,7 +124,7 @@ async def test_create_user_uppercase(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_create_user_empty(
     session: AsyncSession,
 ) -> None:

@@ -6,7 +6,7 @@ from app.core.database.models import User
 from tests import utils
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_user_by_email(
     session: AsyncSession,
     db_user: User,
@@ -33,7 +33,7 @@ async def test_get_user_by_email(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_user_by_email_not_found(
     session: AsyncSession,
     db_user: User,
@@ -46,7 +46,7 @@ async def test_get_user_by_email_not_found(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_user_by_id(
     session: AsyncSession,
     db_user: User,
@@ -73,7 +73,7 @@ async def test_get_user_by_id(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_get_user_by_id_not_found(
     session: AsyncSession,
     db_user: User,

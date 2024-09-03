@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from tests.api.types_ import Json
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user(
     session: AsyncSession,
     client: AsyncClient,
@@ -61,7 +61,7 @@ async def test_register_user(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
         "first_name",
@@ -121,7 +121,7 @@ async def test_register_user_first_name(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
         "last_name",
@@ -184,7 +184,7 @@ async def test_register_user_last_name(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     (
         "email",
@@ -242,7 +242,7 @@ async def test_register_user_email(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "password",
     [
@@ -295,7 +295,7 @@ async def test_register_user_password(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user_terms(
     session: AsyncSession,
     client: AsyncClient,
@@ -339,7 +339,7 @@ async def test_register_user_terms(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user_email_conflict(
     session: AsyncSession,
     client: AsyncClient,
@@ -383,7 +383,7 @@ async def test_register_user_email_conflict(
     assert not user.urls
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "first_name",
     [
@@ -424,7 +424,7 @@ async def test_register_user_invalid_first_name(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "last_name",
     [
@@ -466,7 +466,7 @@ async def test_register_user_invalid_last_name(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "email",
     [
@@ -510,7 +510,7 @@ async def test_register_user_invalid_email(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "password",
     [
@@ -551,7 +551,7 @@ async def test_register_user_invalid_password(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user_invalid_terms(
     session: AsyncSession,
     client: AsyncClient,
@@ -582,7 +582,7 @@ async def test_register_user_invalid_terms(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user_invalid_all(
     session: AsyncSession,
     client: AsyncClient,
@@ -629,7 +629,7 @@ async def test_register_user_invalid_all(
     assert not user
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_register_user_empty(
     session: AsyncSession,
     client: AsyncClient,

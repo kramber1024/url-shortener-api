@@ -41,7 +41,7 @@ inline-quotes = "double"
 multiline-quotes = "double"
 
 [lint.flake8-tidy-imports]
-ban-relative-imports = "all"
+ban-relative-imports = "parents"
 
 [lint.isort]
 case-sensitive = false

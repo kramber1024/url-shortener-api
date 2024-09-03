@@ -3,7 +3,8 @@ from .response import (
     ErrorResponse,
     SuccessResponse,
 )
-from .url import CreateUrl, Tag, Url
+from .tag import Tag
+from .url import CreateUrl, Url
 from .user import CreateUser, LoginUser, User
 
 __all__ = (

@@ -56,12 +56,26 @@ _Password: TypeAlias = Annotated[
     ),
 ]
 
+_Terms: TypeAlias = Annotated[
+    Literal["on"],
+    Field(
+        description="User agreement to terms of use.",
+        examples=["on"],
+    ),
+]
 
-class User(BaseModel):
-    id: Id
+
+class _BaseUser(BaseModel):
+    email: _Email
+
+
+class _BaseUserWithName(_BaseUser):
     first_name: _FirstName
     last_name: _LastName | None = None
-    email: _Email
+
+
+class User(_BaseUserWithName):
+    id: Id
 
     @classmethod
     def from_model(cls: type["User"], user: models.User) -> "User":
@@ -73,20 +87,9 @@ class User(BaseModel):
         )
 
 
-class LoginUser(BaseModel):
-    email: _Email
+class LoginUser(_BaseUser):
     password: _Password
 
 
-class CreateUser(BaseModel):
-    first_name: _FirstName
-    last_name: _LastName | None = None
-    email: _Email
-    password: _Password
-    terms: Annotated[
-        Literal["on"],
-        Field(
-            description="User agreement to terms of use.",
-            examples=["on"],
-        ),
-    ]
+class CreateUser(LoginUser, _BaseUserWithName):
+    terms: _Terms

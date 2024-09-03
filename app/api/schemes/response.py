@@ -13,49 +13,62 @@ _HTTPStatus: TypeAlias = Annotated[
     ),
 ]
 
+_ErrorResponseMessage: TypeAlias = Annotated[
+    str,
+    Field(
+        description="Generic error message.",
+        examples=["Validation error"],
+    ),
+]
+
+_SuccessResponseMessage: TypeAlias = Annotated[
+    str,
+    Field(
+        description="Success message.",
+        examples=["Operation completed successfully"],
+    ),
+]
+
+_ErrorMessage: TypeAlias = Annotated[
+    str,
+    Field(
+        description="Error message. Should not be used as feedback for a user.",
+        examples=["Password length is incorrect"],
+    ),
+]
+
+_ErrorType: TypeAlias = Annotated[
+    str,
+    Field(
+        description=(
+            "Error type. Should be used for frontend logic e.g. form validation."
+        ),
+        examples=["password"],
+    ),
+]
+
 
 class Error(BaseModel):
-    message: Annotated[
-        str,
-        Field(
-            description="Error message. Should not be used as feedback for a user.",
-            examples=["Password length is incorrect"],
-        ),
-    ]
-    type: Annotated[
-        str,
-        Field(
-            description=(
-                "Error type. Should be used for frontend logic e.g. form validation."
-            ),
-            examples=["password"],
-        ),
-    ]
+    message: _ErrorMessage
+    type: _ErrorType
 
 
-class ErrorResponse(BaseModel):
-    errors: Annotated[
-        list[Error],
-        Field(
-            description="List of errors.",
-        ),
-    ]
-    message: Annotated[
-        str,
-        Field(
-            description="Generic error message.",
-            examples=["Validation error"],
-        ),
-    ]
+_Errors: TypeAlias = Annotated[
+    list[Error],
+    Field(
+        description="List of errors.",
+    ),
+]
+
+
+class _BaseResponse(BaseModel):
     status: _HTTPStatus
 
 
-class SuccessResponse(BaseModel):
-    message: Annotated[
-        str,
-        Field(
-            description="Success message.",
-            examples=["Operation completed successfully"],
-        ),
-    ]
-    status: _HTTPStatus
+class ErrorResponse(_BaseResponse):
+    errors: _Errors
+    message: _ErrorResponseMessage
+
+
+class SuccessResponse(_BaseResponse):
+    message: _SuccessResponseMessage

@@ -56,49 +56,56 @@ def _base10_to_urlsafe_base64(number: int, /) -> str:
     )
 
 
-async def _generate_unique_url(
+async def _generate_unique_slug(
     *,
     current_time: int,
     session: AsyncSession,
     max_url_length: int,
     random_number: int | None = None,
 ) -> str:
-    """Generate a random unique short url address.
+    """Generate a random unique slug.
 
     Args:
         current_time (int): The current time in seconds since the epoch.
         session (AsyncSession): The database session.
-        max_url_length (int): The maximum length of the short url address.
+        max_url_length (int): The maximum length of the slug.
         random_number (int | None, optional): A random number to allow for more then\
-        one short url per second. The bigger the number, the longer the address.\
+        one slug per second. The bigger the number, the longer the slug.\
         If None, a random number will be generated automatically. Defaults to None.
 
     Raises:
-        ValueError: Failed to generate a unique short url address in a reasonable time.
+        ValueError: Failed to generate a unique slug in a reasonable time.
 
     Returns:
-        str: A random unique short url address.
+        str: A random unique slug.
+
+    Example:
+    >>> slug = await _generate_unique_slug(
+    ...     current_time=utils.now(),
+    ...     session=session,
+    ...     max_url_length=16,
+    ... )
+    >>> print(slug)
+    "KCvu2jY"
     """
     if random_number is None:
         random_number = secrets.randbelow(101)
 
-    url_string: str = _base10_to_urlsafe_base64(
+    slug: str = _base10_to_urlsafe_base64(
         int(f"{current_time}{random_number}"),
     )
-    while len(url_string) < max_url_length:
-        existing_url: Url | None = await crud.get_url_by_address(
+    while len(slug) < max_url_length:
+        existing_url: Url | None = await crud.get_url_by_slug(
             session=session,
-            address=url_string,
+            slug=slug,
         )
 
         if existing_url is None:
-            return url_string
+            return slug
 
-        url_string += secrets.choice(string.ascii_letters)
+        slug += secrets.choice(string.ascii_letters)
 
-    error_message: str = (
-        "Failed to generate a unique short url address in a reasonable time."
-    )
+    error_message: str = "Failed to generate a unique slug in a reasonable time."
 
     raise ValueError(
         error_message,
@@ -120,12 +127,10 @@ async def _generate_unique_url(
             },
         ),
         status.HTTP_409_CONFLICT: responses.response(
-            description=(
-                "Short url address already in use. User should use a different alias."
-            ),
+            description="Slug is already in use. User should use a different alias.",
             model=schemes.ErrorResponse,
             example={
-                "message": "Short url address already in use",
+                "message": "Slug is already in use",
                 "status": status.HTTP_409_CONFLICT,
             },
         ),
@@ -138,14 +143,12 @@ async def _generate_unique_url(
         ),
         status.HTTP_503_SERVICE_UNAVAILABLE: responses.response(
             description=(
-                "Failed to generate a unique short url address in a reasonable time. "
+                "Failed to generate a unique slug in a reasonable time. "
                 "This error is pretty much **impossible** to happen."
             ),
             model=schemes.ErrorResponse,
             example={
-                "message": (
-                    "Failed to generate a unique short url address in a reasonable time"
-                ),
+                "message": ("Failed to generate a unique slug in a reasonable time"),
                 "status": status.HTTP_503_SERVICE_UNAVAILABLE,
             },
         ),
@@ -165,21 +168,21 @@ async def create_url(
         Depends(db.scoped_session),
     ],
 ) -> JSONResponse:
-    if create_url.address is not None and await crud.get_url_by_address(
+    if create_url.slug is not None and await crud.get_url_by_slug(
         session=session,
-        address=create_url.address,
+        slug=create_url.slug,
     ):
         return JSONResponse(
             content={
-                "message": "Short url address already in use",
+                "message": "Slug is already in use",
                 "status": status.HTTP_409_CONFLICT,
             },
             status_code=status.HTTP_409_CONFLICT,
         )
 
-    if create_url.address is None:
+    if create_url.slug is None:
         try:
-            create_url.address = await _generate_unique_url(
+            create_url.slug = await _generate_unique_slug(
                 current_time=utils.now(),
                 session=session,
                 max_url_length=settings.data.SHORT_URL_MAX_LENGTH,
@@ -187,17 +190,15 @@ async def create_url(
         except ValueError as error:
             raise HTTPError(
                 errors=[],
-                message=(
-                    "Failed to generate a unique short url address in a reasonable time"
-                ),
+                message="Failed to generate a unique slug in a reasonable time",
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             ) from error
 
     url: Url = await crud.create_url(
         session=session,
         user_id=user.id,
-        address=create_url.address,
-        location=str(create_url.location),
+        slug=create_url.slug,
+        address=str(create_url.address),
     )
 
     tag_names: set[str] = {tag.name for tag in create_url.tags}

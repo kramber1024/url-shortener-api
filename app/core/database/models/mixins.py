@@ -7,17 +7,13 @@ from app.core.database.generator import gen
 class Base(DeclarativeBase):
     """Concrete base class for models.
 
-    Examples:
-    ```python
-    from app.core.database.models.mixins import Base
-
-    class User(Base): ...
-
-    ```
+    Example:
+    >>> from mixins import Base
+    >>> class User(Base): ...
 
     """
 
-    __abstract__ = True
+    __abstract__: bool = True
 
 
 class IDMixin:

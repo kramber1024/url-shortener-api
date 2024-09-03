@@ -13,13 +13,13 @@ async def create_url(
     *,
     session: AsyncSession,
     user_id: int,
+    slug: str,
     address: str,
-    location: str,
 ) -> Url:
     url: Url = Url(
         user_id=user_id,
+        slug=slug,
         address=address,
-        location=location,
     )
 
     session.add(url)
@@ -28,13 +28,13 @@ async def create_url(
     return url
 
 
-async def get_url_by_address(
+async def get_url_by_slug(
     *,
     session: AsyncSession,
-    address: str,
+    slug: str,
 ) -> Url | None:
     result: Result[tuple[Url]] = await session.execute(
-        select(Url).filter(Url.address == address),
+        select(Url).filter(Url.slug == slug),
     )
     url: Url | None = result.scalars().first()
 

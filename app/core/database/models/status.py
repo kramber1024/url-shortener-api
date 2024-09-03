@@ -5,7 +5,7 @@ from app.core.database.models.mixins import Base
 
 
 class Status(Base):
-    __tablename__ = "Statuses"
+    __tablename__: str = "Statuses"
 
     user_id: Mapped[int] = mapped_column(
         Integer(),

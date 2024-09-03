@@ -14,7 +14,7 @@ _HASHED_PASSWORD_MAX_LENGTH: int = 64
 
 
 class User(Base, IDMixin):
-    __tablename__ = "Users"
+    __tablename__: str = "Users"
 
     first_name: Mapped[str] = mapped_column(
         String(settings.data.FIRST_NAME_MAX_LENGTH),

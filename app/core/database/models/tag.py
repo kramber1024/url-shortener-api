@@ -16,7 +16,7 @@ class Tag(Base, IDMixin):
 
     """
 
-    __tablename__ = "Tags"
+    __tablename__: str = "Tags"
 
     url_id: Mapped[int] = mapped_column(
         Integer(),
@@ -33,4 +33,4 @@ class Tag(Base, IDMixin):
         self.name = name
 
     def __repr__(self) -> str:
-        return f"<Tag {self.name} for Url {self.id}>"
+        return f"<Tag {self.name} for ...>"

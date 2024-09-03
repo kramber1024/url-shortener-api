@@ -9,10 +9,6 @@ if TYPE_CHECKING:
     from .url import Url
 
 
-# TODO(kramber): Update docstring and field lengths with constants from settings.data
-# 000
-
-
 class Click(Base, IDMixin):
     """Short URL click.
 
@@ -25,7 +21,7 @@ class Click(Base, IDMixin):
 
     """
 
-    __tablename__ = "Clicks"
+    __tablename__: str = "Clicks"
 
     url_id: Mapped[int] = mapped_column(
         Integer(),

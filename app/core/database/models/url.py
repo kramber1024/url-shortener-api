@@ -16,15 +16,15 @@ class Url(Base, IDMixin):
     Attributes:
         id (int): The unique identifier (See ` IDMixin `).
         user_id (int): The unique identifier of the ` User ` aka author.
-        address (str): The short URL address.
-        location (str): The long URL address.
+        slug (str): The short URL address.
+        address (str): The long URL address.
         total_clicks (int): The total number of uses of the short URL.
         author (User): The author of the short URL.
         clicks (list[Click]): The list of ` Click`'s on the short URL.
 
     """
 
-    __tablename__ = "Urls"
+    __tablename__: str = "Urls"
 
     user_id: Mapped[int] = mapped_column(
         Integer(),
@@ -32,12 +32,12 @@ class Url(Base, IDMixin):
         primary_key=True,
         nullable=False,
     )
-    address: Mapped[str] = mapped_column(
+    slug: Mapped[str] = mapped_column(
         String(settings.data.SHORT_URL_MAX_LENGTH),
         unique=True,
         nullable=False,
     )
-    location: Mapped[str] = mapped_column(
+    address: Mapped[str] = mapped_column(
         String(settings.data.URL_MAX_LENGTH),
         nullable=False,
     )
@@ -65,13 +65,13 @@ class Url(Base, IDMixin):
         self,
         *,
         user_id: int,
+        slug: str,
         address: str,
-        location: str,
     ) -> None:
         self.user_id = user_id
+        self.slug = slug
         self.address = address
-        self.location = location
         self.total_clicks = 0
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} /{self.address} -> {self.location}>"
+        return f"<{type(self).__name__} /{self.slug} -> {self.address}>"

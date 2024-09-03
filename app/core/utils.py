@@ -4,13 +4,11 @@ import datetime
 def now() -> int:
     """Get current unix timestamp in seconds (UTC+0).
 
-    Returns
-    -------
+    Returns:
         int: The current unix timestamp in seconds
 
-    Examples
-    --------
-    >>> now()
+    Examples:
+    >>> print(now())
     1723566362
 
     """

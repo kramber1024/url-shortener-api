@@ -16,8 +16,7 @@ if TYPE_CHECKING:
 class Click(Base, IDMixin):
     """Short URL click.
 
-    Attributes
-    ----------
+    Attributes:
         id (int): The unique identifier (See ` IDMixin `).
         url_id (int): The unique identifier of ` Url`.
         ip (str): The IP address of the user.

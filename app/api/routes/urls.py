@@ -25,7 +25,7 @@ router: APIRouter = APIRouter(
 )
 
 
-def _base10_to_urlsafe_base64(number: int) -> str:
+def _base10_to_urlsafe_base64(number: int, /) -> str:
     """Convert a base 10 number to a URL safe base 64 string.
 
     Args:
@@ -35,7 +35,11 @@ def _base10_to_urlsafe_base64(number: int) -> str:
         str: The URL safe base 64 string.
 
     Examples:
-    >>> url_safe_base64 = _base10_to_urlsafe_base64(123456789)
+    >>> url_safe_base64 = (
+    ...     _base10_to_urlsafe_base64(
+    ...         123456789
+    ...     )
+    ... )
     >>> print(url_safe_base64)
     "B1vNFQ"
 
@@ -52,29 +56,52 @@ def _base10_to_urlsafe_base64(number: int) -> str:
     )
 
 
-def _generate_url(*, current_time: int, random_number: int | None = None) -> str:
-    """Generate a random short url address.
+async def _generate_unique_url(
+    *,
+    current_time: int,
+    session: AsyncSession,
+    max_url_length: int,
+    random_number: int | None = None,
+) -> str:
+    """Generate a random unique short url address.
 
     Args:
         current_time (int): The current time in seconds since the epoch.
+        session (AsyncSession): The database session.
+        max_url_length (int): The maximum length of the short url address.
         random_number (int | None, optional): A random number to allow for more then\
         one short url per second. The bigger the number, the longer the address.\
         If None, a random number will be generated automatically. Defaults to None.
 
+    Raises:
+        ValueError: Failed to generate a unique short url address in a reasonable time.
+
     Returns:
-        str: Random short url address
-
-    Examples:
-    >>> short_url = _generate_url(current_time=1620000000, random_number=123)
-    >>> print(address)
-    "AXkvhkh7"
-
+        str: A random unique short url address.
     """
     if random_number is None:
         random_number = secrets.randbelow(101)
 
-    return _base10_to_urlsafe_base64(
+    url_string: str = _base10_to_urlsafe_base64(
         int(f"{current_time}{random_number}"),
+    )
+    while len(url_string) < max_url_length:
+        existing_url: Url | None = await crud.get_url_by_address(
+            session=session,
+            address=url_string,
+        )
+
+        if existing_url is None:
+            return url_string
+
+        url_string += secrets.choice(string.ascii_letters)
+
+    error_message: str = (
+        "Failed to generate a unique short url address in a reasonable time."
+    )
+
+    raise ValueError(
+        error_message,
     )
 
 
@@ -151,28 +178,20 @@ async def create_url(
         )
 
     if create_url.address is None:
-        url_string: str = _generate_url(current_time=utils.now())
-
-        while len(url_string) < settings.data.SHORT_URL_MAX_LENGTH:
-            existing_url: Url | None = await crud.get_url_by_address(
+        try:
+            create_url.address = await _generate_unique_url(
+                current_time=utils.now(),
                 session=session,
-                address=url_string,
+                max_url_length=settings.data.SHORT_URL_MAX_LENGTH,
             )
-
-            if existing_url is None:
-                create_url.address = url_string
-                break
-
-            url_string += secrets.choice(string.ascii_letters)
-
-        else:
+        except ValueError as error:
             raise HTTPError(
                 errors=[],
                 message=(
                     "Failed to generate a unique short url address in a reasonable time"
                 ),
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
-            )
+            ) from error
 
     url: Url = await crud.create_url(
         session=session,
@@ -181,25 +200,18 @@ async def create_url(
         location=str(create_url.location),
     )
 
-    tags_created: set[str] = set()
-    for tag in create_url.tags:
-        if tag.name in tags_created:
-            continue
-
+    tag_names: set[str] = {tag.name for tag in create_url.tags}
+    for tag_name in tag_names:
         await crud.create_tag(
             session=session,
             url_id=url.id,
-            name=tag.name,
+            name=tag_name,
         )
 
-        tags_created.add(tag.name)
-
-    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
-        message="Url created successfully",
-        status=status.HTTP_201_CREATED,
-    )
-
     return JSONResponse(
-        content=success_response.model_dump(),
+        content=schemes.SuccessResponse(
+            message="Url created successfully",
+            status=status.HTTP_201_CREATED,
+        ).model_dump(),
         status_code=status.HTTP_201_CREATED,
     )

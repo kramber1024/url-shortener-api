@@ -101,13 +101,11 @@ async def register_user(
         premium=False,
     )
 
-    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
-        message="Account created successfully",
-        status=status.HTTP_201_CREATED,
-    )
-
     return JSONResponse(
-        content=success_response.model_dump(),
+        content=schemes.SuccessResponse(
+            message="Account created successfully",
+            status=status.HTTP_201_CREATED,
+        ).model_dump(),
         status_code=status.HTTP_201_CREATED,
     )
 
@@ -175,13 +173,11 @@ async def authenticate_user(
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
-        message="User authenticated successfully",
-        status=status.HTTP_200_OK,
-    )
-
     response: JSONResponse = JSONResponse(
-        content=success_response.model_dump(),
+        content=schemes.SuccessResponse(
+            message="User authenticated successfully",
+            status=status.HTTP_200_OK,
+        ).model_dump(),
         status_code=status.HTTP_200_OK,
     )
     response.set_cookie(
@@ -237,13 +233,11 @@ def refresh_user(
         Depends(jwt_.get_refreshed_user),
     ],
 ) -> JSONResponse:
-    success_response: schemes.SuccessResponse = schemes.SuccessResponse(
-        message="Tokens refreshed successfully",
-        status=status.HTTP_200_OK,
-    )
-
     response: JSONResponse = JSONResponse(
-        content=success_response.model_dump(),
+        content=schemes.SuccessResponse(
+            message="Tokens refreshed successfully",
+            status=status.HTTP_200_OK,
+        ).model_dump(),
         status_code=status.HTTP_200_OK,
     )
     response.set_cookie(

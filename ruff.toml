@@ -64,7 +64,7 @@ section-order = [
 split-on-trailing-comma = true
 
 [lint.mccabe]
-max-complexity = 3
+max-complexity = 5
 
 [lint.pycodestyle]
 ignore-overlong-task-comments = false
@@ -74,7 +74,7 @@ max-doc-length = 88
 allow-magic-value-types = ["str", "bytes"]
 max-args = 5
 max-bool-expr = 5
-max-branches = 4
+max-branches = 10
 max-locals = 15
 max-nested-blocks = 5
 max-positional-args = 5

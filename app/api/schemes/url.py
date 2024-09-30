@@ -10,10 +10,11 @@ from pydantic import (
     UrlConstraints,
 )
 
-from app.api.schemes.fields import Id
-from app.api.schemes.tag import Tag, TagList
 from app.core.config import settings
 from app.core.database import models
+
+from .fields import Id
+from .tag import Tag, TagList
 
 _URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
 

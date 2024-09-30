@@ -13,12 +13,12 @@
   "files.trimFinalNewlines": true,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
-  /* Python */
+  // Python
   "python.analysis.autoImportCompletions": true,
   "python.testing.pytestEnabled": true,
-  /* Mypy */
+  // Mypy
   "mypy-type-checker.importStrategy": "fromEnvironment",
-  /* Ruff */
+  // Ruff
   "ruff.enable": true,
   "ruff.lint.preview": true,
   "ruff.importStrategy": "fromEnvironment",
@@ -30,7 +30,7 @@
       "source.ruff": "explicit",
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit",
-      "source.unusedImports": "never",
+      "source.unusedImports": "explicit",
       "source.sortImports": "explicit",
     },
   }

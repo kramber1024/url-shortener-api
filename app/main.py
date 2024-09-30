@@ -11,6 +11,7 @@ from app.api.handlers import (
     http_error_handler,
     request_validation_error_handler,
 )
+from app.api.redirect import redirect
 from app.core.config import settings
 from app.core.database import db
 
@@ -21,6 +22,7 @@ app: FastAPI = FastAPI(
     root_path_in_servers=False,
 )
 app.include_router(api)
+app.include_router(redirect)
 app.add_exception_handler(RequestValidationError, request_validation_error_handler)  # type: ignore[arg-type]
 app.add_exception_handler(HTTPError, http_error_handler)  # type: ignore[arg-type]
 app.add_exception_handler(Exception, exception_handler)

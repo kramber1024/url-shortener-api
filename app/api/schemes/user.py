@@ -2,9 +2,11 @@ from typing import Annotated, Literal, TypeAlias
 
 from pydantic import BaseModel, EmailStr, Field, StringConstraints
 
-from app.api.schemes.fields import Id
 from app.core.config import settings
 from app.core.database import models
+
+from .fields import Id
+from .url import Url
 
 _FirstName: TypeAlias = Annotated[
     str,
@@ -76,6 +78,7 @@ class _BaseUserWithName(_BaseUser):
 
 class User(_BaseUserWithName):
     id: Id
+    urls: list[Url]
 
     @classmethod
     def from_model(cls: type["User"], user: models.User) -> "User":
@@ -84,6 +87,7 @@ class User(_BaseUserWithName):
             first_name=user.first_name,
             last_name=user.last_name,
             email=user.email,
+            urls=[Url.from_model(url) for url in user.urls],
         )
 
 

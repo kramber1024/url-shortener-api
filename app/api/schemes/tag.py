@@ -3,6 +3,7 @@ from typing import Annotated, TypeAlias
 from pydantic import BaseModel, Field, StringConstraints
 
 from app.core.config import settings
+from app.core.database import models
 
 _Name: TypeAlias = Annotated[
     str,
@@ -20,6 +21,12 @@ _Name: TypeAlias = Annotated[
 
 class Tag(BaseModel):
     name: _Name
+
+    @classmethod
+    def from_model(cls: type["Tag"], model: models.Tag) -> "Tag":
+        return cls(
+            name=model.name,
+        )
 
 
 TagList: TypeAlias = Annotated[

@@ -11,8 +11,9 @@ from pydantic import (
 )
 
 from app.api.schemes.fields import Id
-from app.api.schemes.tag import TagList
+from app.api.schemes.tag import Tag, TagList
 from app.core.config import settings
+from app.core.database import models
 
 _URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
 
@@ -86,3 +87,13 @@ class Url(_BaseUrl):
     id: Id
     slug: _Slug
     total_clicks: _TotalClicks
+
+    @classmethod
+    def from_model(cls: type["Url"], model: models.Url) -> "Url":
+        return cls(
+            id=str(model.id),
+            total_clicks=model.total_clicks,
+            slug=model.slug,
+            address=pydantic_core.Url(model.address),
+            tags=[Tag.from_model(tag) for tag in model.tags],
+        )

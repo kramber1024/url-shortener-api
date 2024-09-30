@@ -1,4 +1,3 @@
-import base64
 import secrets
 import string
 from typing import Annotated
@@ -23,37 +22,6 @@ router: APIRouter = APIRouter(
         status.HTTP_401_UNAUTHORIZED: responses.UNAUTHORIZED,
     },
 )
-
-
-def _base10_to_urlsafe_base64(number: int, /) -> str:
-    """Convert a base 10 number to a URL safe base 64 string.
-
-    Args:
-        number (int): The base 10 number to convert.
-
-    Returns:
-        str: The URL safe base 64 string.
-
-    Examples:
-    >>> url_safe_base64 = (
-    ...     _base10_to_urlsafe_base64(
-    ...         123456789
-    ...     )
-    ... )
-    >>> print(url_safe_base64)
-    "B1vNFQ"
-
-    """
-    byte_representation: bytes = number.to_bytes(
-        (number.bit_length() + 7) // 8,
-        byteorder="big",
-    )
-
-    base64_encoded: bytes = base64.b64encode(byte_representation)
-
-    return (
-        base64_encoded.decode("utf-8").replace("+", "-").replace("/", "_").rstrip("=")
-    )
 
 
 async def _generate_unique_slug(
@@ -91,7 +59,7 @@ async def _generate_unique_slug(
     if random_number is None:
         random_number = secrets.randbelow(101)
 
-    slug: str = _base10_to_urlsafe_base64(
+    slug: str = utils.base10_to_urlsafe_base64(
         int(f"{current_time}{random_number}"),
     )
     while len(slug) < max_url_length:

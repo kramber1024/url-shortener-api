@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database.models.mixins import Base, IDMixin
+from .mixins import Base, IDMixin
 
 if TYPE_CHECKING:
     from .url import Url

@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.database.models.mixins import Base
+from .mixins import Base
 
 
 class Status(Base):

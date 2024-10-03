@@ -57,7 +57,6 @@ class User(Base, IDMixin):
         email: str,
         password: str,
     ) -> None:
-        super().__init__()
         self.first_name = first_name
         self.last_name = last_name
         self.email = self._format_email(email)

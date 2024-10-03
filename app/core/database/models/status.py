@@ -5,6 +5,16 @@ from .mixins import Base
 
 
 class Status(Base):
+    """Model for general user information.
+
+    Attributes:
+        user_id (int): The unique identifier of the user.
+        email_verified (bool): Indicates if the user has verified their email.
+        phone_verified (bool): Indicates if the user has verified their phone number.
+        active (bool): Indicates if the user is active and can log in.
+        premium (bool): Indicates if the user is a premium member.
+    """
+
     __tablename__: str = "Statuses"
 
     user_id: Mapped[int] = mapped_column(

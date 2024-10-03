@@ -58,7 +58,7 @@ async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
     app.dependency_overrides[app_db.scoped_session] = db.scoped_session
 
     async with AsyncClient(
-        transport=ASGITransport(app),  # type: ignore[arg-type]
+        transport=ASGITransport(app),
         base_url=f"http://{settings.dev.HOST}:{settings.dev.TEST_PORT}",
         headers={"Content-Type": "application/json"},
         timeout=10,

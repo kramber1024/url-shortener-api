@@ -1,7 +1,7 @@
 from sqlalchemy import Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from app.core.database.generator import gen
+from app.core.database.generator import id_generator
 
 
 class Base(DeclarativeBase):
@@ -32,5 +32,5 @@ class IDMixin:
         nullable=False,
         unique=True,
         sort_order=-1,
-        default=gen.new_id,
+        default=id_generator,
     )

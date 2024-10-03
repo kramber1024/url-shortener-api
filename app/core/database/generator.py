@@ -4,13 +4,20 @@ from app.core.config import settings
 
 
 class IDGenerator:
-    __snowflake: SnowflakeGenerator
+    """Generates unique identifiers using [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID)."""
 
-    def __init__(self, worker_id: int) -> None:
-        self.__snowflake = SnowflakeGenerator(worker_id)
+    _snowflake_generator: SnowflakeGenerator
 
-    def new_id(self) -> int:
-        return int(next(self.__snowflake))
+    def __init__(self, *, worker_id: int) -> None:
+        self._snowflake_generator = SnowflakeGenerator(worker_id)
+
+    def __call__(self) -> int:
+        """Generate a unique identifier.
+
+        Returns:
+            int: The unique identifier.
+        """
+        return int(next(self._snowflake_generator))
 
 
-gen: IDGenerator = IDGenerator(settings.db.WORKER_ID)
+id_generator: IDGenerator = IDGenerator(worker_id=settings.db.WORKER_ID)

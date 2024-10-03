@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +15,7 @@ redirect: APIRouter = APIRouter(prefix="", include_in_schema=False)
 
 @redirect.get("/{slug}", response_class=RedirectResponse)
 async def redirect_to_url(
+    request: Request,
     slug: Annotated[str, Path()],
     session: Annotated[
         AsyncSession,
@@ -28,5 +29,13 @@ async def redirect_to_url(
         # 001
 
         return RedirectResponse(url="/404")
+
+    await crud.create_click(
+        session=session,
+        url_id=url.id,
+        ip=request.client.host if request.client else "None",
+        country="None",
+    )
+    await crud.update_url(session=session, url=url, total_clicks=url.total_clicks + 1)
 
     return RedirectResponse(url=url.address, status_code=301)

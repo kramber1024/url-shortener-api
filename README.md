@@ -4,72 +4,77 @@
 <a href="https://app.codecov.io/github/kramber1024/url-shortener-api/tree/main" target="_blank"><img src="https://img.shields.io/codecov/c/github/kramber1024/url-shortener-api" alt="Coverage">
 </a>
 
-## Технологический стек и фичи
+## Stack & Features
 
-- 🌐 [**FastAPI**](https://fastapi.tiangolo.com/) для апи сервиса.
-    - 📋 [Pydantic](https://docs.pydantic.dev/), используется Fastapi для валидации данных и управления настройками.
-    - 💾 [PostgreSQL](https://www.postgresql.org/) для хранения данных.
-- 🐋 [**Docker**](https://www.docker.com/) для разработки, тестирования и деплоя.
-- 🔑 [**JWT**](https://jwt.io/) для авторизации пользователей.
-- ✅ Тестирование с помощью [**Pytest**](https://pytest.org/).
-- 🔒 Надёжное хеширование паролей.
-- ✉️ Восстановление паролей через почту.
+- 🌐 [**FastAPI**](https://fastapi.tiangolo.com/) for Python backend.
+    - 📋 [Pydantic](https://docs.pydantic.dev/), used for data validation and settings management.
+    - 💾 [PostgreSQL](https://www.postgresql.org/) as SQL Database.
+- 🐋 [**Docker**](https://www.docker.com/) for development, testing and production.
+- 🏭 CI/CD with [**GitHub Actions**](https://github.com/kramber1024/url-shortener-api/actions/).
+- 🔑 [**JWT**](https://jwt.io/) based authentication.
+- ✅ Tests with [**Pytest**](https://pytest.org/).
+- 🔒 Secure password hashing.
+- ✉️ Password recovery with email.
 
-## Локальный запуск
+> [!WARNING]
+> This repository is part of a larger project that consists of multiple repositories. Using this repository on its own is not recommended, as it may not function correctly without the other components of the project. For complete functionality and proper integration, please refer to the [kramber1024/url-shortener](https://github.com/kramber1024/url-shortener).
 
-### Требования
+## Local launch
 
-- 🐍 [**Python 3.12.x**](https://www.python.org/)
+### Requirements
 
-### Запуск
+- 🐍 [**Python 3.12**](https://www.python.org/)
 
-Клонируем репозиторий
+### Installation
+
+Clone the repository:
 ```bash
 git clone https://github.com/kramber1024/url-shortener-api.git
 ```
 
-Переходим в папку с проектом
+Navigate to the project directory:
 ```bash
 cd url-shortener-api
 ```
 
-Создаём виртуальное окружение
+Create a virtual environment:
 ```bash
 python -m venv venv
 ```
 
-Активируем виртуальное окружение
-- На Windows
-
-    ```bat
-    .\venv\Scripts\activate
-    ```
-- На Linux и macOS
+Activate the virtual environment:
+- On Linux and macOS:
 
     ```bash
     source venv/bin/activate
     ```
+- On Windows:
 
-Устанавливаем Poetry
+    ```bat
+    .\venv\Scripts\activate
+    ```
+
+Install [**Poetry**](https://python-poetry.org/) package manager:
 ```bash
 pip install poetry
 ```
 
-Устанавливаем зависимости, необходимые для запуска проекта
+Install dependencies required to run the project:
 ```bash
 poetry install --only main --no-root
 ```
 
-Запускаем проект
+Run the project:
 ```bash
 python -m app.main
 ```
 
-Увидеть результат можно, перейдя по одному из адресов:
+You can see the result by navigating to one of the following addresses:
 - **http://127.0.0.1:26801/api/docs** - Swagger UI
 - **http://127.0.0.1:26801/api/redoc** - ReDoc
 
-**Документацию по тестированию, запуску в докере и переменным окружения можно найти в [DEVELOPMENT.md](./DEVELOPMENT.md)**.
+> [!NOTE]
+> Documentation for testing, running in Docker, and environment variables can be found in [**DEVELOPMENT.md**](./DEVELOPMENT.md)
 
 ## License
 

@@ -4,6 +4,7 @@ import asyncio
 from typing import TYPE_CHECKING
 
 from httpx import AsyncClient, HTTPError, Response
+from sqlalchemy.exc import IntegrityError
 
 from app import crud
 from app.core.database import db
@@ -17,7 +18,6 @@ _COUNTRIES_DIRECTORY: str = "ipv4"
 _RAW_BASE: str = (
     "https://raw.githubusercontent.com/herrbischoff/country-ip-blocks/refs/heads/master"
 )
-_BIG_BLOCK: int = 500
 
 
 def _get_countries(response: Response) -> list[str]:
@@ -30,7 +30,6 @@ def _get_cidrs(response: Response) -> list[str]:
 
 async def parse(*, cooldown: int = 5) -> None:
     logger.info("Parsing network data from GitHub API.")
-    session: AsyncSession = db.session_factory()
 
     async with AsyncClient(timeout=5) as client:
         try:
@@ -54,24 +53,30 @@ async def parse(*, cooldown: int = 5) -> None:
                     f"Found {len(cidrs)} CIDR's.",
                 )
 
-                log_step: int = 10 if len(cidrs) < _BIG_BLOCK else 100
                 for j, cidr in enumerate(cidrs):
-                    if j % log_step == 0 or j == len(cidrs) - 1:
-                        logger.info(
-                            f"Processing {cidr}. ({j + 1}/{len(cidrs)})",
-                        )
-
-                    await crud.create_network(
-                        session=session,
-                        network=cidr.split("/")[0],
-                        mask=int(cidr.split("/")[1]),
-                        country=country,
+                    logger.info(
+                        f"Processing {cidr}. ({j + 1}/{len(cidrs)})",
                     )
-                await session.commit()
-                logger.info(
-                    f"Successfully processed all {len(cidrs)} CIDR's "
-                    f"from {country.upper()}.",
-                )
+                    session: AsyncSession = db.session_factory()
+
+                    try:
+                        await crud.create_network(
+                            session=session,
+                            network=cidr.split("/")[0],
+                            mask=int(cidr.split("/")[1]),
+                            country=country,
+                        )
+                        await session.commit()
+
+                    except IntegrityError:
+                        logger.warning(
+                            f"Network {cidr.split("/")[0]} already exists in the "
+                            "database.",
+                        )
+                        await session.rollback()
+
+                    finally:
+                        await session.close()
 
                 await asyncio.sleep(cooldown)
 

@@ -30,3 +30,6 @@ class Network(Base):
         String(2),
         nullable=False,
     )
+
+    def __repr__(self) -> str:
+        return f"<Network {self.network}/{self.mask} -> {self.country}>"

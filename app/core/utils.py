@@ -1,6 +1,8 @@
 import base64
 import datetime
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 
 def now() -> int:
     """Get current unix timestamp in seconds (UTC+0).
@@ -45,3 +47,7 @@ def base10_to_urlsafe_base64(number: int, /) -> str:
     return (
         base64_encoded.decode("utf-8").replace("+", "-").replace("/", "_").rstrip("=")
     )
+
+
+def get_country_by_ip(*, session: AsyncSession, ip: str) -> str | None:
+    return None

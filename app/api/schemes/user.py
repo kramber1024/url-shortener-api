@@ -39,6 +39,7 @@ _Email: TypeAlias = Annotated[
     StringConstraints(
         min_length=settings.data.EMAIL_MIN_LENGTH,
         max_length=settings.data.EMAIL_MAX_LENGTH,
+        strip_whitespace=True,
     ),
     Field(
         description="Email used for authentication and notifications.",

@@ -33,6 +33,15 @@ async def get_url_by_slug(
     session: AsyncSession,
     slug: str,
 ) -> Url | None:
+    """Get a ` Url ` by its slug.
+
+    Args:
+        session (AsyncSession): The database session.
+        slug (str): The slug of the ` Url `.
+
+    Returns:
+        Url | None: The ` Url ` instance if found, otherwise ` None `.
+    """
     result: Result[tuple[Url]] = await session.execute(
         select(Url).filter(Url.slug == slug),
     )

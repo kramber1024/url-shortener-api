@@ -1,8 +1,8 @@
 # URL Shortener API
 
 <a href="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml" target="_blank"><img src="https://github.com/kramber1024/url-shortener-api/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
-<a href="https://app.codecov.io/github/kramber1024/url-shortener-api/tree/main" target="_blank"><img src="https://img.shields.io/codecov/c/github/kramber1024/url-shortener-api" alt="Coverage">
-</a>
+<a href="https://app.codecov.io/github/kramber1024/url-shortener-api/tree/main" target="_blank"><img src="https://img.shields.io/codecov/c/github/kramber1024/url-shortener-api" alt="Coverage"></a>
+<a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
 
 ## Stack & Features
 

@@ -3,22 +3,23 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .mixins import Base
 
-_MAX_NETWORK_LENGTH = len("255.255.255.255")
+_MAX_NETWORK_ADDRESS_LENGTH = len("255.255.255.255")
 
 
 class Network(Base):
     """Model for network to country mapping.
 
     Attributes:
-        network (str): The network address.
+        address (str): The network address.
         mask (int): The network mask.
-        country (str): The country code.
+        country (str): The country code. \
+            (See [**ISO 3166-1 alpha-2**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))
     """
 
     __tablename__: str = "Networks"
 
-    network: Mapped[str] = mapped_column(
-        String(_MAX_NETWORK_LENGTH),
+    address: Mapped[str] = mapped_column(
+        String(_MAX_NETWORK_ADDRESS_LENGTH),
         primary_key=True,
         nullable=False,
     )
@@ -31,5 +32,10 @@ class Network(Base):
         nullable=False,
     )
 
+    def __init__(self, address: str, mask: int, country: str) -> None:
+        self.address = address
+        self.mask = mask
+        self.country = country
+
     def __repr__(self) -> str:
-        return f"<Network {self.network}/{self.mask} -> {self.country}>"
+        return f"<Network {self.address}/{self.mask} is {self.country}>"

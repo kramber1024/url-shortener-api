@@ -62,7 +62,7 @@ async def parse(*, cooldown: int = 5) -> None:
                     try:
                         await crud.create_network(
                             session=session,
-                            network=cidr.split("/")[0],
+                            address=cidr.split("/")[0],
                             mask=int(cidr.split("/")[1]),
                             country=country,
                         )

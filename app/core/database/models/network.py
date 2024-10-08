@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .mixins import Base
 
-_MAX_NETWORK_ADDRESS_LENGTH = len("255.255.255.255")
+_MAX_NETWORK_ADDRESS_LENGTH: int = len("255.255.255.255")
 
 
 class Network(Base):
@@ -32,7 +32,7 @@ class Network(Base):
         nullable=False,
     )
 
-    def __init__(self, address: str, mask: int, country: str) -> None:
+    def __init__(self, *, address: str, mask: int, country: str) -> None:
         self.address = address
         self.mask = mask
         self.country = country

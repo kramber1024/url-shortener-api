@@ -52,5 +52,8 @@ class Network(Base):
             f"{self.address}/{self.mask}",
         )
 
+    def __str__(self) -> str:
+        return f"{self.address}/{self.mask}"
+
     def __repr__(self) -> str:
         return f"<Network {self.address}/{self.mask} is {self.country}>"

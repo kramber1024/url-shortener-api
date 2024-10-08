@@ -1,3 +1,5 @@
+import ipaddress
+
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -36,6 +38,19 @@ class Network(Base):
         self.address = address
         self.mask = mask
         self.country = country
+
+    def __contains__(self, ip: str) -> bool:
+        """Check if the given ` ip ` is in the network.
+
+        Args:
+            ip (str): The IP address to check. (See [**IPv4**](https://en.wikipedia.org/wiki/IPv4))
+
+        Returns:
+            bool: ` True ` if the ` ip ` is in the network, otherwise ` False `.
+        """
+        return ipaddress.ip_address(ip) in ipaddress.ip_network(
+            f"{self.address}/{self.mask}",
+        )
 
     def __repr__(self) -> str:
         return f"<Network {self.address}/{self.mask} is {self.country}>"

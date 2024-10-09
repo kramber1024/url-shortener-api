@@ -16,7 +16,7 @@ class Click(Base, IDMixin):
         id (int): The unique identifier (See ` IDMixin `).
         url_id (int): The unique identifier of ` Url`.
         ip (str): The IP address of the user.
-        country (str): The country of the user.
+        country (str | None): The country of the user.
         url (Url): The ` Url ` the click is associated with.
 
     """
@@ -32,9 +32,9 @@ class Click(Base, IDMixin):
         String(16),
         nullable=False,
     )
-    country: Mapped[str] = mapped_column(
+    country: Mapped[str | None] = mapped_column(
         String(32),
-        nullable=False,
+        nullable=True,
     )
 
     url: Mapped["Url"] = relationship(
@@ -48,7 +48,7 @@ class Click(Base, IDMixin):
         *,
         url_id: int,
         ip: str,
-        country: str,
+        country: str | None,
     ) -> None:
         self.url_id = url_id
         self.ip = ip

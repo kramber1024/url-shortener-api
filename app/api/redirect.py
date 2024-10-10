@@ -5,6 +5,8 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
+from app.core import utils
+from app.core.config import settings
 from app.core.database import db
 
 if TYPE_CHECKING:
@@ -30,11 +32,22 @@ async def redirect_to_url(
 
         return RedirectResponse(url="/404")
 
+    click_ip: str = (
+        request.client.host if request.client else settings.data.UNKNOWN_IP_ADDRESS
+    )
+    click_country: str = (
+        await utils.get_country_by_ip(
+            session=session,
+            ip=click_ip,
+        )
+        or settings.data.UNKNOWN_COUNTRY_CODE
+    )
+
     await crud.create_click(
         session=session,
         url_id=url.id,
-        ip=request.client.host if request.client else "None",
-        country="None",
+        ip=click_ip,
+        country=click_country,
     )
     await crud.update_url(session=session, url=url, total_clicks=url.total_clicks + 1)
 

@@ -139,13 +139,22 @@ def get_token_payload(
 
     Example:
     -------
-    >>> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZ\
-    W1haWwiOiJleGFtcGxlQGVtYWlsLnRsZCIsImV4cCI6MTcxOTk1OTk3MiwiaWF0IjoxNzE5OTU2Mzcy\
-    fQ.SU7oI8z5-MVI4GpiOdMtv1eVB-J2bMovCyyfXsHw-Vo"
-    >>> jwt_type = "access"
-    >>> get_token_payload(token, jwt_type)
-    {"sub": "1234567890", "email": "example@email.tld",
-    "exp": 1719959972, "iat": 1719956372}
+        >>> token = (
+        ...     "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N"
+        ...     "TY3ODkwIiwiZW1haWwiOiJleGFtcGxlQGVtYWlsLnRsZCIsImV4cCI6MTc"
+        ...     "xOTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.SU7oI8z5-MVI4GpiOdMtv1"
+        ...     "eVB-J2bMovCyyfXsHw-Vo"
+        ... )
+        >>> jwt_type = "access"
+        >>> get_token_payload(
+        ...     token, jwt_type
+        ... )
+        ... {
+        ...     "sub": "1234567890",
+        ...     "email": "example@email.tld",
+        ...     "exp": 1719959972,
+        ...     "iat": 1719956372,
+        ... }
 
     """
     try:

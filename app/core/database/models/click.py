@@ -32,9 +32,9 @@ class Click(Base, IDMixin):
         String(16),
         nullable=False,
     )
-    country: Mapped[str | None] = mapped_column(
-        String(32),
-        nullable=True,
+    country: Mapped[str] = mapped_column(
+        String(2),
+        nullable=False,
     )
 
     url: Mapped["Url"] = relationship(
@@ -48,7 +48,7 @@ class Click(Base, IDMixin):
         *,
         url_id: int,
         ip: str,
-        country: str | None,
+        country: str,
     ) -> None:
         self.url_id = url_id
         self.ip = ip

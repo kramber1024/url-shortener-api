@@ -74,7 +74,7 @@ You can see the result by navigating to one of the following addresses:
 - **http://127.0.0.1:26801/api/redoc** - ReDoc
 
 > [!NOTE]
-> Documentation for testing, running in Docker, and environment variables can be found in [**DEVELOPMENT.md**](./DEVELOPMENT.md)
+> Documentation for testing, running in Docker, and environment variables can be found in [**DEVELOPMENT.md**](./DEVELOPMENT.md).
 
 ## License
 

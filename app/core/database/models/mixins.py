@@ -8,8 +8,7 @@ class Base(DeclarativeBase):
     """Concrete base class for models.
 
     Example:
-    >>> from mixins import Base
-    >>> class User(Base): ...
+        >>> class User(Base): ...
 
     """
 
@@ -23,6 +22,9 @@ class IDMixin:
 
     Attributes:
         id (int): The unique identifier (Generated automatically).
+
+    Example:
+        >>> class User(Base, IDMixin): ...
 
     """
 

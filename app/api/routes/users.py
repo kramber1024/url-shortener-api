@@ -45,7 +45,35 @@ def get_users_me(
     )
 
 
-@router.get("/me/urls", summary="Get all")
+@router.get(
+    "/me/urls",
+    summary="Get URL's created by the current user",
+    description="Retrieve a list of URLs created by the currently authenticated user.",
+    responses={
+        status.HTTP_200_OK: responses.response(
+            description=(
+                "The URLs created by the current user were successfully retrieved."
+            ),
+            model=schemes.UrlList,
+            example={
+                "urls": [
+                    {
+                        "tags": [
+                            {
+                                "name": "python",
+                            },
+                        ],
+                        "address": "https://example.com/i-am-a-very-long-url",
+                        "id": "7250096963688906752",
+                        "slug": "sjaKA",
+                        "total_clicks": 2,
+                    },
+                ],
+                "length": 1,
+            },
+        ),
+    },
+)
 async def get_users_me_urls(
     user: Annotated[
         User,

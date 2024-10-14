@@ -8,6 +8,7 @@ _Response: TypeAlias = dict[str, Any]
 
 
 def response(
+    *,
     description: str,
     model: type[BaseModel],
     example: dict[str, Any] | None = None,

@@ -4,7 +4,7 @@ from .response import (
     SuccessResponse,
 )
 from .tag import Tag
-from .url import CreateUrl, Url
+from .url import CreateUrl, Url, UrlList
 from .user import CreateUser, LoginUser, User
 
 __all__ = (
@@ -16,5 +16,6 @@ __all__ = (
     "SuccessResponse",
     "Tag",
     "Url",
+    "UrlList",
     "User",
 )

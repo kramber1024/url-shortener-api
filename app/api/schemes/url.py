@@ -14,7 +14,7 @@ from app.core.config import settings
 from app.core.database import models
 
 from .fields import Id
-from .tag import Tag, TagList
+from .tag import Tag, Tags
 
 _URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
 
@@ -74,9 +74,14 @@ _TotalClicks: TypeAlias = Annotated[
     ),
 ]
 
+_Length: TypeAlias = Annotated[
+    int,
+    Field(description="Total number of urls in list", examples=[10]),
+]
+
 
 class _BaseUrl(BaseModel):
-    tags: TagList
+    tags: Tags
     address: _Address
 
 
@@ -98,3 +103,23 @@ class Url(_BaseUrl):
             address=pydantic_core.Url(model.address),
             tags=[Tag.from_model(tag) for tag in model.tags],
         )
+
+
+_Urls: TypeAlias = Annotated[
+    list[Url],
+    Field(
+        description="Total number of URL's in a list.",
+        examples=[123],
+        min_length=0,
+        max_length=settings.data.PREMIUM_USER_MAX_URL_AMOUNT,
+    ),
+]
+
+
+class UrlList(BaseModel):
+    urls: _Urls
+    length: _Length
+
+    @classmethod
+    def from_model(cls: type["UrlList"], model: list[models.Url]) -> "UrlList":
+        return cls(urls=[Url.from_model(url) for url in model], length=len(model))

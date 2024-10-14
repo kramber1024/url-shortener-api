@@ -29,7 +29,7 @@ class Tag(BaseModel):
         )
 
 
-TagList: TypeAlias = Annotated[
+Tags: TypeAlias = Annotated[
     list[Tag],
     Field(
         description="Repeating tags will be ignored. Can be empty.",

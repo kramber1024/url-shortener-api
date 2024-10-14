@@ -2,7 +2,7 @@ from typing import Any, TypeAlias
 
 from pydantic import BaseModel
 
-from app.api.schemes import ErrorResponse as ErrorResponseScheme
+from app.api import schemes
 
 _Response: TypeAlias = dict[str, Any]
 
@@ -37,14 +37,14 @@ def validation_error_response(example: dict[str, Any]) -> _Response:
             "A validation error occurs when the input data provided does not meet the "
             "required scheme or format specified by the endpoint."
         ),
-        model=ErrorResponseScheme,
+        model=schemes.ErrorResponse,
         example=example,
     )
 
 
 UNAUTHORIZED: _Response = response(
     description="Authorization required. Provide a valid token in cookies.",
-    model=ErrorResponseScheme,
+    model=schemes.ErrorResponse,
     example={
         "errors": [],
         "message": "Authorization required",
@@ -54,7 +54,7 @@ UNAUTHORIZED: _Response = response(
 
 INVALID_TOKEN: _Response = response(
     description="Provided token is not valid.",
-    model=ErrorResponseScheme,
+    model=schemes.ErrorResponse,
     example={
         "errors": [],
         "message": "Invalid token",
@@ -64,7 +64,7 @@ INVALID_TOKEN: _Response = response(
 
 INTERNAL_SERVER_ERROR: _Response = response(
     description="Something went very wrong. Please report this issue.",
-    model=ErrorResponseScheme,
+    model=schemes.ErrorResponse,
     example={
         "errors": [],
         "message": "Internal server error",

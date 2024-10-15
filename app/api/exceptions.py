@@ -28,18 +28,16 @@ class HTTPError(HTTPException):
         response (_Response): JSON response.
 
     Examples:
-    ```python
-    raise HTTPError(
-        errors=[
-            {
-                "message": "The password field is required",
-                "type": "password",
-            },
-        ],
-        message="Validation error",
-        status=422,
-    )
-    ```
+        >>> raise HTTPError(
+        ...     errors=[
+        ...         {
+        ...             "message": "The password field is required",
+        ...             "type": "password",
+        ...         },
+        ...     ],
+        ...     message="Validation error",
+        ...     status=422,
+        ... )
 
     """
 

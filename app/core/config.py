@@ -52,8 +52,7 @@ class DataSettings(BaseSettings):
     URL_MAX_LENGTH: int = 2048
     TAG_MIN_LENGTH: int = len("a")
     TAG_MAX_LENGTH: int = 32
-    UNKNOWN_COUNTRY_CODE: str = "ZZ"
-    UNKNOWN_IP_ADDRESS: str = "255.255.255.255"
+    NOT_FOUND_PAGE_URL: str = "404"
 
 
 class Settings(BaseSettings):

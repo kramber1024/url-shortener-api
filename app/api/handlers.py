@@ -13,12 +13,13 @@ def request_validation_error_handler(
     errors_map: dict[str, str] = {
         "string_too_short": "The {} length is invalid",
         "string_too_long": "The {} length is invalid",
-        "value_error": "The {} format is invalid",
-        "missing": "The {} field is required",
         "string_type": "The {} should be a string",
-        "json_invalid": "Request should be a valid JSON",
         "literal_error": "The {} value is invalid",
+        "value_error": "The {} format is invalid",
+        "json_invalid": "Request should be a valid JSON",
+        "missing": "The {} field is required",
         "url_parsing": "The {} format is invalid",
+        "url_too_long": "The {} length is invalid",
     }
     errors: list[schemes.Error] = []
 

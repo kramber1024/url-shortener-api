@@ -1,9 +1,7 @@
-import string
 from typing import Annotated, TypeAlias
 
 import pydantic_core
 from pydantic import (
-    AfterValidator,
     BaseModel,
     Field,
     StringConstraints,
@@ -16,23 +14,14 @@ from app.core.database import models
 from .fields import Id
 from .tag import Tag, Tags
 
-_URL_SAFE_CHARACTERS: str = string.ascii_letters + string.digits + "-_"
-
-
-def _slug_characters_validator(value: str) -> str:
-    if any(char not in _URL_SAFE_CHARACTERS for char in value):
-        raise ValueError
-    return value
-
-
 _Slug: TypeAlias = Annotated[
     str,
     StringConstraints(
         strip_whitespace=True,
         min_length=settings.data.SHORT_URL_MIN_LENGTH,
         max_length=settings.data.SHORT_URL_MAX_LENGTH,
+        pattern=r"^[a-zA-Z0-9\-_]+$",
     ),
-    AfterValidator(_slug_characters_validator),
     Field(
         description=(
             "A short URL address. If not provided by the user, it will be "
@@ -42,24 +31,12 @@ _Slug: TypeAlias = Annotated[
     ),
 ]
 
-
-def _address_length_validator(
-    value: pydantic_core.Url,
-) -> str:
-    if not (
-        settings.data.URL_MIN_LENGTH <= len(str(value)) <= settings.data.URL_MAX_LENGTH
-    ):
-        raise ValueError
-    return str(value)
-
-
 _Address: TypeAlias = Annotated[
     pydantic_core.Url,
     UrlConstraints(
         max_length=settings.data.URL_MAX_LENGTH,
         allowed_schemes=["http", "https"],
     ),
-    AfterValidator(_address_length_validator),
     Field(
         description="Long url to be shortened.",
         examples=["https://example.com/i-am-a-very-long-url"],
@@ -76,7 +53,15 @@ _TotalClicks: TypeAlias = Annotated[
 
 _Length: TypeAlias = Annotated[
     int,
-    Field(description="Total number of urls in list", examples=[10]),
+    Field(
+        description="Total number of urls in list",
+        examples=[settings.data.FREE_USER_MAX_URL_AMOUNT - 1],
+        ge=0,
+        le=max(
+            settings.data.FREE_USER_MAX_URL_AMOUNT,
+            settings.data.PREMIUM_USER_MAX_URL_AMOUNT,
+        ),
+    ),
 ]
 
 
@@ -108,10 +93,13 @@ class Url(_BaseUrl):
 _Urls: TypeAlias = Annotated[
     list[Url],
     Field(
-        description="Total number of URL's in a list.",
+        description="List of unique URLs.",
         examples=[123],
         min_length=0,
-        max_length=settings.data.PREMIUM_USER_MAX_URL_AMOUNT,
+        max_length=max(
+            settings.data.FREE_USER_MAX_URL_AMOUNT,
+            settings.data.PREMIUM_USER_MAX_URL_AMOUNT,
+        ),
     ),
 ]
 

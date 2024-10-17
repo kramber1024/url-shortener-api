@@ -11,6 +11,7 @@ def request_validation_error_handler(
     exc: RequestValidationError,
 ) -> JSONResponse:
     errors_map: dict[str, str] = {
+        "string_pattern_mismatch": "The {} value is invalid",
         "string_too_short": "The {} length is invalid",
         "string_too_long": "The {} length is invalid",
         "string_type": "The {} should be a string",

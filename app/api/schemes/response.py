@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 _HTTPStatus: TypeAlias = Annotated[
     int,
     Field(
-        description="HTTP status code.",
+        description="The HTTP status code for the response.",
         examples=[status.HTTP_422_UNPROCESSABLE_ENTITY],
         ge=100,
         le=599,
@@ -16,7 +16,7 @@ _HTTPStatus: TypeAlias = Annotated[
 _ErrorResponseMessage: TypeAlias = Annotated[
     str,
     Field(
-        description="Generic error message.",
+        description="A generic error message explaining the reason for the failure.",
         examples=["Validation error"],
     ),
 ]
@@ -24,7 +24,9 @@ _ErrorResponseMessage: TypeAlias = Annotated[
 _SuccessResponseMessage: TypeAlias = Annotated[
     str,
     Field(
-        description="Success message.",
+        description=(
+            "A message indicating that the operation was completed successfully."
+        ),
         examples=["Operation completed successfully"],
     ),
 ]
@@ -32,7 +34,9 @@ _SuccessResponseMessage: TypeAlias = Annotated[
 _ErrorMessage: TypeAlias = Annotated[
     str,
     Field(
-        description="Error message. Should not be used as feedback for a user.",
+        description=(
+            "A detailed error message. This should not be displayed directly to users."
+        ),
         examples=["Password length is incorrect"],
     ),
 ]
@@ -41,7 +45,8 @@ _ErrorType: TypeAlias = Annotated[
     str,
     Field(
         description=(
-            "Error type. Should be used for frontend logic e.g. form validation."
+            "The type of error, often corresponding to a form field or validation. "
+            "Used by the frontend for handling specific logic."
         ),
         examples=["password"],
     ),
@@ -56,7 +61,7 @@ class Error(BaseModel):
 _Errors: TypeAlias = Annotated[
     list[Error],
     Field(
-        description="List of errors.",
+        description="A list of specific errors encountered during the request.",
     ),
 ]
 

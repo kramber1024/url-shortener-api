@@ -13,7 +13,9 @@ _Name: TypeAlias = Annotated[
         max_length=settings.data.TAG_MAX_LENGTH,
     ),
     Field(
-        description="Tag name.",
+        description=(
+            "A tag associated with a URL. Used for categorization or labeling."
+        ),
         examples=["python"],
     ),
 ]
@@ -32,7 +34,7 @@ class Tag(BaseModel):
 Tags: TypeAlias = Annotated[
     list[Tag],
     Field(
-        description="Repeating tags will be ignored. Can be empty.",
+        description="A list of unique tags. Duplicate tags will be ignored",
         min_length=0,
         max_length=settings.data.SHORT_URL_MAX_TAGS_COUNT,
     ),

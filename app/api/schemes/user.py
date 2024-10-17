@@ -15,7 +15,10 @@ _FirstName: TypeAlias = Annotated[
         max_length=settings.data.FIRST_NAME_MAX_LENGTH,
     ),
     Field(
-        description="Used in full name and official emails",
+        description=(
+            "The user's first name, used in official emails and displayed as "
+            "part of the full name."
+        ),
         examples=["John"],
     ),
 ]
@@ -28,7 +31,7 @@ _LastName: TypeAlias = Annotated[
         max_length=settings.data.LAST_NAME_MAX_LENGTH,
     ),
     Field(
-        description="Used in full name.",
+        description="The user's last name, displayed as part of the full name.",
         examples=["Doe"],
     ),
 ]
@@ -41,7 +44,9 @@ _Email: TypeAlias = Annotated[
         strip_whitespace=True,
     ),
     Field(
-        description="Email used for authentication and notifications.",
+        description=(
+            "The user's email address, used for login and receiving notifications."
+        ),
         examples=["email@domain.tld"],
     ),
 ]
@@ -53,7 +58,9 @@ _Password: TypeAlias = Annotated[
         max_length=settings.data.PASSWORD_MAX_LENGTH,
     ),
     Field(
-        description="Used for authentication.",
+        description=(
+            "The user's password, used for authentication. It should be kept secure."
+        ),
         examples=["My$uper$ecretPa$$word"],
     ),
 ]
@@ -61,7 +68,10 @@ _Password: TypeAlias = Annotated[
 _Terms: TypeAlias = Annotated[
     Literal["on"],
     Field(
-        description="User agreement to terms of use.",
+        description=(
+            "Confirmation that the user agrees to the terms of use. Only accepted value"
+            " is 'on'."
+        ),
         examples=["on"],
     ),
 ]

@@ -40,7 +40,7 @@ async def get_url_by_slug(
         slug (str): The slug of the ` Url `.
 
     Returns:
-        Url | None: The ` Url ` instance if found, otherwise ` None `.
+        The ` Url ` instance if found, otherwise ` None `.
     """
     result: Result[tuple[Url]] = await session.execute(
         select(Url).filter(Url.slug == slug),
@@ -68,7 +68,7 @@ async def update_url(
         total_clicks (int | None, optional): New total_clicks value.
 
     Returns:
-        Url: The updated ` Url ` instance.
+        The updated ` Url ` instance.
     """
     url.slug = slug or url.slug
     url.address = address or url.address

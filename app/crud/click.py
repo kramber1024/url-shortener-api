@@ -7,8 +7,8 @@ async def create_click(
     *,
     session: AsyncSession,
     url_id: int,
-    ip: str,
-    country: str,
+    ip: str | None,
+    country: str | None,
 ) -> Click:
     click: Click = Click(url_id=url_id, ip=ip, country=country)
 

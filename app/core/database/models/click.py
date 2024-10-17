@@ -10,14 +10,19 @@ if TYPE_CHECKING:
 
 
 class Click(Base, IDMixin):
-    """Short URL click.
+    """Represents a click event on a shortened URL.
 
     Attributes:
         id (int): The unique identifier (See ` IDMixin `).
-        url_id (int): The unique identifier of ` Url`.
-        ip (str): The IP address of the user.
-        country (str | None): The country of the user.
-        url (Url): The ` Url ` the click is associated with.
+        url_id (int): The unique identifier of the `Url` to which this click event is
+            related. A foreign key to the Urls table.
+        ip (str | None): The IP address from which the click was made.
+            Can be `None` if not available.
+        country (str | None): The two-character [**ISO 3166-1 alpha-2 code**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+            indicating the country from which the click originated.
+            Can be `None` if the country is not identified by ` ip `.
+        url (Url): The ` Url ` to which this click is associated.
+            Establishes a relationship between the `Click` and the `Url` it belongs to.
 
     """
 
@@ -28,13 +33,13 @@ class Click(Base, IDMixin):
         ForeignKey("Urls.id"),
         nullable=False,
     )
-    ip: Mapped[str] = mapped_column(
+    ip: Mapped[str | None] = mapped_column(
         String(16),
-        nullable=False,
+        nullable=True,
     )
-    country: Mapped[str] = mapped_column(
+    country: Mapped[str | None] = mapped_column(
         String(2),
-        nullable=False,
+        nullable=True,
     )
 
     url: Mapped["Url"] = relationship(
@@ -47,8 +52,8 @@ class Click(Base, IDMixin):
         self,
         *,
         url_id: int,
-        ip: str,
-        country: str,
+        ip: str | None,
+        country: str | None,
     ) -> None:
         self.url_id = url_id
         self.ip = ip

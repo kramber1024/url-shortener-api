@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING, Annotated
 
-from fastapi import APIRouter, Depends, Path, Request
+from fastapi import APIRouter, Depends, Path, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
+from app.api.exceptions import HTTPError
 from app.core import utils
 from app.core.config import settings
 from app.core.database import db
@@ -24,31 +25,35 @@ async def redirect_to_url(
         Depends(db.scoped_session),
     ],
 ) -> RedirectResponse:
+    if slug == settings.data.NOT_FOUND_PAGE_URL:
+        raise HTTPError(
+            errors=[],
+            message="Not Found",
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
     url: Url | None = await crud.get_url_by_slug(session=session, slug=slug)
 
     if url is None:
-        # TODO @kramber: Redirect to real 404 page
-        # 001
-
-        return RedirectResponse(url="/404")
-
-    click_ip: str = (
-        request.client.host if request.client else settings.data.UNKNOWN_IP_ADDRESS
-    )
-    click_country: str = (
-        await utils.get_country_by_ip(
-            session=session,
-            ip=click_ip,
+        return RedirectResponse(
+            url=settings.data.NOT_FOUND_PAGE_URL,
+            status_code=status.HTTP_307_TEMPORARY_REDIRECT,
         )
-        or settings.data.UNKNOWN_COUNTRY_CODE
-    )
+
+    ip: str | None = request.client.host if request.client else None
+    country: str | None = None
+    if ip:
+        country = await utils.get_country_by_ip(
+            session=session,
+            ip=ip,
+        )
 
     await crud.create_click(
         session=session,
         url_id=url.id,
-        ip=click_ip,
-        country=click_country,
+        ip=ip,
+        country=country,
     )
     await crud.update_url(session=session, url=url, total_clicks=url.total_clicks + 1)
 
-    return RedirectResponse(url=url.address, status_code=301)
+    return RedirectResponse(url=url.address, status_code=307)

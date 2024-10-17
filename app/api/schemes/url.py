@@ -24,8 +24,8 @@ _Slug: TypeAlias = Annotated[
     ),
     Field(
         description=(
-            "A short URL address. If not provided by the user, it will be "
-            "generated automatically."
+            "A custom or auto-generated identifier for the shortened "
+            " URL. It must only contain letters, numbers, dashes, or underscores."
         ),
         examples=["clickme"],
     ),
@@ -38,7 +38,10 @@ _Address: TypeAlias = Annotated[
         allowed_schemes=["http", "https"],
     ),
     Field(
-        description="Long url to be shortened.",
+        description=(
+            "The original URL that will be shortened. Must be a valid HTTP or HTTPS"
+            " URL."
+        ),
         examples=["https://example.com/i-am-a-very-long-url"],
     ),
 ]
@@ -46,15 +49,16 @@ _Address: TypeAlias = Annotated[
 _TotalClicks: TypeAlias = Annotated[
     int,
     Field(
-        description="Total number of clicks on the short URL.",
+        description="The total number of times the short URL has been accessed.",
         examples=[123],
+        ge=0,
     ),
 ]
 
 _Length: TypeAlias = Annotated[
     int,
     Field(
-        description="Total number of urls in list",
+        description="The number of URLs in the list.",
         examples=[settings.data.FREE_USER_MAX_URL_AMOUNT - 1],
         ge=0,
         le=max(
@@ -93,7 +97,7 @@ class Url(_BaseUrl):
 _Urls: TypeAlias = Annotated[
     list[Url],
     Field(
-        description="List of unique URLs.",
+        description="A collection of unique shortened URLs.",
         examples=[123],
         min_length=0,
         max_length=max(

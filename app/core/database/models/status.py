@@ -9,13 +9,13 @@ class Status(Base, UpdatedAtMixin):
 
     Attributes:
         user_id (int): The unique identifier of the user.
-            This is a foreign key linked to the Users table.
+                       This is a foreign key linked to the Users table.
         email_verified (bool): Indicates whether the user's email address
-            has been verified.
+                               has been verified.
         phone_verified (bool): Indicates whether the user's phone number
-            has been verified.
+                               has been verified.
         active (bool): Indicates whether the user is currently active
-            and allowed to log in.
+                       and allowed to log in.
         premium (bool): Indicates whether the user has a premium membership.
     """
 

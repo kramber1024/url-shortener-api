@@ -1,5 +1,5 @@
 indent-width = 4
-line-length = 88
+line-length = 80
 target-version = "py311"
 respect-gitignore = true
 

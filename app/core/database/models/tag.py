@@ -3,10 +3,10 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.config import settings
 
-from .mixins import Base, IDMixin
+from .mixins import Base, CreatedAtMixin, IDMixin
 
 
-class Tag(Base, IDMixin):
+class Tag(Base, IDMixin, CreatedAtMixin):
     """Model for short URL tags.
 
     Attributes:

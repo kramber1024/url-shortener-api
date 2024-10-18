@@ -5,15 +5,17 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
-from app.core.database.models.mixins import Base, IDMixin
+
+from .mixins import Base, CreatedAtMixin, IDMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
-    from app.core.database.models import Status, Url
+    from .status import Status
+    from .url import Url
 
 _HASHED_PASSWORD_MAX_LENGTH: int = 64
 
 
-class User(Base, IDMixin):
+class User(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
     __tablename__: str = "Users"
 
     first_name: Mapped[str] = mapped_column(

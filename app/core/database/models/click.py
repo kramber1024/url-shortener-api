@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .mixins import Base, IDMixin
+from .mixins import Base, CreatedAtMixin, IDMixin
 
 if TYPE_CHECKING:
     from .url import Url
 
 
-class Click(Base, IDMixin):
+class Click(Base, IDMixin, CreatedAtMixin):
     """Represents a click event on a shortened URL.
 
     Attributes:

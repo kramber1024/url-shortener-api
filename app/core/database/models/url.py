@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
 
-from .mixins import Base, IDMixin
+from .mixins import Base, CreatedAtMixin, IDMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .click import Click
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class Url(Base, IDMixin):
+class Url(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
     """Model for short URLs.
 
     Attributes:

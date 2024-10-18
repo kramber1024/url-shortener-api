@@ -1,18 +1,22 @@
 from sqlalchemy import Boolean, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .mixins import Base
+from .mixins import Base, UpdatedAtMixin
 
 
-class Status(Base):
-    """Model for general user information.
+class Status(Base, UpdatedAtMixin):
+    """The status of a user, tracking their verification and membership details.
 
     Attributes:
         user_id (int): The unique identifier of the user.
-        email_verified (bool): Indicates if the user has verified their email.
-        phone_verified (bool): Indicates if the user has verified their phone number.
-        active (bool): Indicates if the user is active and can log in.
-        premium (bool): Indicates if the user is a premium member.
+            This is a foreign key linked to the Users table.
+        email_verified (bool): Indicates whether the user's email address
+            has been verified.
+        phone_verified (bool): Indicates whether the user's phone number
+            has been verified.
+        active (bool): Indicates whether the user is currently active
+            and allowed to log in.
+        premium (bool): Indicates whether the user has a premium membership.
     """
 
     __tablename__: str = "Statuses"

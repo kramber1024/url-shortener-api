@@ -31,7 +31,7 @@ async def get_networks_by_ip(
     ip: str,
     octets: Literal[1, 2, 3],
 ) -> list[Network]:
-    """Retrieve all networks that match the first ` octets ` of the given ` ip `.
+    """Retrieve all networks that match the first ` octets ` of the ` ip `.
 
     Args:
         session (AsyncSession): The database session.

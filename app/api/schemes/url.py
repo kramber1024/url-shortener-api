@@ -24,8 +24,8 @@ _Slug: TypeAlias = Annotated[
     ),
     Field(
         description=(
-            "A custom or auto-generated identifier for the shortened "
-            " URL. It must only contain letters, numbers, dashes, or underscores."
+            "A custom or auto-generated identifier for the shortened URL. "
+            "It must only contain letters, numbers, dashes, or underscores."
         ),
         examples=["clickme"],
     ),
@@ -39,8 +39,8 @@ _Address: TypeAlias = Annotated[
     ),
     Field(
         description=(
-            "The original URL that will be shortened. Must be a valid HTTP or HTTPS"
-            " URL."
+            "The original URL that will be shortened. "
+            "Must be a valid HTTP or HTTPS URL."
         ),
         examples=["https://example.com/i-am-a-very-long-url"],
     ),
@@ -49,7 +49,9 @@ _Address: TypeAlias = Annotated[
 _TotalClicks: TypeAlias = Annotated[
     int,
     Field(
-        description="The total number of times the short URL has been accessed.",
+        description=(
+            "The total number of times the short URL has been accessed."
+        ),
         examples=[123],
         ge=0,
     ),
@@ -114,4 +116,7 @@ class UrlList(BaseModel):
 
     @classmethod
     def from_model(cls: type["UrlList"], model: list[models.Url]) -> "UrlList":
-        return cls(urls=[Url.from_model(url) for url in model], length=len(model))
+        return cls(
+            urls=[Url.from_model(url) for url in model],
+            length=len(model),
+        )

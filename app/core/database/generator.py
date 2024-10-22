@@ -4,7 +4,10 @@ from app.core.config import settings
 
 
 class IDGenerator:
-    """Generates unique identifiers using [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID)."""
+    """Generates unique identifiers using Snowflake ID.
+
+    See [**Snowflake ID**](https://en.wikipedia.org/wiki/Snowflake_ID).
+    """
 
     _snowflake_generator: SnowflakeGenerator
 

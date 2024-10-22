@@ -45,7 +45,8 @@ _Email: TypeAlias = Annotated[
     ),
     Field(
         description=(
-            "The user's email address, used for login and receiving notifications."
+            "The user's email address, used for login and receiving "
+            "notifications."
         ),
         examples=["email@domain.tld"],
     ),
@@ -59,7 +60,8 @@ _Password: TypeAlias = Annotated[
     ),
     Field(
         description=(
-            "The user's password, used for authentication. It should be kept secure."
+            "The user's password, used for authentication. "
+            "It should be kept secure."
         ),
         examples=["My$uper$ecretPa$$word"],
     ),
@@ -69,8 +71,8 @@ _Terms: TypeAlias = Annotated[
     Literal["on"],
     Field(
         description=(
-            "Confirmation that the user agrees to the terms of use. Only accepted value"
-            " is 'on'."
+            "Confirmation that the user agrees to the terms of use. "
+            "Only accepted value is 'on'."
         ),
         examples=["on"],
     ),

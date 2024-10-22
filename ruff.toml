@@ -82,7 +82,7 @@ max-public-methods = 20
 max-returns = 3
 max-statements = 50
 
-[pydocstyle]
+[lint.pydocstyle]
 convention = "google"
 
 [format]

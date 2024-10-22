@@ -37,9 +37,12 @@ async def _generate_unique_slug(
         current_time (int): The current time in seconds since the epoch.
         session (AsyncSession): The database session.
         max_url_length (int): The maximum length of the slug.
-        random_number (int | None, optional): A random number to allow for more then\
-        one slug per second. The bigger the number, the longer the slug.\
-        If None, a random number will be generated automatically. Defaults to None.
+        random_number (int | None, optional): A random number to allow for
+                                              more then one slug per second.
+                                              The bigger the number, the longer
+                                              the slug. If None, a random
+                                              number will be generated
+                                              automatically. Defaults to None.
 
     Raises:
         ValueError: Failed to generate a unique slug in a reasonable time.
@@ -73,7 +76,9 @@ async def _generate_unique_slug(
 
         slug += secrets.choice(string.ascii_letters)
 
-    error_message: str = "Failed to generate a unique slug in a reasonable time."
+    error_message: str = (
+        "Failed to generate a unique slug in a reasonable time."
+    )
 
     raise ValueError(
         error_message,
@@ -95,14 +100,16 @@ async def _generate_unique_slug(
             },
         ),
         status.HTTP_409_CONFLICT: responses.response(
-            description="Slug is already in use. User should use a different alias.",
+            description=(
+                "Slug is already in use. User should use a different alias."
+            ),
             model=schemes.ErrorResponse,
             example={
                 "message": "Slug is already in use",
                 "status": status.HTTP_409_CONFLICT,
             },
         ),
-        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_response(
             example={
                 "errors": [],
                 "message": "Validation error",
@@ -116,7 +123,9 @@ async def _generate_unique_slug(
             ),
             model=schemes.ErrorResponse,
             example={
-                "message": ("Failed to generate a unique slug in a reasonable time"),
+                "message": (
+                    "Failed to generate a unique slug in a reasonable time"
+                ),
                 "status": status.HTTP_503_SERVICE_UNAVAILABLE,
             },
         ),

@@ -42,7 +42,7 @@ router: APIRouter = APIRouter(prefix="/auth")
                 "status": status.HTTP_409_CONFLICT,
             },
         ),
-        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_response(
             example={
                 "errors": [
                     {
@@ -133,7 +133,7 @@ async def register_user(
                 "status": status.HTTP_401_UNAUTHORIZED,
             },
         ),
-        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_error_response(
+        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_response(
             example={
                 "errors": [
                     {

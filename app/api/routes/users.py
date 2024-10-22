@@ -48,11 +48,14 @@ def get_users_me(
 @router.get(
     "/me/urls",
     summary="Get URL's created by the current user",
-    description="Retrieve a list of URLs created by the currently authenticated user.",
+    description=(
+        "Retrieve a list of URLs created by the currently authenticated user."
+    ),
     responses={
         status.HTTP_200_OK: responses.response(
             description=(
-                "The URLs created by the current user were successfully retrieved."
+                "The URLs created by the current user were successfully "
+                "retrieved."
             ),
             model=schemes.UrlList,
             example={

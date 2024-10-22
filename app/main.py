@@ -27,8 +27,14 @@ app.add_exception_handler(
     RequestValidationError,
     request_validation_error_handler,  # type: ignore[arg-type]
 )
-app.add_exception_handler(HTTPError, http_error_handler)  # type: ignore[arg-type]
-app.add_exception_handler(Exception, exception_handler)
+app.add_exception_handler(
+    HTTPError,
+    http_error_handler,  # type: ignore[arg-type]
+)
+app.add_exception_handler(
+    Exception,
+    exception_handler,
+)
 
 
 async def main() -> None:

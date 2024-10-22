@@ -1,5 +1,6 @@
 from typing import Any, TypeAlias
 
+from fastapi import status
 from pydantic import BaseModel
 
 from app.api import schemes
@@ -13,6 +14,20 @@ def response(
     model: type[BaseModel],
     example: dict[str, Any] | None = None,
 ) -> _Response:
+    """Constructs a standardized response object for documenting API endpoints.
+
+    Args:
+        description (str): A brief description of the response.
+        model (type[BaseModel]): The Pydantic model that represents the
+                                 response structure.
+        example (dict[str, Any] | None, optional): Example of a endpoint JSON
+                                                   response. Optional.
+
+    Returns:
+        _Response: A dictionary-like response object that includes
+                   the description, model, and example (if provided).
+                   Should be used for ` responses ` dict of an endpoint.
+    """
     response: _Response = {
         "description": description,
         "model": model,
@@ -35,8 +50,8 @@ def response(
 def validation_error_response(example: dict[str, Any]) -> _Response:
     return response(
         description=(
-            "A validation error occurs when the input data provided does not meet the "
-            "required scheme or format specified by the endpoint."
+            "A validation error occurs when the input data provided does not "
+            "meet the required scheme or format specified by the endpoint."
         ),
         model=schemes.ErrorResponse,
         example=example,
@@ -49,7 +64,7 @@ UNAUTHORIZED: _Response = response(
     example={
         "errors": [],
         "message": "Authorization required",
-        "status": 401,
+        "status": status.HTTP_401_UNAUTHORIZED,
     },
 )
 
@@ -59,16 +74,16 @@ INVALID_TOKEN: _Response = response(
     example={
         "errors": [],
         "message": "Invalid token",
-        "status": 400,
+        "status": status.HTTP_400_BAD_REQUEST,
     },
 )
 
 INTERNAL_SERVER_ERROR: _Response = response(
-    description="Something went very wrong. Please report this issue.",
+    description="Something went very wrong. Please report this.",
     model=schemes.ErrorResponse,
     example={
         "errors": [],
-        "message": "Internal server error",
-        "status": 500,
+        "message": "Internal Server Error",
+        "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
     },
 )

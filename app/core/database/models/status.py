@@ -1,7 +1,8 @@
 from sqlalchemy import Boolean, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .mixins import Base, UpdatedAtMixin
+from .base import Base
+from .mixins import UpdatedAtMixin
 
 
 class Status(Base, UpdatedAtMixin):

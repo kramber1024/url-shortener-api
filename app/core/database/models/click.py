@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .mixins import Base, CreatedAtMixin, IDMixin
+from .base import Base
+from .mixins import CreatedAtMixin, IDMixin
 
 if TYPE_CHECKING:
     from .url import Url
@@ -12,17 +13,21 @@ if TYPE_CHECKING:
 class Click(Base, IDMixin, CreatedAtMixin):
     """Represents a click event on a shortened URL.
 
+    See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+
     Attributes:
         id (int): The unique identifier (See ` IDMixin `).
-        url_id (int): The unique identifier of the `Url` to which this click event is
-            related. A foreign key to the Urls table.
+        url_id (int): The unique identifier of the `Url` to which this click
+                      event is related. A foreign key to the Urls table.
         ip (str | None): The IP address from which the click was made.
-            Can be `None` if not available.
-        country (str | None): The two-character [**ISO 3166-1 alpha-2 code**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-            indicating the country from which the click originated.
-            Can be `None` if the country is not identified by ` ip `.
+                         Can be `None` if not available.
+        country (str | None): The two-character code indicating the
+                              country from which the click originated.
+                              Can be `None` if the country is not identified
+                              by ` ip `.
         url (Url): The ` Url ` to which this click is associated.
-            Establishes a relationship between the `Click` and the `Url` it belongs to.
+                   Establishes a relationship between the `Click` and
+                   the `Url` it belongs to.
 
     """
 

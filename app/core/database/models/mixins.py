@@ -1,26 +1,16 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, Integer, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database.generator import id_generator
-
-
-class Base(DeclarativeBase):
-    """Concrete base class for models.
-
-    Example:
-        >>> class User(Base): ...
-
-    """
-
-    __abstract__: bool = True
 
 
 class IDMixin:
     """Mixin for models that require an ` id ` primary column.
 
-    Generates a unique identifier using [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID).
+    Generates a unique identifier using
+    [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID).
 
     Attributes:
         id (int): The unique identifier (Generated automatically).
@@ -71,9 +61,9 @@ class CreatedAtMixin:
     when the record is created.
 
     Attributes:
-        created_at (datetime): The timestamp indicating when the record was created.
-                               It is automatically set to the current time
-                               when the record is first created.
+        created_at (datetime): The timestamp indicating when the record was
+                               created. It is automatically set to the
+                               current time when the record is first created.
 
     Example:
         >>> class User(

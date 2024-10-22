@@ -3,7 +3,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.config import settings
 
-from .mixins import Base, CreatedAtMixin, IDMixin
+from .base import Base
+from .mixins import CreatedAtMixin, IDMixin
 
 
 class Tag(Base, IDMixin, CreatedAtMixin):

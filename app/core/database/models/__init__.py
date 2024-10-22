@@ -1,5 +1,5 @@
+from .base import Base
 from .click import Click
-from .mixins import Base
 from .network import Network
 from .status import Status
 from .tag import Tag

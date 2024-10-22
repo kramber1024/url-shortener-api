@@ -3,7 +3,7 @@ import ipaddress
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .mixins import Base
+from .base import Base
 
 _MAX_NETWORK_ADDRESS_LENGTH: int = len("255.255.255.255")
 
@@ -11,11 +11,12 @@ _MAX_NETWORK_ADDRESS_LENGTH: int = len("255.255.255.255")
 class Network(Base):
     """Model for network to country mapping.
 
+    See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
+
     Attributes:
         address (str): The network address.
         mask (int): The network mask.
-        country (str): The country code. \
-            (See [**ISO 3166-1 alpha-2**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))
+        country (str): The ISO 3166-1 country code.
     """
 
     __tablename__: str = "Networks"

@@ -6,7 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
 
-from .mixins import Base, CreatedAtMixin, IDMixin, UpdatedAtMixin
+from .base import Base
+from .mixins import CreatedAtMixin, IDMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from .status import Status

@@ -47,7 +47,17 @@ def response(
     return response
 
 
-def validation_error_response(example: dict[str, Any]) -> _Response:
+def validation_response(*, example: dict[str, Any]) -> _Response:
+    """Constructs a standardized response object for documenting 422 error.
+
+    Args:
+        example (dict[str, Any]): Example of a endpoint JSON response.
+
+    Returns:
+        _Response: A dictionary-like response object that includes
+                   the description, model, and example. Should be
+                   used for documenting 422 error of an endpoint.
+    """
     return response(
         description=(
             "A validation error occurs when the input data provided does not "
@@ -83,7 +93,7 @@ INTERNAL_SERVER_ERROR: _Response = response(
     model=schemes.ErrorResponse,
     example={
         "errors": [],
-        "message": "Internal Server Error",
+        "message": "Internal server error",
         "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
     },
 )

@@ -1,7 +1,7 @@
 from typing import Annotated, Literal, TypeAlias, TypedDict
 
 import jwt
-from fastapi import Cookie, Depends
+from fastapi import Cookie, Depends, status
 from fastapi.security import APIKeyCookie
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -136,10 +136,11 @@ def generate_token(
     )
 
 
-def get_token_payload(
-    token: str,
+def _get_token_payload(
     jwt_type: _TokenType,
     /,
+    *,
+    token: str,
 ) -> _TokenPayload | None:
     """Get payload from a JWT token.
 
@@ -147,31 +148,13 @@ def get_token_payload(
     ----
         token (str): The JWT token.
         jwt_type ("access" | "refresh"): The type of JWT token.
-        Either "access" or "refresh".
+                                         Either "access" or "refresh".
 
     Returns:
     -------
         _TokenPayload | None: The payload of the JWT token if the
-        token type matches and signature is valid, otherwise None.
-
-    Example:
-    -------
-        >>> token = (
-        ...     "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N"
-        ...     "TY3ODkwIiwiZW1haWwiOiJleGFtcGxlQGVtYWlsLnRsZCIsImV4cCI6MTc"
-        ...     "xOTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.SU7oI8z5-MVI4GpiOdMtv1"
-        ...     "eVB-J2bMovCyyfXsHw-Vo"
-        ... )
-        >>> jwt_type = "access"
-        >>> get_token_payload(
-        ...     token, jwt_type
-        ... )
-        ... {
-        ...     "sub": "1234567890",
-        ...     "email": "example@email.tld",
-        ...     "exp": 1719959972,
-        ...     "iat": 1719956372,
-        ... }
+                              token type matches and signature is valid,
+                              otherwise None.
 
     """
     try:
@@ -214,19 +197,19 @@ async def get_current_user(
         raise HTTPError(
             errors=[],
             message="Authorization required",
-            status=401,
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    payload: _TokenPayload | None = get_token_payload(
-        access_token,
+    payload: _TokenPayload | None = _get_token_payload(
         "access",
+        token=access_token,
     )
 
     if payload is None:
         raise HTTPError(
             errors=[],
             message="Invalid token",
-            status=400,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     user: User | None = await crud.get_user_by_id(
@@ -238,7 +221,7 @@ async def get_current_user(
         raise HTTPError(
             errors=[],
             message="Invalid token",
-            status=400,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     return user
@@ -260,19 +243,19 @@ async def get_refreshed_user(
         raise HTTPError(
             errors=[],
             message="Authorization required",
-            status=401,
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    payload: _TokenPayload | None = get_token_payload(
-        refresh_token,
+    payload: _TokenPayload | None = _get_token_payload(
         "refresh",
+        token=refresh_token,
     )
 
     if payload is None:
         raise HTTPError(
             errors=[],
             message="Invalid token",
-            status=400,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     user: User | None = await crud.get_user_by_id(
@@ -284,7 +267,7 @@ async def get_refreshed_user(
         raise HTTPError(
             errors=[],
             message="Invalid token",
-            status=400,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     return user

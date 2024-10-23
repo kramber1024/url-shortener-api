@@ -42,23 +42,30 @@ def _encode_token(
 
     Args:
     ----
-        jwt_type (_TokenType): The type of JWT token. Either "access" or "refresh".
+        jwt_type (_TokenType): The type of JWT token.
+                               Either "access" or "refresh".
         payload (_UserData): The payload of the JWT token.
         current_time (int): The current time in seconds since the epoch.
-        key (str, optional): Secret key to sign the token.\
-        Defaults to settings.jwt.SECRET.
-        algorithm (JWTAlgorithm, optional): The algorithm to use for signing the token.\
-        Defaults to settings.jwt.ALGORITHM.
+        key (str, optional): Secret key to sign the token
+                             Defaults to settings.jwt.SECRET.
+        algorithm (JWTAlgorithm, optional): The algorithm to use for
+                                            signing the token.
+                                            Defaults to settings.jwt.ALGORITHM.
 
     Returns:
     -------
-        str: The JWT token.
+        The JWT token.
 
     """
     if jwt_type == "access":
-        expire: int = current_time + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
+        expire: int = (
+            current_time + settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60
+        )
     else:
-        expire = current_time + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
+        expire = (
+            current_time
+            + settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60
+        )
 
     token_payload: _TokenPayload = {
         "sub": payload.get("sub", ""),
@@ -68,9 +75,9 @@ def _encode_token(
     }
 
     return jwt.encode(
-        dict(token_payload),
-        key,
-        algorithm,
+        payload=dict(token_payload),
+        key=key,
+        algorithm=algorithm,
         headers={
             "typ": jwt_type,
         },
@@ -80,6 +87,7 @@ def _encode_token(
 def generate_token(
     jwt_type: _TokenType,
     /,
+    *,
     user_id: int,
     email: str,
     current_time: int,
@@ -88,14 +96,15 @@ def generate_token(
 
     Args:
     ----
-        jwt_type (_TokenType): The type of JWT token. Either "access" or "refresh".
-        user_id (int): The ` User ` ID.
+        jwt_type (_TokenType): The type of JWT token.
+                               Either "access" or "refresh".
+        user_id (int): The ` User ` id.
         email (str): The ` User ` email.
         current_time (int): The current time in seconds since the epoch.
 
     Returns:
     -------
-        str: The encoded JWT token.
+        The encoded JWT token.
 
     Example:
     -------
@@ -103,10 +112,18 @@ def generate_token(
     >>> user_id = 1234567890
     >>> email = "email@example.com"
     >>> current_time = 1719956372
-    >>> generate_token(jwt_type, user_id, email, current_time)
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N\
-        TY3ODkwIiwiZW1haWwiOiJlbWFpbEBleGFtcGxlLmNvbSIsImV4cCI6MTcx\
-            OTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.AXEWuud-NgdLFsEV8NQ93moZZasu2zUZJF3oCIo2lBE"
+    >>> generate_token(
+    ...     jwt_type,
+    ...     user_id,
+    ...     email,
+    ...     current_time,
+    ... )
+    ... (
+    ...     "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N"
+    ...     "TY3ODkwIiwiZW1haWwiOiJlbWFpbEBleGFtcGxlLmNvbSIsImV4cCI6MTcx"
+    ...     "OTk1OTk3MiwiaWF0IjoxNzE5OTU2MzcyfQ.AXEWuud-NgdLFsEV8NQ93moZZ"
+    ...     "asu2zUZJF3oCIo2lBE"
+    ... )
 
     """
     return _encode_token(

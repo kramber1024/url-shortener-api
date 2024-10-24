@@ -11,12 +11,12 @@ from app.core.config import JWTAlgorithm, settings
 from app.core.database import db
 from app.core.database.models import User
 
-_TokenType: TypeAlias = Literal["access", "refresh"]
-
-access_cookie_scheme: APIKeyCookie = APIKeyCookie(
+api_key_cookie: APIKeyCookie = APIKeyCookie(
     name="access_token",
     auto_error=False,
 )
+
+_TokenType: TypeAlias = Literal["access", "refresh"]
 
 
 class _UserData(TypedDict):
@@ -190,7 +190,7 @@ async def get_current_user(
     ],
     access_token: Annotated[
         str | None,
-        Depends(access_cookie_scheme),
+        Depends(api_key_cookie),
     ],
 ) -> User:
     if access_token is None:

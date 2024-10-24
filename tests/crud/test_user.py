@@ -27,6 +27,8 @@ async def test_create_user(
     assert not user.phone
     assert user.password != testing_utils.USER_PASSWORD
     assert user.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user.updated_at
+    assert user.created_at
     assert not user.status
     assert not user.urls
 
@@ -60,6 +62,8 @@ async def test_create_user_two_in_a_row(
     assert not user_1.phone
     assert user_1.password != testing_utils.USER_PASSWORD
     assert user_1.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user_1.updated_at
+    assert user_1.created_at
     assert not user_1.status
     assert not user_1.urls
     assert user_2
@@ -70,6 +74,8 @@ async def test_create_user_two_in_a_row(
     assert not user_2.phone
     assert user_2.password != testing_utils.USER_PASSWORD
     assert user_2.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user_2.updated_at
+    assert user_2.created_at
     assert not user_2.status
     assert not user_2.urls
 
@@ -95,6 +101,8 @@ async def test_create_user_no_last_name(
     assert not user.phone
     assert user.password != testing_utils.USER_PASSWORD
     assert user.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user.updated_at
+    assert user.created_at
     assert not user.status
     assert not user.urls
 
@@ -117,11 +125,13 @@ async def test_create_user_uppercase(
     assert user.first_name == user_credentials.first_name.upper()
     assert user.last_name == str(user_credentials.last_name).upper()
     assert user.email == testing_utils.format_email(
-        user_credentials.email.upper()
+        user_credentials.email.upper(),
     )
     assert not user.phone
     assert user.password != testing_utils.USER_PASSWORD.upper()
     assert user.is_password_valid(testing_utils.USER_PASSWORD.upper())
+    assert user.updated_at
+    assert user.created_at
     assert not user.status
     assert not user.urls
 
@@ -146,6 +156,8 @@ async def test_create_user_empty(
     assert not user.phone
     assert user.password
     assert user.is_password_valid("")
+    assert user.updated_at
+    assert user.created_at
     assert not user.status
     assert not user.urls
 
@@ -161,6 +173,7 @@ async def test_get_user_by_email(
     )
 
     assert user
+    assert user
     assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == db_user.first_name
     assert user.last_name == db_user.last_name
@@ -168,12 +181,9 @@ async def test_get_user_by_email(
     assert not user.phone
     assert user.password != testing_utils.USER_PASSWORD
     assert user.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user.updated_at
+    assert user.created_at
     assert user.status
-    assert user.status.user_id == db_user.id
-    assert not user.status.email_verified
-    assert not user.status.phone_verified
-    assert user.status.active
-    assert not user.status.premium
     assert not user.urls
 
 
@@ -197,9 +207,10 @@ async def test_get_user_by_id(
 ) -> None:
     user: User | None = await crud.get_user_by_id(
         session=session,
-        id_=db_user.id,
+        user_id=db_user.id,
     )
 
+    assert user
     assert user
     assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == db_user.first_name
@@ -208,12 +219,9 @@ async def test_get_user_by_id(
     assert not user.phone
     assert user.password != testing_utils.USER_PASSWORD
     assert user.is_password_valid(testing_utils.USER_PASSWORD)
+    assert user.updated_at
+    assert user.created_at
     assert user.status
-    assert user.status.user_id == db_user.id
-    assert not user.status.email_verified
-    assert not user.status.phone_verified
-    assert user.status.active
-    assert not user.status.premium
     assert not user.urls
 
 
@@ -224,7 +232,7 @@ async def test_get_user_by_id_not_found(
 ) -> None:
     user: User | None = await crud.get_user_by_id(
         session=session,
-        id_=db_user.id - 1,
+        user_id=db_user.id - 1,
     )
 
     assert not user

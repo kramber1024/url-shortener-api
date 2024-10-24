@@ -1,6 +1,6 @@
 from typing import Annotated, Literal, TypeAlias, TypedDict
 
-import jwt
+import jwt as pyjwt
 from fastapi import Cookie, Depends, status
 from fastapi.security import APIKeyCookie
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -74,7 +74,7 @@ def _encode_token(
         "iat": current_time,
     }
 
-    return jwt.encode(
+    return pyjwt.encode(
         payload=dict(token_payload),
         key=key,
         algorithm=algorithm,
@@ -158,10 +158,10 @@ def _get_token_payload(
 
     """
     try:
-        if jwt.get_unverified_header(token).get("typ", "") != jwt_type:
+        if pyjwt.get_unverified_header(token).get("typ", "") != jwt_type:
             return None
 
-        token_payload: _TokenPayload = jwt.decode(
+        token_payload: _TokenPayload = pyjwt.decode(
             token,
             key=settings.jwt.SECRET,
             algorithms=[settings.jwt.ALGORITHM],
@@ -177,7 +177,7 @@ def _get_token_payload(
             },
         )
 
-    except jwt.InvalidTokenError:
+    except pyjwt.InvalidTokenError:
         return None
 
     return token_payload

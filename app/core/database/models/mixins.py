@@ -26,7 +26,7 @@ class IDMixin:
         nullable=False,
         unique=True,
         sort_order=-1,
-        default=id_generator(),
+        default=id_generator,
     )
 
 

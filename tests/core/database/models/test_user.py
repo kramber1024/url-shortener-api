@@ -108,7 +108,7 @@ def test__hash_password() -> None:
 
     assert user.password != password
     assert user.password.startswith(
-        f"$2b${str(settings.db.SALT_ROUNDS).zfill(2)}$"
+        f"$2b${str(settings.db.SALT_ROUNDS).zfill(2)}$",
     )
 
 

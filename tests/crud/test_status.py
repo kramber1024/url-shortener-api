@@ -18,6 +18,8 @@ async def test_create_status(
     status: Status = await crud.create_status(
         session=session,
         user_id=user_credentials.id,
+        active=True,
+        premium=False,
     )
 
     assert status
@@ -37,6 +39,7 @@ async def test_create_status_inactive(
         session=session,
         user_id=user_credentials.id,
         active=False,
+        premium=False,
     )
 
     assert status
@@ -55,6 +58,7 @@ async def test_create_status_premium(
     status: Status = await crud.create_status(
         session=session,
         user_id=user_credentials.id,
+        active=True,
         premium=True,
     )
 

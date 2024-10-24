@@ -7,8 +7,8 @@ async def create_status(
     *,
     session: AsyncSession,
     user_id: int,
-    active: bool = True,
-    premium: bool = False,
+    active: bool,
+    premium: bool,
 ) -> Status:
     status: Status = Status(
         user_id=user_id,

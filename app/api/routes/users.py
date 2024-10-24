@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
 from app.api import responses, schemes
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.database.models import User
 
 router: APIRouter = APIRouter(
@@ -36,7 +36,7 @@ router: APIRouter = APIRouter(
 def get_users_me(
     user: Annotated[
         User,
-        Depends(jwt_.get_current_user),
+        Depends(jwt.get_current_user),
     ],
 ) -> JSONResponse:
     return JSONResponse(
@@ -80,7 +80,7 @@ def get_users_me(
 async def get_users_me_urls(
     user: Annotated[
         User,
-        Depends(jwt_.get_current_user),
+        Depends(jwt.get_current_user),
     ],
 ) -> JSONResponse:
     return JSONResponse(

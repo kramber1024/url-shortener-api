@@ -10,7 +10,7 @@ from app import crud
 from app.api import responses, schemes
 from app.api.exceptions import HTTPError
 from app.core import utils
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.config import settings
 from app.core.database import db
 from app.core.database.models import Url, User
@@ -134,7 +134,7 @@ async def _generate_unique_slug(
 async def create_url(
     user: Annotated[
         User,
-        Depends(jwt_.get_current_user),
+        Depends(jwt.get_current_user),
     ],
     create_url: Annotated[
         schemes.CreateUrl,

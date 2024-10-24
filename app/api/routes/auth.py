@@ -8,7 +8,7 @@ from app import crud
 from app.api import responses, schemes
 from app.api.exceptions import HTTPError
 from app.core import utils
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.config import settings
 from app.core.database import db
 from app.core.database.models import User
@@ -182,7 +182,7 @@ async def authenticate_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_.generate_token(
+        value=jwt.generate_token(
             "access",
             user_id=user.id,
             email=user.email,
@@ -194,7 +194,7 @@ async def authenticate_user(
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_.generate_token(
+        value=jwt.generate_token(
             "refresh",
             user_id=user.id,
             email=user.email,
@@ -230,7 +230,7 @@ async def authenticate_user(
 def refresh_user(
     user: Annotated[
         User,
-        Depends(jwt_.get_refreshed_user),
+        Depends(jwt.get_refreshed_user),
     ],
 ) -> JSONResponse:
     response: JSONResponse = JSONResponse(
@@ -242,7 +242,7 @@ def refresh_user(
     )
     response.set_cookie(
         key="access_token",
-        value=jwt_.generate_token(
+        value=jwt.generate_token(
             "access",
             user_id=user.id,
             email=user.email,
@@ -254,7 +254,7 @@ def refresh_user(
     )
     response.set_cookie(
         key="refresh_token",
-        value=jwt_.generate_token(
+        value=jwt.generate_token(
             "refresh",
             user_id=user.id,
             email=user.email,

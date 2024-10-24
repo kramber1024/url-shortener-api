@@ -55,13 +55,13 @@ async def create_user(
 async def get_user_by_id(
     *,
     session: AsyncSession,
-    id_: int,
+    user_id: int,
 ) -> User | None:
     """Retrieve a user from the database by their ` id `.
 
     Args:
         session (AsyncSession): The database session.
-        id_ (int): The ` id ` of the user to retrieve.
+        user_id (int): The ` id ` of the user to retrieve.
 
     Returns:
         The ` User ` instance if found, otherwise ` None `.
@@ -69,15 +69,17 @@ async def get_user_by_id(
     Example:
         >>> user = await get_user_by_id(
         ...     session=session,
-        ...     id_=1,
+        ...     user_id=1,
         ... )
         >>> if user:
-        >>>     print(f"User found: {user.display_name}")
-        >>> else:
-        >>>     print("User not found.")
+        ...     print(
+        ...         f"User found: {user.display_name}"
+        ...     )
+        ... else:
+        ...     print("User not found.")
     """
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.id == id_),
+        select(User).filter(User.id == user_id),
     )
     user: User | None = result.scalars().first()
 

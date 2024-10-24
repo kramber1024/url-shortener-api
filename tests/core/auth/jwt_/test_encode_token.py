@@ -1,12 +1,12 @@
 from typing import Any
 
-import jwt
+import jwt as pyjwt
 import pytest
 
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.config import settings
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 
 @pytest.mark.parametrize(
@@ -14,11 +14,11 @@ from tests import utils
     ["access", "refresh"],
 )
 def test__encode_token_types(
-    jwt_type: jwt_._TokenType,
+    jwt_type: jwt._TokenType,
     user_credentials: User,
     current_time: int,
 ) -> None:
-    token: str = jwt_._encode_token(
+    token: str = jwt._encode_token(
         jwt_type,
         payload={
             "sub": str(user_credentials.id),
@@ -27,8 +27,8 @@ def test__encode_token_types(
         current_time=current_time,
     )
 
-    decoded_header: dict[str, Any] = jwt.get_unverified_header(token)
-    decoded_payload: Any = jwt.decode(
+    decoded_header: dict[str, Any] = pyjwt.get_unverified_header(token)
+    decoded_payload: Any = pyjwt.decode(
         token,
         key=settings.jwt.SECRET,
         algorithms=[settings.jwt.ALGORITHM],
@@ -42,5 +42,8 @@ def test__encode_token_types(
     assert len(decoded_payload) == len(["sub", "email", "exp", "iat"])
     assert decoded_payload.get("sub", -1) == str(user_credentials.id)
     assert decoded_payload.get("email", -1) == user_credentials.email
-    assert decoded_payload.get("exp", -1) == utils.get_token_exp(jwt_type, current_time)
+    assert decoded_payload.get("exp", -1) == testing_utils.get_token_exp(
+        jwt_type,
+        current_time,
+    )
     assert decoded_payload["iat"] == current_time

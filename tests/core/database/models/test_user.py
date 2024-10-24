@@ -1,6 +1,6 @@
 from app.core.config import settings
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 
 def test_user_display_name() -> None:
@@ -80,7 +80,7 @@ def test__format_email_uppercase() -> None:
         password="",
     )
 
-    assert user.email == utils.format_email(email)
+    assert user.email == testing_utils.format_email(email)
 
 
 def test__format_email_linvalid_email() -> None:
@@ -107,7 +107,9 @@ def test__hash_password() -> None:
     )
 
     assert user.password != password
-    assert user.password.startswith(f"$2b${str(settings.db.SALT_ROUNDS).zfill(2)}$")
+    assert user.password.startswith(
+        f"$2b${str(settings.db.SALT_ROUNDS).zfill(2)}$"
+    )
 
 
 def test_user_repr() -> None:

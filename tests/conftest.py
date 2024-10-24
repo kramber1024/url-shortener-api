@@ -13,7 +13,7 @@ from app.core.database import Database
 from app.core.database import db as app_db
 from app.core.database.models import Status, User
 from app.main import app
-from tests import utils
+from tests import testing_utils
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -71,10 +71,10 @@ async def client(db: Database) -> AsyncGenerator[AsyncClient, None]:
 @pytest_asyncio.fixture
 async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
     user: User = User(
-        first_name=utils.USER_FIRST_NAME,
-        last_name=utils.USER_LAST_NAME,
-        email=utils.USER_EMAIL,
-        password=utils.USER_PASSWORD,
+        first_name=testing_utils.USER_FIRST_NAME,
+        last_name=testing_utils.USER_LAST_NAME,
+        email=testing_utils.USER_EMAIL,
+        password=testing_utils.USER_PASSWORD,
     )
     session.add(user)
     await session.commit()
@@ -99,13 +99,13 @@ async def db_user(session: AsyncSession) -> AsyncGenerator[User, None]:
 @pytest.fixture
 def user_credentials() -> User:
     user: User = User(
-        first_name=utils.USER_FIRST_NAME,
-        last_name=utils.USER_LAST_NAME,
-        email=utils.USER_EMAIL,
-        password=utils.USER_PASSWORD,
+        first_name=testing_utils.USER_FIRST_NAME,
+        last_name=testing_utils.USER_LAST_NAME,
+        email=testing_utils.USER_EMAIL,
+        password=testing_utils.USER_PASSWORD,
     )
-    user.id = utils.USER_ID
-    user.phone = utils.USER_PHONE
+    user.id = testing_utils.USER_ID
+    user.phone = testing_utils.USER_PHONE
     return user
 
 

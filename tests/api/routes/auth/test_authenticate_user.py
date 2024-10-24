@@ -6,7 +6,7 @@ from httpx import AsyncClient, Response
 
 from app.core.config import settings
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 if TYPE_CHECKING:
     from tests.api.types_ import Json
@@ -19,7 +19,7 @@ async def test_authenticate_user(
 ) -> None:
     json: Json = {
         "email": db_user.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
     }
 
     response: Response = await client.post(
@@ -41,7 +41,7 @@ async def test_authenticate_user_incorrect_email(
 ) -> None:
     json: Json = {
         "email": db_user.email + "a",
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
     }
 
     response: Response = await client.post(
@@ -64,7 +64,7 @@ async def test_authenticate_user_incorrect_password(
 ) -> None:
     json: Json = {
         "email": db_user.email,
-        "password": utils.USER_PASSWORD[::-1],
+        "password": testing_utils.USER_PASSWORD[::-1],
     }
 
     response: Response = await client.post(
@@ -87,7 +87,7 @@ async def test_authenticate_user_incorrect_all(
 ) -> None:
     json: Json = {
         "email": db_user.email + "a",
-        "password": utils.USER_PASSWORD[::-1],
+        "password": testing_utils.USER_PASSWORD[::-1],
     }
 
     response: Response = await client.post(
@@ -122,7 +122,7 @@ async def test_authenticate_user_invalid_email(
 ) -> None:
     json: Json = {
         "email": email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
     }
 
     response: Response = await client.post(
@@ -132,9 +132,12 @@ async def test_authenticate_user_invalid_email(
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "email")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
 
 
 @pytest.mark.asyncio
@@ -152,7 +155,7 @@ async def test_authenticate_user_invalid_password(
     client: AsyncClient,
 ) -> None:
     json: Json = {
-        "email": utils.USER_EMAIL,
+        "email": testing_utils.USER_EMAIL,
         "password": password,
     }
 
@@ -163,9 +166,12 @@ async def test_authenticate_user_invalid_password(
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "password")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
 
 
 @pytest.mark.asyncio
@@ -184,10 +190,13 @@ async def test_authenticate_user_invalid_all(
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == len(["email", "password"])
-    assert utils.error_type_exists(response.json(), "email")
-    assert utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "password")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
 
 
 @pytest.mark.asyncio
@@ -201,7 +210,10 @@ async def test_authenticate_user_empty(
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == len(["email", "password"])
-    assert utils.error_type_exists(response.json(), "email")
-    assert utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "password")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )

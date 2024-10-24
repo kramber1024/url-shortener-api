@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 if TYPE_CHECKING:
     from httpx import Response
@@ -27,7 +27,7 @@ async def test_register_user(
         "first_name": user_credentials.first_name,
         "last_name": str(user_credentials.last_name),
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -37,7 +37,9 @@ async def test_register_user(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -45,13 +47,13 @@ async def test_register_user(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -87,7 +89,7 @@ async def test_register_user_first_name(
         "first_name": first_name,
         "last_name": user_credentials.last_name,
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -97,7 +99,9 @@ async def test_register_user_first_name(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -105,13 +109,13 @@ async def test_register_user_first_name(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == validated_first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -147,7 +151,7 @@ async def test_register_user_last_name(
     json: Json = {
         "first_name": user_credentials.first_name,
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -160,7 +164,9 @@ async def test_register_user_last_name(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -168,13 +174,13 @@ async def test_register_user_last_name(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == validated_last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -208,7 +214,7 @@ async def test_register_user_email(
         "first_name": user_credentials.first_name,
         "last_name": user_credentials.last_name,
         "email": email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -226,13 +232,13 @@ async def test_register_user_email(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == validated_email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -271,7 +277,9 @@ async def test_register_user_password(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -279,7 +287,7 @@ async def test_register_user_password(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
@@ -305,7 +313,7 @@ async def test_register_user_terms(
         "first_name": user_credentials.first_name,
         "last_name": user_credentials.last_name,
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -315,7 +323,9 @@ async def test_register_user_terms(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -323,13 +333,13 @@ async def test_register_user_terms(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_201_CREATED
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -349,7 +359,7 @@ async def test_register_user_email_conflict(
     json: Json = {
         "first_name": user_credentials.first_name,
         "email": db_user.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -359,7 +369,9 @@ async def test_register_user_email_conflict(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(db_user.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(db_user.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -367,13 +379,13 @@ async def test_register_user_email_conflict(
     assert response.json().get("message", "")
     assert response.json().get("status", -1) == status.HTTP_409_CONFLICT
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == user.id
     assert not user.status.email_verified
@@ -402,7 +414,7 @@ async def test_register_user_invalid_first_name(
     json: Json = {
         "first_name": first_name,
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -412,15 +424,20 @@ async def test_register_user_invalid_first_name(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "first_name")
+    assert testing_utils.error_type_exists(response.json(), "first_name")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -444,7 +461,7 @@ async def test_register_user_invalid_last_name(
         "first_name": user_credentials.first_name,
         "last_name": last_name,
         "email": user_credentials.email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -454,15 +471,20 @@ async def test_register_user_invalid_last_name(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "last_name")
+    assert testing_utils.error_type_exists(response.json(), "last_name")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -488,7 +510,7 @@ async def test_register_user_invalid_email(
     json: Json = {
         "first_name": user_credentials.first_name,
         "email": email,
-        "password": utils.USER_PASSWORD,
+        "password": testing_utils.USER_PASSWORD,
         "terms": "on",
     }
 
@@ -498,15 +520,18 @@ async def test_register_user_invalid_email(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(email)),
+        select(User).filter(User.email == testing_utils.format_email(email)),
     )
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "email")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -539,15 +564,20 @@ async def test_register_user_invalid_password(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(user_credentials.email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(user_credentials.email)
+        ),
     )
     user: User | None = result.scalars().first()
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "password")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -576,9 +606,12 @@ async def test_register_user_invalid_terms(
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert len(response.json().get("errors", [])) == 1
-    assert utils.error_type_exists(response.json(), "terms")
+    assert testing_utils.error_type_exists(response.json(), "terms")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -605,7 +638,9 @@ async def test_register_user_invalid_all(
     )
 
     result: Result[tuple[User]] = await session.execute(
-        select(User).filter(User.email == utils.format_email(invalid_email)),
+        select(User).filter(
+            User.email == testing_utils.format_email(invalid_email)
+        ),
     )
     user: User | None = result.scalars().first()
 
@@ -619,13 +654,16 @@ async def test_register_user_invalid_all(
             "terms",
         ],
     )
-    assert utils.error_type_exists(response.json(), "first_name")
-    assert utils.error_type_exists(response.json(), "last_name")
-    assert utils.error_type_exists(response.json(), "email")
-    assert utils.error_type_exists(response.json(), "password")
-    assert utils.error_type_exists(response.json(), "terms")
+    assert testing_utils.error_type_exists(response.json(), "first_name")
+    assert testing_utils.error_type_exists(response.json(), "last_name")
+    assert testing_utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "terms")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user
 
 
@@ -655,10 +693,13 @@ async def test_register_user_empty(
             "terms",
         ],
     )
-    assert utils.error_type_exists(response.json(), "first_name")
-    assert utils.error_type_exists(response.json(), "email")
-    assert utils.error_type_exists(response.json(), "password")
-    assert utils.error_type_exists(response.json(), "terms")
+    assert testing_utils.error_type_exists(response.json(), "first_name")
+    assert testing_utils.error_type_exists(response.json(), "email")
+    assert testing_utils.error_type_exists(response.json(), "password")
+    assert testing_utils.error_type_exists(response.json(), "terms")
     assert response.json().get("message", "")
-    assert response.json().get("status", -1) == status.HTTP_422_UNPROCESSABLE_ENTITY
+    assert (
+        response.json().get("status", -1)
+        == status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
     assert not user

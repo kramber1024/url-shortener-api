@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 
 @pytest.mark.asyncio
@@ -16,17 +16,17 @@ async def test_create_user(
         first_name=user_credentials.first_name,
         last_name=user_credentials.last_name,
         email=user_credentials.email,
-        password=utils.USER_PASSWORD,
+        password=testing_utils.USER_PASSWORD,
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert user.last_name == user_credentials.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert not user.status
     assert not user.urls
 
@@ -41,7 +41,7 @@ async def test_create_user_two_in_a_row(
         first_name=user_credentials.first_name,
         last_name=user_credentials.last_name,
         email=user_credentials.email,
-        password=utils.USER_PASSWORD,
+        password=testing_utils.USER_PASSWORD,
     )
 
     user_2: User = await crud.create_user(
@@ -49,27 +49,27 @@ async def test_create_user_two_in_a_row(
         first_name=user_credentials.first_name,
         last_name=user_credentials.last_name,
         email=user_credentials.email + "ma",
-        password=utils.USER_PASSWORD,
+        password=testing_utils.USER_PASSWORD,
     )
 
     assert user_1
-    assert user_1.id in utils.SNOWFLAKE_RANGE
+    assert user_1.id in testing_utils.SNOWFLAKE_RANGE
     assert user_1.first_name == user_credentials.first_name
     assert user_1.last_name == user_credentials.last_name
     assert user_1.email == user_credentials.email
     assert not user_1.phone
-    assert user_1.password != utils.USER_PASSWORD
-    assert user_1.is_password_valid(utils.USER_PASSWORD)
+    assert user_1.password != testing_utils.USER_PASSWORD
+    assert user_1.is_password_valid(testing_utils.USER_PASSWORD)
     assert not user_1.status
     assert not user_1.urls
     assert user_2
-    assert user_2.id in utils.SNOWFLAKE_RANGE
+    assert user_2.id in testing_utils.SNOWFLAKE_RANGE
     assert user_2.first_name == user_credentials.first_name
     assert user_2.last_name == user_credentials.last_name
     assert user_2.email == user_credentials.email + "ma"
     assert not user_2.phone
-    assert user_2.password != utils.USER_PASSWORD
-    assert user_2.is_password_valid(utils.USER_PASSWORD)
+    assert user_2.password != testing_utils.USER_PASSWORD
+    assert user_2.is_password_valid(testing_utils.USER_PASSWORD)
     assert not user_2.status
     assert not user_2.urls
 
@@ -84,17 +84,17 @@ async def test_create_user_no_last_name(
         first_name=user_credentials.first_name,
         last_name=None,
         email=user_credentials.email,
-        password=utils.USER_PASSWORD,
+        password=testing_utils.USER_PASSWORD,
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name
     assert not user.last_name
     assert user.email == user_credentials.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert not user.status
     assert not user.urls
 
@@ -109,17 +109,19 @@ async def test_create_user_uppercase(
         first_name=user_credentials.first_name.upper(),
         last_name=str(user_credentials.last_name).upper(),
         email=user_credentials.email.upper(),
-        password=utils.USER_PASSWORD.upper(),
+        password=testing_utils.USER_PASSWORD.upper(),
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == user_credentials.first_name.upper()
     assert user.last_name == str(user_credentials.last_name).upper()
-    assert user.email == utils.format_email(user_credentials.email.upper())
+    assert user.email == testing_utils.format_email(
+        user_credentials.email.upper()
+    )
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD.upper()
-    assert user.is_password_valid(utils.USER_PASSWORD.upper())
+    assert user.password != testing_utils.USER_PASSWORD.upper()
+    assert user.is_password_valid(testing_utils.USER_PASSWORD.upper())
     assert not user.status
     assert not user.urls
 
@@ -137,7 +139,7 @@ async def test_create_user_empty(
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert not user.first_name
     assert not user.last_name
     assert not user.email
@@ -159,13 +161,13 @@ async def test_get_user_by_email(
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == db_user.first_name
     assert user.last_name == db_user.last_name
     assert user.email == db_user.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == db_user.id
     assert not user.status.email_verified
@@ -199,13 +201,13 @@ async def test_get_user_by_id(
     )
 
     assert user
-    assert user.id in utils.SNOWFLAKE_RANGE
+    assert user.id in testing_utils.SNOWFLAKE_RANGE
     assert user.first_name == db_user.first_name
     assert user.last_name == db_user.last_name
     assert user.email == db_user.email
     assert not user.phone
-    assert user.password != utils.USER_PASSWORD
-    assert user.is_password_valid(utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(testing_utils.USER_PASSWORD)
     assert user.status
     assert user.status.user_id == db_user.id
     assert not user.status.email_verified

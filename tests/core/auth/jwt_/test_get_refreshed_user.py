@@ -3,14 +3,14 @@ from fastapi import status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.exceptions import HTTPError
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
 
 @pytest.fixture
 def refresh_token(db_user: User, current_time: int) -> str:
-    return jwt_.generate_token(
+    return jwt.generate_token(
         "refresh",
         user_id=db_user.id,
         email=db_user.email,
@@ -23,19 +23,21 @@ async def test_get_refreshed_user(
     session: AsyncSession,
     refresh_token: str,
 ) -> None:
-    refreshed_user: User = await jwt_.get_refreshed_user(
+    refreshed_user: User = await jwt.get_refreshed_user(
         session=session,
         refresh_token=refresh_token,
     )
 
     assert refreshed_user
-    assert refreshed_user.id in utils.SNOWFLAKE_RANGE
-    assert refreshed_user.first_name == utils.USER_FIRST_NAME
-    assert refreshed_user.last_name == utils.USER_LAST_NAME
-    assert refreshed_user.email == utils.format_email(utils.USER_EMAIL)
+    assert refreshed_user.id in testing_utils.SNOWFLAKE_RANGE
+    assert refreshed_user.first_name == testing_utils.USER_FIRST_NAME
+    assert refreshed_user.last_name == testing_utils.USER_LAST_NAME
+    assert refreshed_user.email == testing_utils.format_email(
+        testing_utils.USER_EMAIL
+    )
     assert not refreshed_user.phone
-    assert refreshed_user.password != utils.USER_PASSWORD
-    assert refreshed_user.is_password_valid(utils.USER_PASSWORD)
+    assert refreshed_user.password != testing_utils.USER_PASSWORD
+    assert refreshed_user.is_password_valid(testing_utils.USER_PASSWORD)
     assert refreshed_user.status
     assert refreshed_user.status.user_id == refreshed_user.id
     assert not refreshed_user.status.email_verified
@@ -50,7 +52,7 @@ async def test_get_refreshed_user_none_token(
     session: AsyncSession,
 ) -> None:
     with pytest.raises(HTTPError) as exc:
-        await jwt_.get_refreshed_user(
+        await jwt.get_refreshed_user(
             session=session,
             refresh_token=None,
         )
@@ -66,7 +68,7 @@ async def test_get_refreshed_user_no_token(
     session: AsyncSession,
 ) -> None:
     with pytest.raises(HTTPError) as exc:
-        await jwt_.get_refreshed_user(
+        await jwt.get_refreshed_user(
             session=session,
         )
 
@@ -84,7 +86,7 @@ async def test_get_refreshed_user_no_user(
     id_: int = 5187728381231
     email: str = "Ettie94@gmail.com"
 
-    token: str = jwt_.generate_token(
+    token: str = jwt.generate_token(
         "refresh",
         user_id=id_,
         email=email,
@@ -92,7 +94,7 @@ async def test_get_refreshed_user_no_user(
     )
 
     with pytest.raises(HTTPError) as exc:
-        await jwt_.get_refreshed_user(
+        await jwt.get_refreshed_user(
             session=session,
             refresh_token=token,
         )
@@ -109,7 +111,7 @@ async def test_get_refreshed_user_invalid_token(
     user_credentials: User,
 ) -> None:
     with pytest.raises(HTTPError) as exc:
-        await jwt_.get_refreshed_user(
+        await jwt.get_refreshed_user(
             session=session,
             refresh_token=(
                 f"{user_credentials.email * 2}."

@@ -4,7 +4,7 @@ import pytest
 from fastapi import status
 from httpx import AsyncClient, Response
 
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.database.models import User
 
 _Tokens: TypeAlias = tuple[str, str]
@@ -21,14 +21,14 @@ def tokens(db_user: User, current_time: int) -> _Tokens:
 
     """
     # Subtract 10 seconds from the current time to prevent token collision.
-    access_token: str = jwt_.generate_token(
+    access_token: str = jwt.generate_token(
         "access",
         user_id=db_user.id,
         email=db_user.email,
         current_time=current_time - 10,
     )
 
-    refresh_token: str = jwt_.generate_token(
+    refresh_token: str = jwt.generate_token(
         "refresh",
         user_id=db_user.id,
         email=db_user.email,

@@ -3,12 +3,12 @@ from typing import Any, TypeAlias
 import jwt
 import pytest
 
-from app.core.auth import jwt_
+from app.core.auth import jwt
 from app.core.config import settings
 from app.core.database.models import User
-from tests import utils
+from tests import testing_utils
 
-_DecodedPayload: TypeAlias = jwt_._TokenPayload | None
+_DecodedPayload: TypeAlias = jwt._TokenPayload | None
 
 
 @pytest.mark.parametrize(
@@ -16,11 +16,11 @@ _DecodedPayload: TypeAlias = jwt_._TokenPayload | None
     ["access", "refresh"],
 )
 def test_get_token_payload_access(
-    jwt_type: jwt_._TokenType,
+    jwt_type: jwt._TokenType,
     user_credentials: User,
     current_time: int,
 ) -> None:
-    token: str = jwt_.generate_token(
+    token: str = jwt.generate_token(
         jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
@@ -28,7 +28,7 @@ def test_get_token_payload_access(
     )
 
     decoded_header: dict[str, Any] = jwt.get_unverified_header(token)
-    decoded_payload: _DecodedPayload = jwt_.get_token_payload(
+    decoded_payload: _DecodedPayload = jwt._get_token_payload(
         token,
         jwt_type,
     )
@@ -41,7 +41,10 @@ def test_get_token_payload_access(
     assert len(decoded_payload) == len(["sub", "email", "exp", "iat"])
     assert decoded_payload.get("sub", -1) == str(user_credentials.id)
     assert decoded_payload.get("email", -1) == user_credentials.email
-    assert decoded_payload.get("exp", -1) == utils.get_token_exp(jwt_type, current_time)
+    assert decoded_payload.get("exp", -1) == testing_utils.get_token_exp(
+        jwt_type,
+        current_time,
+    )
     assert decoded_payload["iat"] == current_time
 
 
@@ -58,7 +61,7 @@ def test_get_token_payload_access(
     ],
 )
 def test_get_token_payload_invalid_token(token: str) -> None:
-    payload: _DecodedPayload = jwt_.get_token_payload(
+    payload: _DecodedPayload = jwt._get_token_payload(
         token,
         "access",
     )
@@ -74,19 +77,19 @@ def test_get_token_payload_invalid_token(token: str) -> None:
     ],
 )
 def test_get_token_payload_invalid_type(
-    jwt_type: jwt_._TokenType,
-    opposite_jwt_type: jwt_._TokenType,
+    jwt_type: jwt._TokenType,
+    opposite_jwt_type: jwt._TokenType,
     user_credentials: User,
     current_time: int,
 ) -> None:
-    token: str = jwt_.generate_token(
+    token: str = jwt.generate_token(
         jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
         current_time=current_time,
     )
 
-    payload: _DecodedPayload = jwt_.get_token_payload(
+    payload: _DecodedPayload = jwt._get_token_payload(
         token,
         opposite_jwt_type,
     )
@@ -99,18 +102,20 @@ def test_get_token_payload_invalid_type(
     ["access", "refresh"],
 )
 def test_get_token_payload_exired(
-    jwt_type: jwt_._TokenType,
+    jwt_type: jwt._TokenType,
     current_time: int,
     user_credentials: User,
 ) -> None:
-    token: str = jwt_.generate_token(
+    token: str = jwt.generate_token(
         jwt_type,
         user_id=user_credentials.id,
         email=user_credentials.email,
-        current_time=2 * current_time - utils.get_token_exp(jwt_type, current_time) - 1,
+        current_time=2 * current_time
+        - testing_utils.get_token_exp(jwt_type, current_time)
+        - 1,
     )
 
-    payload: _DecodedPayload = jwt_.get_token_payload(
+    payload: _DecodedPayload = jwt._get_token_payload(
         token,
         jwt_type,
     )
@@ -123,7 +128,7 @@ def test_get_token_payload_exired(
     ["access", "refresh"],
 )
 def test_get_token_payload_invalid_signature(
-    jwt_type: jwt_._TokenType,
+    jwt_type: jwt._TokenType,
     current_time: int,
     user_credentials: User,
 ) -> None:
@@ -145,7 +150,7 @@ def test_get_token_payload_invalid_signature(
         },
     )
 
-    decoded_payload: _DecodedPayload = jwt_.get_token_payload(
+    decoded_payload: _DecodedPayload = jwt._get_token_payload(
         token,
         "access",
     )

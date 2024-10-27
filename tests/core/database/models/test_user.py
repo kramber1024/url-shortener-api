@@ -3,60 +3,57 @@ from app.core.database.models import User
 from tests import testing_utils
 
 
-def test_user_display_name() -> None:
-    first_name: str = "Adonis"
-    last_name: str = "Miller"
-
+def test_user_display_name(user_credentials: User) -> None:
     user: User = User(
-        first_name=first_name,
-        last_name=last_name,
+        first_name=user_credentials.first_name,
+        last_name=user_credentials.last_name,
         email="",
         password="",
     )
 
-    assert user.display_name == f"{first_name} {last_name}"
+    assert (
+        user.display_name
+        == f"{user_credentials.first_name} {user_credentials.last_name}"
+    )
 
 
-def test_user_display_name_no_last_name() -> None:
-    first_name: str = "Briana"
-
+def test_user_display_name_no_last_name(user_credentials: User) -> None:
     user: User = User(
-        first_name=first_name,
+        first_name=user_credentials.first_name,
         last_name=None,
         email="",
         password="",
     )
 
-    assert user.display_name == first_name
+    assert user.display_name == user_credentials.first_name
 
 
 def test_is_password_valid_success() -> None:
-    password: str = "XpRWZM113tlKo6v"
-
     user: User = User(
         first_name="",
         last_name="",
         email="",
-        password=password,
+        password=testing_utils.USER_PASSWORD,
     )
 
-    assert user.is_password_valid(password=password)
-    assert user.password != password
+    assert user.is_password_valid(password=testing_utils.USER_PASSWORD)
+    assert user.password != testing_utils.USER_PASSWORD
 
 
 def test_is_password_valid_failure() -> None:
-    password: str = "RLV_bzHRWN7s_et"
-
     user: User = User(
         first_name="",
         last_name="",
         email="",
-        password=password,
+        password=testing_utils.USER_PASSWORD,
     )
 
-    assert not user.is_password_valid(password=password[::-1])
+    assert not user.is_password_valid(
+        password=testing_utils.USER_PASSWORD[::-1],
+    )
 
 
+# Update
 def test__format_email() -> None:
     email: str = "Harmony_Ebert4@gmail.com"
 

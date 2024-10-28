@@ -230,7 +230,7 @@ async def authenticate_user(
 def refresh_user(
     user: Annotated[
         User,
-        Depends(jwt.get_refreshed_user),
+        Depends(jwt.refreshed_user),
     ],
 ) -> JSONResponse:
     response: JSONResponse = JSONResponse(

@@ -134,7 +134,7 @@ async def _generate_unique_slug(
 async def create_url(
     user: Annotated[
         User,
-        Depends(jwt.get_current_user),
+        Depends(jwt.current_user),
     ],
     create_url: Annotated[
         schemes.CreateUrl,

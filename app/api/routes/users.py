@@ -36,7 +36,7 @@ router: APIRouter = APIRouter(
 def get_users_me(
     user: Annotated[
         User,
-        Depends(jwt.get_current_user),
+        Depends(jwt.current_user),
     ],
 ) -> JSONResponse:
     return JSONResponse(
@@ -80,7 +80,7 @@ def get_users_me(
 async def get_users_me_urls(
     user: Annotated[
         User,
-        Depends(jwt.get_current_user),
+        Depends(jwt.current_user),
     ],
 ) -> JSONResponse:
     return JSONResponse(

@@ -109,14 +109,11 @@ def generate_token(
     Example:
     -------
     >>> jwt_type = "access"
-    >>> user_id = 1234567890
-    >>> email = "email@example.com"
-    >>> current_time = 1719956372
     >>> generate_token(
     ...     jwt_type,
-    ...     user_id,
-    ...     email,
-    ...     current_time,
+    ...     user_id=1234567890,
+    ...     email="email@example.com",
+    ...     current_time=1719956372,
     ... )
     ... (
     ...     "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOiIxMjM0N"
@@ -183,7 +180,7 @@ def _get_token_payload(
     return token_payload
 
 
-async def get_current_user(
+async def current_user(
     session: Annotated[
         AsyncSession,
         Depends(db.scoped_session),
@@ -227,7 +224,7 @@ async def get_current_user(
     return user
 
 
-async def get_refreshed_user(
+async def refreshed_user(
     session: Annotated[
         AsyncSession,
         Depends(db.scoped_session),

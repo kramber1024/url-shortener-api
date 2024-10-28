@@ -1,11 +1,11 @@
 from .jwt import (
+    current_user,
     generate_token,
-    get_current_user,
-    get_refreshed_user,
+    refreshed_user,
 )
 
 __all__ = (
+    "current_user",
     "generate_token",
-    "get_current_user",
-    "get_refreshed_user",
+    "refreshed_user",
 )

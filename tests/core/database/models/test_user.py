@@ -1,9 +1,29 @@
-from app.core.config import settings
 from app.core.database.models import User
 from tests import testing_utils
 
 
-def test_user_display_name(user_credentials: User) -> None:
+def test_tablename() -> None:
+    assert User.__tablename__ == "Users"
+
+
+def test_init(user_credentials: User) -> None:
+    user: User = User(
+        first_name=user_credentials.first_name,
+        last_name=user_credentials.last_name,
+        email=testing_utils.USER_EMAIL,
+        password=testing_utils.USER_PASSWORD,
+    )
+
+    assert user.first_name == user_credentials.first_name
+    assert user.last_name == user_credentials.last_name
+    assert user.email != testing_utils.USER_EMAIL
+    assert user.email == testing_utils.format_email(testing_utils.USER_EMAIL)
+    assert not user.phone
+    assert user.password != testing_utils.USER_PASSWORD
+    assert user.password.startswith("$2b$")
+
+
+def test_display_name(user_credentials: User) -> None:
     user: User = User(
         first_name=user_credentials.first_name,
         last_name=user_credentials.last_name,
@@ -17,7 +37,7 @@ def test_user_display_name(user_credentials: User) -> None:
     )
 
 
-def test_user_display_name_no_last_name(user_credentials: User) -> None:
+def test_display_name_no_last_name(user_credentials: User) -> None:
     user: User = User(
         first_name=user_credentials.first_name,
         last_name=None,
@@ -28,7 +48,7 @@ def test_user_display_name_no_last_name(user_credentials: User) -> None:
     assert user.display_name == user_credentials.first_name
 
 
-def test_is_password_valid_success() -> None:
+def test_is_password_valid() -> None:
     user: User = User(
         first_name="",
         last_name="",
@@ -36,8 +56,9 @@ def test_is_password_valid_success() -> None:
         password=testing_utils.USER_PASSWORD,
     )
 
-    assert user.is_password_valid(password=testing_utils.USER_PASSWORD)
-    assert user.password != testing_utils.USER_PASSWORD
+    assert user.is_password_valid(
+        password=testing_utils.USER_PASSWORD,
+    )
 
 
 def test_is_password_valid_failure() -> None:
@@ -53,35 +74,24 @@ def test_is_password_valid_failure() -> None:
     )
 
 
-# Update
 def test__format_email() -> None:
-    email: str = "Harmony_Ebert4@gmail.com"
-
-    user: User = User(
-        first_name="",
-        last_name="",
-        email=email,
-        password="",
+    assert User._format_email(
+        testing_utils.USER_EMAIL,
+    ) == testing_utils.format_email(
+        testing_utils.USER_EMAIL,
     )
-
-    assert user.email == email
 
 
 def test__format_email_uppercase() -> None:
-    email: str = "Reba41@gmail.com".upper()
-
-    user: User = User(
-        first_name="",
-        last_name="",
-        email=email,
-        password="",
+    assert User._format_email(
+        testing_utils.USER_EMAIL.upper(),
+    ) == testing_utils.format_email(
+        testing_utils.USER_EMAIL.upper(),
     )
-
-    assert user.email == testing_utils.format_email(email)
 
 
 def test__format_email_linvalid_email() -> None:
-    email: str = "Beatrice Leffler"
+    email: str = "I_am_invalid_email"
 
     user: User = User(
         first_name="",
@@ -94,30 +104,32 @@ def test__format_email_linvalid_email() -> None:
 
 
 def test__hash_password() -> None:
-    password: str = "KDaN1dezEOWlNle"
+    hashed_password: str = User._hash_password(testing_utils.USER_PASSWORD)
 
+    assert hashed_password != testing_utils.USER_PASSWORD
+    assert hashed_password.startswith("$2b$")
+
+
+def test_repr(user_credentials: User) -> None:
     user: User = User(
-        first_name="",
-        last_name=None,
-        email="",
-        password=password,
-    )
-
-    assert user.password != password
-    assert user.password.startswith(
-        f"$2b${str(settings.db.SALT_ROUNDS).zfill(2)}$",
-    )
-
-
-def test_user_repr() -> None:
-    first_name: str = "Grayson"
-    last_name: str = "Jaskolski"
-
-    user: User = User(
-        first_name=first_name,
-        last_name=last_name,
+        first_name=user_credentials.first_name,
+        last_name=user_credentials.last_name,
         email="",
         password="",
     )
 
-    assert repr(user) == f"<User {first_name} {last_name}>"
+    assert (
+        repr(user)
+        == f"<User {user_credentials.first_name} {user_credentials.last_name}>"
+    )
+
+
+def test_repr_no_last_name(user_credentials: User) -> None:
+    user: User = User(
+        first_name=user_credentials.first_name,
+        last_name=None,
+        email="",
+        password="",
+    )
+
+    assert repr(user) == f"<User {user_credentials.first_name}>"

@@ -77,7 +77,7 @@ class User(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
         )
 
     @staticmethod
-    def _format_email(email: str) -> str:
+    def _format_email(email: str, /) -> str:
         if "@" not in email:
             return email
 
@@ -85,7 +85,7 @@ class User(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
         return f"{email_splitted[0]}@{email_splitted[1].lower()}"
 
     @staticmethod
-    def _hash_password(password: str) -> str:
+    def _hash_password(password: str, /) -> str:
         return bcrypt.hashpw(
             password.encode("utf-8"),
             bcrypt.gensalt(rounds=settings.db.SALT_ROUNDS),

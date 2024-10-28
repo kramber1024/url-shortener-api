@@ -18,7 +18,7 @@ def error_type_exists(json: dict[str, Any], error_type: str) -> bool:
     return any(error.get("type") == error_type for error in errors)
 
 
-def format_email(email: str) -> str:
+def format_email(email: str, /) -> str:
     if "@" not in email:
         return email
     email_splitted: list[str] = email.split("@")

@@ -274,12 +274,13 @@ async def test_current_user_none_token(
 @pytest.mark.asyncio
 async def test_current_user_no_user(
     session: AsyncSession,
+    user_credentials: User,
     current_time: int,
 ) -> None:
     token: str = jwt.generate_token(
         "access",
-        user_id=-1,
-        email="",
+        user_id=user_credentials.id,
+        email=user_credentials.email,
         current_time=current_time,
     )
 
@@ -378,15 +379,13 @@ async def test_refreshed_user_no_token(
 @pytest.mark.asyncio
 async def test_refreshed_user_no_user(
     session: AsyncSession,
+    user_credentials: User,
     current_time: int,
 ) -> None:
-    id_: int = 5187728381231
-    email: str = "Ettie94@gmail.com"
-
     token: str = jwt.generate_token(
         "refresh",
-        user_id=id_,
-        email=email,
+        user_id=user_credentials.id,
+        email=user_credentials.email,
         current_time=current_time,
     )
 

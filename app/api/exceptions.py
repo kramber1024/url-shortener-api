@@ -45,6 +45,7 @@ class HTTPError(HTTPException):
 
     def __init__(
         self,
+        *,
         errors: list[_ErrorDict],
         message: str,
         status: int,

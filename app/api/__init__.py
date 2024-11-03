@@ -12,3 +12,5 @@ api: APIRouter = APIRouter(
 api.include_router(users.router, tags=["Users"])
 api.include_router(auth.router, tags=["Auth"])
 api.include_router(urls.router, tags=["Urls"])
+
+__all__: tuple[str, ...] = ("api",)

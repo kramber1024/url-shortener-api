@@ -16,6 +16,25 @@ async def create_url(
     slug: str,
     address: str,
 ) -> Url:
+    """Create a new url and commit it to the database.
+
+    Args:
+        session (AsyncSession): The database session.
+        user_id (int): The ` id ` of the user that owns new url.
+        slug (str): The short URL address.
+        address (str): The long URL address.
+
+    Returns:
+        The newly created ` Url ` instance.
+
+    Example:
+        >>> url = await create_url(
+        ...     session=session,
+        ...     user_id=123,
+        ...     slug="clickme",
+        ...     address="https://example.com/",
+        ... )
+    """
     url: Url = Url(
         user_id=user_id,
         slug=slug,

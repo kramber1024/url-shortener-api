@@ -61,10 +61,10 @@ def _base10_to_urlsafe_base64(number: int, /) -> str:
 
 async def _generate_unique_slug(
     *,
-    current_time: int,
     session: AsyncSession,
     max_url_length: int,
     random_number: int | None = None,
+    current_time: int,
 ) -> str:
     """Generate a random unique slug.
 
@@ -195,9 +195,9 @@ async def create_url(
     if create_url.slug is None:
         try:
             create_url.slug = await _generate_unique_slug(
-                current_time=utils.now(),
                 session=session,
                 max_url_length=settings.data.SHORT_URL_MAX_LENGTH,
+                current_time=utils.now(),
             )
         except ValueError as error:
             raise HTTPError(

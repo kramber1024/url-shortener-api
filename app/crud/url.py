@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import select
+from sqlalchemy import desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database.models import Url
@@ -52,7 +52,7 @@ async def get_url_by_slug(
     session: AsyncSession,
     slug: str,
 ) -> Url | None:
-    """Get a ` Url ` by its slug.
+    """Retrieve a ` Url ` by its slug.
 
     Args:
         session (AsyncSession): The database session.
@@ -67,6 +67,33 @@ async def get_url_by_slug(
     url: Url | None = result.scalars().first()
 
     return url
+
+
+async def get_urls_by_page_and_limit(
+    *,
+    session: AsyncSession,
+    page: int,
+    limit: int,
+) -> list[Url]:
+    """Retrieve a paginated and sorted list of ` Url `.
+
+    Args:
+        session (AsyncSession): The database session.
+        page (int): The page number.
+        limit (int): The number of records per page.
+
+    Returns:
+        A list of ` Url ` records for the requested page.
+    """
+    result: Result[tuple[Url]] = await session.execute(
+        select(Url)
+        .order_by(desc(Url.created_at))
+        .offset((page - 1) * limit)
+        .limit(limit),
+    )
+    urls: list[Url] = list(result.scalars().all())
+
+    return urls
 
 
 async def update_url(

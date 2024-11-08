@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import JSONResponse
 
 from app.api import responses, schemes
@@ -82,7 +82,24 @@ async def get_users_me_urls(
         User,
         Depends(jwt.current_user),
     ],
+    page: Annotated[
+        int,
+        Query(
+            description="The page number",
+            ge=0,
+        ),
+    ] = 0,
+    limit: Annotated[
+        int,
+        Query(
+            title="Limit",
+            description="The number of records per page",
+            ge=1,
+            le=10,
+        ),
+    ] = 10,
 ) -> JSONResponse:
+    print(schemes.UrlList.from_model(user.urls).model_dump())
     return JSONResponse(
         content=schemes.UrlList.from_model(user.urls).model_dump(),
         status_code=status.HTTP_200_OK,

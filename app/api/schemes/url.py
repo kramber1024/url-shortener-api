@@ -1,9 +1,9 @@
 from typing import Annotated, TypeAlias
 
-import pydantic_core
 from pydantic import (
     BaseModel,
     Field,
+    HttpUrl,
     StringConstraints,
     UrlConstraints,
 )
@@ -32,7 +32,7 @@ _Slug: TypeAlias = Annotated[
 ]
 
 _Address: TypeAlias = Annotated[
-    pydantic_core.Url,
+    HttpUrl,
     UrlConstraints(
         max_length=settings.data.URL_MAX_LENGTH,
         allowed_schemes=["http", "https"],
@@ -91,7 +91,7 @@ class Url(_BaseUrl):
             id=str(model.id),
             total_clicks=model.total_clicks,
             slug=model.slug,
-            address=pydantic_core.Url(model.address),
+            address=HttpUrl(url=model.address),
             tags=[Tag.from_model(tag) for tag in model.tags],
         )
 

@@ -40,7 +40,7 @@ def get_users_me(
     ],
 ) -> JSONResponse:
     return JSONResponse(
-        content=schemes.User.from_model(user).model_dump(),
+        content=schemes.User.from_model(user).model_dump(mode="json"),
         status_code=status.HTTP_200_OK,
     )
 
@@ -99,8 +99,7 @@ async def get_users_me_urls(
         ),
     ] = 10,
 ) -> JSONResponse:
-    print(schemes.UrlList.from_model(user.urls).model_dump())
     return JSONResponse(
-        content=schemes.UrlList.from_model(user.urls).model_dump(),
+        content=schemes.UrlList.from_model(user.urls).model_dump(mode="json"),
         status_code=status.HTTP_200_OK,
     )

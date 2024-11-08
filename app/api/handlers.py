@@ -44,7 +44,7 @@ def request_validation_error_handler(
     )
 
     return JSONResponse(
-        content=response.model_dump(),
+        content=response.model_dump(mode="json"),
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
     )
 
@@ -68,6 +68,6 @@ def exception_handler(
             errors=[],
             message="Internal server error",
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        ).model_dump(),
+        ).model_dump(mode="json"),
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )

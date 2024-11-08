@@ -105,7 +105,7 @@ async def register_user(
         content=schemes.SuccessResponse(
             message="Account created successfully",
             status=status.HTTP_201_CREATED,
-        ).model_dump(),
+        ).model_dump(mode="json"),
         status_code=status.HTTP_201_CREATED,
     )
 
@@ -177,7 +177,7 @@ async def authenticate_user(
         content=schemes.SuccessResponse(
             message="User authenticated successfully",
             status=status.HTTP_200_OK,
-        ).model_dump(),
+        ).model_dump(mode="json"),
         status_code=status.HTTP_200_OK,
     )
     response.set_cookie(
@@ -237,7 +237,7 @@ def refresh_user(
         content=schemes.SuccessResponse(
             message="Tokens refreshed successfully",
             status=status.HTTP_200_OK,
-        ).model_dump(),
+        ).model_dump(mode="json"),
         status_code=status.HTTP_200_OK,
     )
     response.set_cookie(

@@ -69,4 +69,4 @@ class HTTPError(HTTPException):
             errors=errors_list,
             message=message,
             status=status,
-        ).model_dump()
+        ).model_dump(mode="json")

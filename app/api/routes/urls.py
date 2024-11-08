@@ -225,6 +225,6 @@ async def create_url(
         content=schemes.SuccessResponse(
             message="Url created successfully",
             status=status.HTTP_201_CREATED,
-        ).model_dump(),
+        ).model_dump(mode="json"),
         status_code=status.HTTP_201_CREATED,
     )

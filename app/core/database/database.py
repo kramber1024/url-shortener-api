@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.core.config import settings
-from app.core.database.models import Base
+from app.core.database.models import Model
 
 
 class Database:
@@ -52,7 +52,7 @@ class Database:
 
         if not Path.exists(Path(self._url)):
             async with self.engine.begin() as connection:
-                await connection.run_sync(Base.metadata.create_all)
+                await connection.run_sync(Model.metadata.create_all)
 
 
 db: Database = Database(

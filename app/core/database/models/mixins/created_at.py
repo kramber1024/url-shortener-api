@@ -18,7 +18,7 @@ class CreatedAtMixin:
 
     Example:
         >>> class User(
-        ...     Base, CreatedAtMixin
+        ...     Model, CreatedAtMixin
         ... ): ...
     """
 

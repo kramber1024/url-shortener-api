@@ -10,21 +10,10 @@ class CreatedAtMixin:
 
     Automatically sets the creation time of a record to the current timestamp
     when the record is created.
-
-    Attributes:
-        created_at (datetime): The timestamp indicating when the record was
-                               created. It is automatically set to the
-                               current time when the record is first created.
-
-    Example:
-        >>> class User(
-        ...     Model, CreatedAtMixin
-        ... ): ...
     """
 
-    __abstract__ = True
-
     _created_at: Mapped[datetime] = mapped_column(
+        "created_at",
         DateTime(),
         nullable=False,
         default=func.now(),
@@ -33,4 +22,9 @@ class CreatedAtMixin:
 
     @hybrid_property
     def created_at(self) -> datetime:
+        """The timestamp indicating when the record was created.
+
+        Returns:
+            datetime: The timestamp indicating when the record was created.
+        """
         return self._created_at

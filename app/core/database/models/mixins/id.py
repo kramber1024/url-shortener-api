@@ -8,18 +8,9 @@ from app.core.database.generator import id_generator
 class IDMixin:
     """Mixin for models that require an ` id ` primary column.
 
-    Generates a unique identifier using
+    It generates a unique identifier using
     [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID).
-
-    Attributes:
-        id (int): The unique identifier (Generated automatically).
-
-    Example:
-        >>> class User(Model, IDMixin): ...
-
     """
-
-    __abstract__ = True
 
     _id: Mapped[int] = mapped_column(
         "id",
@@ -33,4 +24,9 @@ class IDMixin:
 
     @hybrid_property
     def id(self) -> int:
+        """Unique identifier for the record.
+
+        Returns:
+            int: The unique identifier for the record.
+        """
         return self._id

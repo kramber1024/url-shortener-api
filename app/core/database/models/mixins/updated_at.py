@@ -9,18 +9,7 @@ class UpdatedAtMixin:
     """Mixin for models that require an ` updated_at ` timestamp column.
 
     Automatically tracks the last modification time of the record.
-
-    Attributes:
-        updated_at (datetime): The timestamp indicating when
-                               the record was last updated.
-
-    Example:
-        >>> class User(
-        ...     Model, UpdatedAtMixin
-        ... ): ...
     """
-
-    __abstract__ = True
 
     _updated_at: Mapped[datetime] = mapped_column(
         "updated_at",
@@ -33,4 +22,9 @@ class UpdatedAtMixin:
 
     @hybrid_property
     def updated_at(self) -> datetime:
+        """The timestamp indicating when the record was last updated.
+
+        Returns:
+            datetime: The timestamp indicating when the record was last updated.
+        """
         return self._updated_at

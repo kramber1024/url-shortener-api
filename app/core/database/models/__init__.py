@@ -6,4 +6,4 @@ from .tag import Tag
 from .url import Url
 from .user import User
 
-__all__ = ("Base", "Click", "Network", "Status", "Tag", "Url", "User")
+__all__ = ["Base", "Click", "Network", "Status", "Tag", "Url", "User"]

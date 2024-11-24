@@ -14,10 +14,10 @@ ignore = [
   "D105",   # Disable check for missing docstring in magic method
   "D106",   # Disable check for missing docstring in public nested class
   "D107",   # Disable check for missing docstring in __init__
-  "ANN101", # Disable check for missing type annotation for self in method
   "CPY001", # Disable check for copyright notice
   "D203",   # Disable check for 1 blank line before class docstring
   "D213",   # Disable check for 1 blank line before method/function docstring
+  "PLW3201" # Disable check for dunder methods
 ]
 fixable = ["ALL"]
 unfixable = ["F401"] # Disable check for unused imports

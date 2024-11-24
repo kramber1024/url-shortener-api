@@ -5,16 +5,16 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
 
-from .base import Base
-from .mixins import CreatedAtMixin, IDMixin, UpdatedAtMixin
+from .mixins import CreatedAtMixin, IDMixin, TableNameMixin, UpdatedAtMixin
+from .model import Model
+from .user import User
 
 if TYPE_CHECKING:
     from .click import Click
     from .tag import Tag
-    from .user import User
 
 
-class Url(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
+class Url(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
     """Model for short URLs.
 
     Attributes:
@@ -28,18 +28,16 @@ class Url(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
 
     """
 
-    __tablename__: str = "Urls"
-
     user_id: Mapped[int] = mapped_column(
-        Integer(),
-        ForeignKey("Users.id"),
+        "user_id",
+        ForeignKey(f"{User.__tablename__}.id"),
         primary_key=True,
         nullable=False,
     )
     slug: Mapped[str] = mapped_column(
         String(settings.data.SHORT_URL_MAX_LENGTH),
-        unique=True,
         nullable=False,
+        unique=True,
     )
     address: Mapped[str] = mapped_column(
         String(settings.data.URL_MAX_LENGTH),

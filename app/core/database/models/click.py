@@ -1,16 +1,12 @@
-from typing import TYPE_CHECKING
-
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
-from .mixins import CreatedAtMixin, IDMixin
-
-if TYPE_CHECKING:
-    from .url import Url
+from .mixins import CreatedAtMixin, IDMixin, TableNameMixin
+from .model import Model
+from .url import Url
 
 
-class Click(Base, IDMixin, CreatedAtMixin):
+class Click(Model, TableNameMixin, IDMixin, CreatedAtMixin):
     """Represents a click event on a shortened URL.
 
     See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
@@ -31,11 +27,8 @@ class Click(Base, IDMixin, CreatedAtMixin):
 
     """
 
-    __tablename__: str = "Clicks"
-
     url_id: Mapped[int] = mapped_column(
-        Integer(),
-        ForeignKey("Urls.id"),
+        ForeignKey(f"{Url.__tablename__}.id"),
         nullable=False,
     )
     ip: Mapped[str | None] = mapped_column(

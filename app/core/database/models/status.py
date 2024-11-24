@@ -1,11 +1,12 @@
-from sqlalchemy import Boolean, ForeignKey, Integer
+from sqlalchemy import Boolean, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import Base
-from .mixins import UpdatedAtMixin
+from .mixins import TableNameMixin, UpdatedAtMixin
+from .model import Model
+from .user import User
 
 
-class Status(Base, UpdatedAtMixin):
+class Status(Model, TableNameMixin, UpdatedAtMixin):
     """The status of a user, tracking their verification and membership details.
 
     Attributes:
@@ -20,11 +21,8 @@ class Status(Base, UpdatedAtMixin):
         premium (bool): Indicates whether the user has a premium membership.
     """
 
-    __tablename__: str = "Statuses"
-
     user_id: Mapped[int] = mapped_column(
-        Integer(),
-        ForeignKey("Users.id"),
+        ForeignKey(f"{User.__tablename__}.id"),
         primary_key=True,
         nullable=False,
     )

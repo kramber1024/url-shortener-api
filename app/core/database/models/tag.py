@@ -1,13 +1,14 @@
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.config import settings
 
-from .base import Base
-from .mixins import CreatedAtMixin, IDMixin
+from .mixins import CreatedAtMixin, IDMixin, TableNameMixin
+from .model import Model
+from .url import Url
 
 
-class Tag(Base, IDMixin, CreatedAtMixin):
+class Tag(Model, TableNameMixin, IDMixin, CreatedAtMixin):
     """Model for short URL tags.
 
     Attributes:
@@ -18,11 +19,8 @@ class Tag(Base, IDMixin, CreatedAtMixin):
 
     """
 
-    __tablename__: str = "Tags"
-
     url_id: Mapped[int] = mapped_column(
-        Integer(),
-        ForeignKey("Urls.id"),
+        ForeignKey(f"{Url.__tablename__}.id"),
         nullable=False,
     )
     name: Mapped[str] = mapped_column(

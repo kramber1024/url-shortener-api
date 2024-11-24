@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.config import settings
 
-from .base import Base
-from .mixins import CreatedAtMixin, IDMixin, UpdatedAtMixin
+from .mixins import CreatedAtMixin, IDMixin, TableNameMixin, UpdatedAtMixin
+from .model import Model
 
 if TYPE_CHECKING:
     from .status import Status
@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 _HASHED_PASSWORD_MAX_LENGTH: int = 64
 
 
-class User(Base, IDMixin, UpdatedAtMixin, CreatedAtMixin):
-    __tablename__: str = "Users"
-
+class User(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
     first_name: Mapped[str] = mapped_column(
         String(settings.data.FIRST_NAME_MAX_LENGTH),
         nullable=False,

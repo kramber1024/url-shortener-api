@@ -1,6 +1,6 @@
 from snowflake import SnowflakeGenerator
 
-from app.core.config import settings
+from app.core.settings import settings
 
 
 class IDGenerator:
@@ -23,4 +23,6 @@ class IDGenerator:
         return int(next(self._snowflake_generator))
 
 
-id_generator: IDGenerator = IDGenerator(worker_id=settings.db.WORKER_ID)
+id_generator: IDGenerator = IDGenerator(
+    worker_id=settings.database.DATABASE_WORKER_ID,
+)

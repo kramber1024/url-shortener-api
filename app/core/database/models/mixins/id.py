@@ -2,7 +2,7 @@ from sqlalchemy import Integer
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.database.generator import id_generator
+from app.core.database.id_generator import id_generator
 
 
 class IDMixin:

@@ -20,6 +20,7 @@ class JWTSettings(BaseSettings):
     JWT_SECRET: str = "JWT_SECRET"
     JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: int = 60
     JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS: int = 30
+    ALGORITHM: str = "HS256"
 
 
 class DevelopmentSettings(BaseSettings):

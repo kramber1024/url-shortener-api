@@ -1,6 +1,6 @@
 indent-width = 4
 line-length = 80
-target-version = "py311"
+target-version = "py312"
 respect-gitignore = true
 
 [lint]
@@ -17,7 +17,7 @@ ignore = [
   "CPY001", # Disable check for copyright notice
   "D203",   # Disable check for 1 blank line before class docstring
   "D213",   # Disable check for 1 blank line before method/function docstring
-  "PLW3201" # Disable check for dunder methods
+  "PLW3201" # Disable check for dunder methods # TODO: Move this to per-file-ignores
 ]
 fixable = ["ALL"]
 unfixable = ["F401"] # Disable check for unused imports

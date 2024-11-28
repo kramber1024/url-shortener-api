@@ -2,8 +2,8 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, EmailStr, Field, StringConstraints
 
-from app.core.config.data import Email, FirstName, LastName, Password
 from app.core.database import models
+from app.core.settings.data import Email, FirstName, LastName, Password
 
 from .fields import Id
 

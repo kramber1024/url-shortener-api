@@ -8,8 +8,8 @@ from pydantic import (
     UrlConstraints,
 )
 
-from app.core.config.data import Address, Slug, User
 from app.core.database import models
+from app.core.settings.data import Address, Slug, User
 
 from .fields import Id
 from .tag import Tag

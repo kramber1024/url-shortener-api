@@ -2,8 +2,8 @@ from typing import Annotated
 
 from pydantic import BaseModel, Field, StringConstraints
 
-from app.core.config.data import Name
 from app.core.database import models
+from app.core.settings.data import Name
 
 
 class Tag(BaseModel):

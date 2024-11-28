@@ -5,7 +5,7 @@ from app.core.database.models import Status
 
 async def create_status(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     user_id: int,
     active: bool,
     premium: bool,
@@ -16,7 +16,7 @@ async def create_status(
         premium=premium,
     )
 
-    session.add(status)
-    await session.commit()
-    await session.refresh(status)
+    async_session.add(status)
+    await async_session.commit()
+    await async_session.refresh(status)
     return status

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 async def create_url(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     user_id: int,
     slug: str,
     address: str,
@@ -19,21 +19,13 @@ async def create_url(
     """Create a new url and commit it to the database.
 
     Args:
-        session (AsyncSession): The database session.
+        async_session (AsyncSession): The database session.
         user_id (int): The ` id ` of the user that owns new url.
         slug (str): The short URL address.
         address (str): The long URL address.
 
     Returns:
         The newly created ` Url ` instance.
-
-    Example:
-        >>> url = await create_url(
-        ...     session=session,
-        ...     user_id=123,
-        ...     slug="clickme",
-        ...     address="https://example.com/",
-        ... )
     """
     url: Url = Url(
         user_id=user_id,
@@ -41,27 +33,27 @@ async def create_url(
         address=address,
     )
 
-    session.add(url)
-    await session.commit()
-    await session.refresh(url)
+    async_session.add(url)
+    await async_session.commit()
+    await async_session.refresh(url)
     return url
 
 
 async def get_url_by_slug(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     slug: str,
 ) -> Url | None:
     """Retrieve a ` Url ` by its slug.
 
     Args:
-        session (AsyncSession): The database session.
+        async_session (AsyncSession): The database session.
         slug (str): The slug of the ` Url `.
 
     Returns:
         The ` Url ` instance if found, otherwise ` None `.
     """
-    result: Result[tuple[Url]] = await session.execute(
+    result: Result[tuple[Url]] = await async_session.execute(
         select(Url).filter(Url.slug == slug),
     )
     url: Url | None = result.scalars().first()
@@ -71,21 +63,21 @@ async def get_url_by_slug(
 
 async def get_urls_by_page_and_limit(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     page: int,
     limit: int,
 ) -> list[Url]:
     """Retrieve a paginated and sorted list of ` Url `.
 
     Args:
-        session (AsyncSession): The database session.
+        async_session (AsyncSession): The database session.
         page (int): The page number.
         limit (int): The number of records per page.
 
     Returns:
         A list of ` Url ` records for the requested page.
     """
-    result: Result[tuple[Url]] = await session.execute(
+    result: Result[tuple[Url]] = await async_session.execute(
         select(Url)
         .order_by(desc(Url.created_at))
         .offset((page - 1) * limit)
@@ -98,7 +90,7 @@ async def get_urls_by_page_and_limit(
 
 async def update_url(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     url: Url,
     slug: str | None = None,
     address: str | None = None,
@@ -107,7 +99,7 @@ async def update_url(
     """Update the ` Url ` attributes with the given values.
 
     Args:
-        session (AsyncSession): The database session.
+        async_session (AsyncSession): The database session.
         url (Url): The ` Url ` instance to update.
         slug (str | None, optional): New slug.
         address (str | None, optional): New address.
@@ -120,7 +112,7 @@ async def update_url(
     url.address = address or url.address
     url.total_clicks = total_clicks or url.total_clicks
 
-    session.add(url)
-    await session.commit()
-    await session.refresh(url)
+    async_session.add(url)
+    await async_session.commit()
+    await async_session.refresh(url)
     return url

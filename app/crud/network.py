@@ -8,7 +8,7 @@ from app.core.database.models import Network
 
 async def create_network(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     address: str,
     mask: int,
     country: str,
@@ -19,22 +19,22 @@ async def create_network(
         country=country,
     )
 
-    session.add(network)
-    await session.commit()
-    await session.refresh(network)
+    async_session.add(network)
+    await async_session.commit()
+    await async_session.refresh(network)
     return network
 
 
 async def get_networks_by_ip(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     ip: str,
     octets: Literal[1, 2, 3],
 ) -> list[Network]:
     """Retrieve all networks that match the first ` octets ` of the ` ip `.
 
     Args:
-        session (AsyncSession): The database session.
+        async_session (AsyncSession): The database session.
         ip (str): The IP address to match.
         octets (Literal[1, 2, 3]): The number of octets to match \
             starting from left to right.
@@ -42,7 +42,7 @@ async def get_networks_by_ip(
     Returns:
         A list of ` Network ` instances that match the given ` ip `.
     """
-    result: Result[tuple[Network]] = await session.execute(
+    result: Result[tuple[Network]] = await async_session.execute(
         Select(Network).filter(
             Network.address.startswith(".".join(ip.split(".")[0:octets])),
         ),

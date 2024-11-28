@@ -5,7 +5,7 @@ from app.core.database.models import Tag
 
 async def create_tag(
     *,
-    session: AsyncSession,
+    async_session: AsyncSession,
     url_id: int,
     name: str,
 ) -> Tag:
@@ -14,7 +14,7 @@ async def create_tag(
         name=name,
     )
 
-    session.add(tag)
-    await session.commit()
-    await session.refresh(tag)
+    async_session.add(tag)
+    await async_session.commit()
+    await async_session.refresh(tag)
     return tag

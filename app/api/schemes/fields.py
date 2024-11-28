@@ -1,8 +1,8 @@
-from typing import Annotated, TypeAlias
+from typing import Annotated
 
 from pydantic import Field
 
-Id: TypeAlias = Annotated[
+Id = Annotated[
     str,
     Field(
         description="A unique identifier.",

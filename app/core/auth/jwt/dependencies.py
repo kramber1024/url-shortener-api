@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import Cookie, Depends, status
 from fastapi.security import APIKeyCookie
@@ -8,12 +8,10 @@ from app import crud
 from app.api.exceptions import HTTPError
 from app.core.database import database
 from app.core.database.models import User
+from app.core.settings import settings
 
 from .enums import TokenType
-from .jwt import (
-    TokenPayload,
-    get_token_payload,
-)
+from .jwt import get_token_payload
 
 api_key_cookie: APIKeyCookie = APIKeyCookie(
     name="access_token",
@@ -23,9 +21,9 @@ api_key_cookie: APIKeyCookie = APIKeyCookie(
 
 
 async def get_current_user(
-    session: Annotated[
+    async_session: Annotated[
         AsyncSession,
-        Depends(database.get_session),
+        Depends(database.get_async_session),
     ],
     access_token: Annotated[
         str | None,
@@ -39,12 +37,13 @@ async def get_current_user(
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    payload: TokenPayload | None = get_token_payload(
+    token_payload: dict[str, Any] | None = get_token_payload(
         TokenType.ACCESS,
         token=access_token,
+        key=settings.jwt.JWT_SECRET,
     )
 
-    if not payload:
+    if token_payload is None:
         raise HTTPError(
             errors=[],
             message="Invalid token",
@@ -52,8 +51,8 @@ async def get_current_user(
         )
 
     user: User | None = await crud.get_user_by_id(
-        session=session,
-        user_id=int(payload["sub"]),
+        async_session=async_session,
+        user_id=int(token_payload.get("sub", -1)),
     )
 
     if not user:
@@ -67,9 +66,9 @@ async def get_current_user(
 
 
 async def get_refreshed_user(
-    session: Annotated[
+    async_session: Annotated[
         AsyncSession,
-        Depends(database.get_session),
+        Depends(database.get_async_session),
     ],
     refresh_token: Annotated[
         str | None,
@@ -85,12 +84,13 @@ async def get_refreshed_user(
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-    payload: TokenPayload | None = get_token_payload(
+    token_payload: dict[str, Any] | None = get_token_payload(
         TokenType.REFRESH,
         token=refresh_token,
+        key=settings.jwt.JWT_SECRET,
     )
 
-    if not payload:
+    if token_payload is None:
         raise HTTPError(
             errors=[],
             message="Invalid token",
@@ -98,8 +98,8 @@ async def get_refreshed_user(
         )
 
     user: User | None = await crud.get_user_by_id(
-        session=session,
-        user_id=int(payload.get("sub", -1)),
+        async_session=async_session,
+        user_id=int(token_payload.get("sub", -1)),
     )
 
     if not user:

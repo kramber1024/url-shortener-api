@@ -17,15 +17,17 @@ ignore = [
   "CPY001", # Disable check for copyright notice
   "D203",   # Disable check for 1 blank line before class docstring
   "D213",   # Disable check for 1 blank line before method/function docstring
-  "PLW3201" # Disable check for dunder methods # TODO: Move this to per-file-ignores
 ]
 fixable = ["ALL"]
-unfixable = ["F401"] # Disable check for unused imports
+unfixable = ["F401"] # Disable fix for unused imports
 
 [lint.per-file-ignores]
-"**test**" = [
-  "S101",   # Disable check for use of assert in tests
-  "SLF001", # Disable check for use of private members in tests
+"./app/core/database/models/mixins/*.py" = [
+  "PLW3201" # Allow non-standart dunder name methods
+]
+"./tests/**/*.py" = [
+  "S101",   # Disable check for use of asserts
+  "SLF001", # Disable check for use of private members
 ]
 
 [lint.flake8-pytest-style]
@@ -68,7 +70,7 @@ max-complexity = 5
 
 [lint.pycodestyle]
 ignore-overlong-task-comments = false
-max-doc-length = 88
+max-doc-length = 80
 
 [lint.pylint]
 allow-magic-value-types = ["str", "bytes"]

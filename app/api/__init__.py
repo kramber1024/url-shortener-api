@@ -10,7 +10,7 @@ api: APIRouter = APIRouter(
     },
 )
 api.include_router(users.router, tags=["Users"])
-api.include_router(auth.router, tags=["Auth"])
 api.include_router(urls.router, tags=["Urls"])
+api.include_router(auth.router, tags=["Auth"])
 
-__all__: tuple[str, ...] = ("api",)
+__all__ = ["api"]

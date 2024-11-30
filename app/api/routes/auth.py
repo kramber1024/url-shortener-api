@@ -9,9 +9,10 @@ from app.api import responses, schemes
 from app.api.exceptions import HTTPError
 from app.core import utils
 from app.core.auth import jwt
-from app.core.config import settings
-from app.core.database import db
+from app.core.auth.jwt import TokenType
+from app.core.database import database
 from app.core.database.models import User
+from app.core.settings import settings
 
 router: APIRouter = APIRouter(prefix="/auth")
 
@@ -69,17 +70,14 @@ async def register_user(
         schemes.CreateUser,
         Body(),
     ],
-    session: Annotated[
+    async_session: Annotated[
         AsyncSession,
-        Depends(db.scoped_session),
+        Depends(database.get_async_session),
     ],
 ) -> JSONResponse:
-    if (
-        await crud.get_user_by_email(
-            session=session,
-            email=create_user.email,
-        )
-        is not None
+    if await crud.get_user_by_email(
+        async_session=async_session,
+        email=create_user.email,
     ):
         raise HTTPError(
             errors=[],
@@ -88,14 +86,14 @@ async def register_user(
         )
 
     user: User = await crud.create_user(
-        session=session,
+        async_session=async_session,
         first_name=create_user.first_name,
         last_name=create_user.last_name,
         email=create_user.email,
         password=create_user.password,
     )
     await crud.create_status(
-        session=session,
+        async_session=async_session,
         user_id=user.id,
         active=True,
         premium=False,
@@ -156,17 +154,17 @@ async def authenticate_user(
         schemes.LoginUser,
         Body(),
     ],
-    session: Annotated[
+    async_session: Annotated[
         AsyncSession,
-        Depends(db.scoped_session),
+        Depends(database.get_async_session),
     ],
 ) -> JSONResponse:
     user: User | None = await crud.get_user_by_email(
-        session=session,
+        async_session=async_session,
         email=login_user.email,
     )
 
-    if user is None or not user.is_password_valid(login_user.password):
+    if not user or not user.is_password_valid(login_user.password):
         raise HTTPError(
             errors=[],
             message="The email or password is incorrect",
@@ -183,28 +181,29 @@ async def authenticate_user(
     response.set_cookie(
         key="access_token",
         value=jwt.generate_token(
-            "access",
+            TokenType.ACCESS,
             user_id=user.id,
             email=user.email,
+            key=settings.jwt.JWT_SECRET,
             current_time=utils.now(),
         ),
-        max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
+        max_age=settings.jwt.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
         value=jwt.generate_token(
-            "refresh",
+            TokenType.REFRESH,
             user_id=user.id,
             email=user.email,
+            key=settings.jwt.JWT_SECRET,
             current_time=utils.now(),
         ),
-        max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,
+        max_age=settings.jwt.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,
     )
-
     return response
 
 
@@ -230,7 +229,7 @@ async def authenticate_user(
 def refresh_user(
     user: Annotated[
         User,
-        Depends(jwt.refreshed_user),
+        Depends(jwt.get_refreshed_user),
     ],
 ) -> JSONResponse:
     response: JSONResponse = JSONResponse(
@@ -243,26 +242,27 @@ def refresh_user(
     response.set_cookie(
         key="access_token",
         value=jwt.generate_token(
-            "access",
+            TokenType.ACCESS,
             user_id=user.id,
             email=user.email,
+            key=settings.jwt.JWT_SECRET,
             current_time=utils.now(),
         ),
-        max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_MINUTES * 60,
+        max_age=settings.jwt.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
         value=jwt.generate_token(
-            "refresh",
+            TokenType.REFRESH,
             user_id=user.id,
             email=user.email,
+            key=settings.jwt.JWT_SECRET,
             current_time=utils.now(),
         ),
-        max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60,
+        max_age=settings.jwt.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,
     )
-
     return response

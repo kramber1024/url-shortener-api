@@ -12,9 +12,9 @@ from app.api import responses, schemes
 from app.api.exceptions import HTTPError
 from app.core import utils
 from app.core.auth import jwt
-from app.core.config import settings
-from app.core.database import db
+from app.core.database import database
 from app.core.database.models import Url, User
+from app.core.settings.data import Slug
 
 router: APIRouter = APIRouter(
     prefix="/url",
@@ -33,16 +33,6 @@ def _base10_to_urlsafe_base64(number: int, /) -> str:
 
     Returns:
         The URL safe base 64 string.
-
-    Examples:
-    >>> url_safe_base64 = (
-    ...     base10_to_urlsafe_base64(
-    ...         123456789
-    ...     )
-    ... )
-    >>> print(url_safe_base64)
-    "B1vNFQ"
-
     """
     byte_representation: bytes = number.to_bytes(
         (number.bit_length() + 7) // 8,
@@ -84,15 +74,6 @@ async def _generate_unique_slug(
 
     Returns:
         str: A random unique slug.
-
-    Example:
-    >>> slug = await _generate_unique_slug(
-    ...     current_time=utils.now(),
-    ...     session=session,
-    ...     max_url_length=16,
-    ... )
-    >>> print(slug)
-    "KCvu2jY"
     """
     if random_number is None:
         random_number = secrets.randbelow(101)
@@ -102,7 +83,7 @@ async def _generate_unique_slug(
     )
     while len(slug) < max_url_length:
         existing_url: Url | None = await crud.get_url_by_slug(
-            session=session,
+            async_session=session,
             slug=slug,
         )
 
@@ -169,7 +150,7 @@ async def _generate_unique_slug(
 async def create_url(
     user: Annotated[
         User,
-        Depends(jwt.current_user),
+        Depends(jwt.get_current_user),
     ],
     create_url: Annotated[
         schemes.CreateUrl,
@@ -177,11 +158,11 @@ async def create_url(
     ],
     session: Annotated[
         AsyncSession,
-        Depends(db.scoped_session),
+        Depends(database.get_async_session),
     ],
 ) -> JSONResponse:
     if create_url.slug is not None and await crud.get_url_by_slug(
-        session=session,
+        async_session=session,
         slug=create_url.slug,
     ):
         return JSONResponse(
@@ -196,7 +177,7 @@ async def create_url(
         try:
             create_url.slug = await _generate_unique_slug(
                 session=session,
-                max_url_length=settings.data.SHORT_URL_MAX_LENGTH,
+                max_url_length=Slug.MAX_LENGTH,
                 current_time=utils.now(),
             )
         except ValueError as error:
@@ -207,7 +188,7 @@ async def create_url(
             ) from error
 
     url: Url = await crud.create_url(
-        session=session,
+        async_session=session,
         user_id=user.id,
         slug=create_url.slug,
         address=str(create_url.address),
@@ -216,7 +197,7 @@ async def create_url(
     tag_names: set[str] = {tag.name for tag in create_url.tags}
     for tag_name in tag_names:
         await crud.create_tag(
-            session=session,
+            async_session=session,
             url_id=url.id,
             name=tag_name,
         )

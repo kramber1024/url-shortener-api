@@ -1,4 +1,5 @@
-import asyncio
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -11,14 +12,23 @@ from app.api.handlers import (
     http_error_handler,
     request_validation_error_handler,
 )
-from app.core.config import settings
-from app.core.database import db
+from app.core.database import database
+from app.core.settings import settings
 from app.redirector import redirector
 
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    await database.create_tables(hard_rest=False)
+    yield
+    await database.shutdown()
+
+
 app: FastAPI = FastAPI(
-    title=f"{settings.app.NAME} - API",
+    title=f"{settings.app.APP_NAME} - API",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
+    lifespan=lifespan,
     root_path_in_servers=False,
 )
 app.include_router(api)
@@ -37,16 +47,10 @@ app.add_exception_handler(
 )
 
 
-async def main() -> None:
-    await db.create_db(hard_rest=False)
-
+if __name__ == "__main__":
     uvicorn.run(
         "app.main:app",
-        host=settings.dev.HOST,
-        port=settings.dev.PORT,
+        host=settings.development.DEVELOPMENT_HOST,
+        port=settings.development.DEVELOPMENT_PORT,
         reload=True,
     )
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

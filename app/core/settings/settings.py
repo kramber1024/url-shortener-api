@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -10,10 +8,7 @@ class AppSettings(BaseSettings):
 class DatabaseSettings(BaseSettings):
     DATABASE_WORKER_ID: int = 268
     DATABASE_SALT_ROUNDS: int = 16
-    SCHEME: str = "sqlite+aiosqlite:///"
-    URL: str = SCHEME + str(
-        Path(__file__).parent.parent / "database" / "database.sqlite3",
-    )
+    DATABASE_URL: str = "sqlite:///database.sqlite3"
 
 
 class JWTSettings(BaseSettings):

@@ -47,7 +47,7 @@ class Database:
         finally:
             await async_session.close()
 
-    async def create_db(self, *, hard_rest: bool) -> None:
+    async def create_tables(self, *, hard_rest: bool) -> None:
         if hard_rest and Path.exists(Path(self._url)):
             Path.unlink(Path(self._url))
 
@@ -57,5 +57,5 @@ class Database:
 
 
 database: Database = Database(
-    url=settings.database.URL,
+    url=settings.database.DATABASE_URL,
 )

@@ -44,7 +44,7 @@ def _encode_token(
         key=key,
         algorithm=algorithm,
         headers={
-            "typ": token_type,
+            "typ": token_type.value,
         },
         sort_headers=True,
     )

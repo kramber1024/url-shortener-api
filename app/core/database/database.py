@@ -1,6 +1,5 @@
 from asyncio import current_task
 from collections.abc import AsyncGenerator
-from pathlib import Path
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -47,13 +46,19 @@ class Database:
         finally:
             await async_session.close()
 
-    async def create_tables(self, *, hard_rest: bool) -> None:
-        if hard_rest and Path.exists(Path(self._url)):
-            Path.unlink(Path(self._url))
+    async def shutdown(self) -> None:
+        """Shutdown the database connections.
 
-        if not Path.exists(Path(self._url)):
-            async with self._async_engine.begin() as connection:
-                await connection.run_sync(Model.metadata.create_all)
+        This method ` must ` be called when the application is shutting down.
+        """
+        await self._async_engine.dispose(close=True)
+
+    async def create_tables(self, *, hard_reset: bool = False) -> None:
+        async with self._async_engine.begin() as connection:
+            if hard_reset:
+                await connection.run_sync(Model.metadata.drop_all)
+
+            await connection.run_sync(Model.metadata.create_all)
 
 
 database: Database = Database(

@@ -1,6 +1,6 @@
 from typing import Any, Literal
 
-from app.core.config import settings
+from app.core.settings import settings
 
 SNOWFLAKE_RANGE: range = range(10**18, 10**19)
 USER_ID: int = 1234567890123456789

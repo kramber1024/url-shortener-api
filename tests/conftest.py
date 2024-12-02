@@ -8,37 +8,36 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session
 
-from app.core.config import settings
 from app.core.database import Database
-from app.core.database import db as app_db
 from app.core.database.models import Status, User
+from app.core.settings import settings
 from app.main import app
 from tests import testing_utils
 
 
 @pytest.fixture(scope="session", autouse=True)
-def _setup() -> None:
-    settings.db.SALT_ROUNDS = 4
-    settings.db.URL = settings.db.URL.replace(
+def setup() -> None:
+    settings.database.DATABASE_SALT_ROUNDS = 4
+    settings.database.URL = settings.database.URL.replace(
         "database.sqlite3",
         "test_database.sqlite3",
     )
 
 
 @pytest_asyncio.fixture(scope="session")
-async def db() -> AsyncGenerator[Database, None]:
-    test_db: Database = Database(
-        url=settings.db.URL,
+async def database() -> AsyncGenerator[Database, None]:
+    test_database: Database = Database(
+        url=settings.database.URL,
     )
-    await test_db.create_db(hard_rest=True)
-    yield test_db
-    await test_db.engine.dispose()
+    await test_database.create_db(hard_rest=True)
+    yield test_database
+    await test_database.engine.dispose()
 
 
 @pytest_asyncio.fixture
 async def session(db: Database) -> AsyncGenerator[AsyncSession, None]:
     async_session: async_scoped_session[AsyncSession] = async_scoped_session(
-        session_factory=db.session_factory,
+        session_factory=db._async_sessionmaker,
         scopefunc=current_task,
     )
 

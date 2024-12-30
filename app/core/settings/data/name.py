@@ -1,7 +1,8 @@
-from enum import Enum, unique
+from enum import Enum
 
 
-@unique
 class Name(int, Enum):
-    MIN_LENGTH: int = len("a")
-    MAX_LENGTH: int = 32
+    """` Tag ` name length constraints."""
+
+    MIN_LENGTH = len("a")
+    MAX_LENGTH = 32

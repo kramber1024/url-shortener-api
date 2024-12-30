@@ -2,5 +2,7 @@ from enum import Enum
 
 
 class Slug(int, Enum):
-    MIN_LENGTH: int = len("a")
-    MAX_LENGTH: int = 256
+    """` Url ` slug length constraints."""
+
+    MIN_LENGTH = len("a")
+    MAX_LENGTH = 256

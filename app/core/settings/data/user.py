@@ -1,7 +1,8 @@
-from enum import Enum, unique
+from enum import Enum
 
 
-@unique
 class User(int, Enum):
-    MAX_URL_AMOUNT: int = 512
-    MAX_TAGS_PER_URL: int = 32
+    """` User ` related constraints."""
+
+    MAX_URL_AMOUNT = 512
+    MAX_TAGS_PER_URL = 32

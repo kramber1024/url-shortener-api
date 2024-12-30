@@ -2,5 +2,7 @@ from enum import Enum
 
 
 class Source(int, Enum):
-    MIN_LENGTH: int = len("http://a.b")
-    MAX_LENGTH: int = 2048
+    """` Url ` source length constraints."""
+
+    MIN_LENGTH = len("http://a.b")
+    MAX_LENGTH = 2048

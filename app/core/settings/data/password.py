@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Password(int, Enum):
-    MIN_LENGTH: int = 8
-    MAX_LENGTH: int = 256
-    HASHED_LENGTH: int = 128
+    """` User ` password length constraints."""
+
+    MIN_LENGTH = 8
+    MAX_LENGTH = 256
+    HASHED_LENGTH = 128

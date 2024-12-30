@@ -2,5 +2,7 @@ from enum import Enum
 
 
 class FirstName(int, Enum):
-    MIN_LENGTH: int = 3
-    MAX_LENGTH: int = 16
+    """` User ` first name length constraints."""
+
+    MIN_LENGTH = 3
+    MAX_LENGTH = 16

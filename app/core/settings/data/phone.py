@@ -2,5 +2,7 @@ from enum import Enum
 
 
 class Phone(int, Enum):
-    MIN_LENGTH: int = 7
-    MAX_LENGTH: int = 16
+    """` User ` phone number length constraints."""
+
+    MIN_LENGTH = 7
+    MAX_LENGTH = 16

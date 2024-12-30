@@ -1,3 +1,9 @@
+"""Module for data constraints.
+
+This module provides various data constraints for the application. Each
+constraint is defined as an ` Enum ` class.
+"""
+
 from .first_name import FirstName
 from .last_name import LastName
 from .mail import Email

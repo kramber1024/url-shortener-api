@@ -1,27 +1,47 @@
+from typing import Annotated
+
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
-    APP_NAME: str = "My App"
+    NAME: Annotated[str, Field(min_length=1)] = "ushort"
+
+    model_config = SettingsConfigDict(
+        str_strip_whitespace=True,
+        env_prefix="APP_",
+    )
 
 
 class DatabaseSettings(BaseSettings):
-    DATABASE_WORKER_ID: int = 268
-    DATABASE_SALT_ROUNDS: int = 16
-    DATABASE_URL: str = "sqlite:///database.sqlite3"
+    URL: Annotated[str, Field(min_length=1)] = ""
+    MACHINE_ID: Annotated[int, Field(gt=0, lt=1024)] = -1
+    SALT_ROUNDS: Annotated[int, Field(ge=4)] = -1
+
+    model_config = SettingsConfigDict(
+        env_prefix="DATABASE_",
+    )
 
 
 class JWTSettings(BaseSettings):
-    JWT_SECRET: str = "JWT_SECRET"
-    JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: int = 60
-    JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS: int = 30
+    SECRET: Annotated[str, Field(min_length=1)] = ""
+    ACCESS_TOKEN_EXPIRES_IN_MINUTES: Annotated[int, Field(ge=15)] = -1
+    REFRESH_TOKEN_EXPIRES_IN_DAYS: Annotated[int, Field(ge=1)] = -1
     ALGORITHM: str = "HS256"
+
+    model_config = SettingsConfigDict(
+        env_prefix="JWT_",
+    )
 
 
 class DevelopmentSettings(BaseSettings):
-    DEVELOPMENT_HOST: str = "127.0.0.1"
-    DEVELOPMENT_PORT: int = 26801
-    DEVELOPMENT_TEST_PORT: int = 8001
+    HOST: Annotated[str, Field(min_length=8)] = ""
+    PORT: Annotated[int, Field(gt=0, lt=65536)] = -1
+    TEST_PORT: Annotated[int, Field(gt=0, lt=65536)] = -1
+
+    model_config = SettingsConfigDict(
+        env_prefix="DEVELOPMENT_",
+    )
 
 
 class Settings(BaseSettings):
@@ -31,10 +51,11 @@ class Settings(BaseSettings):
     development: DevelopmentSettings = DevelopmentSettings()
 
     model_config = SettingsConfigDict(
+        extra="ignore",
         env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore",
     )
 
 
 settings: Settings = Settings()
+"""The application settings."""

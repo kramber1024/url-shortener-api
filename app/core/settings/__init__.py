@@ -1,3 +1,9 @@
-from .settings import Settings, settings
+"""App settings module.
 
-__all__ = ["Settings", "settings"]
+This module contains the settings for the whole application.
+"""
+
+from . import data
+from .settings import settings
+
+__all__ = ["data", "settings"]

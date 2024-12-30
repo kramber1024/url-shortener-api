@@ -49,7 +49,6 @@ extend-unsafe-fixes = []
 external = []
 fixable = ["ALL"]
 ignore = [
-  "D100",   # Disable check for missing docstring in public module
   "D101",   # Disable check for missing docstring in public class
   "D102",   # Disable check for missing docstring in public method
   "D103",   # Disable check for missing docstring in public function

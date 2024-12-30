@@ -1,3 +1,5 @@
+"""Main module for the FastAPI application."""
+
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -19,13 +21,13 @@ from app.redirector import redirector
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    await database.create_tables(hard_rest=False)
+    await database.create_tables(hard_reset=False)
     yield
     await database.shutdown()
 
 
 app: FastAPI = FastAPI(
-    title=f"{settings.app.APP_NAME} - API",
+    title=f"{settings.app.NAME} - API",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     lifespan=lifespan,
@@ -49,8 +51,8 @@ app.add_exception_handler(
 
 if __name__ == "__main__":
     uvicorn.run(
-        "app.main:app",
-        host=settings.development.DEVELOPMENT_HOST,
-        port=settings.development.DEVELOPMENT_PORT,
+        "app.__main__:app",
+        host=settings.development.HOST,
+        port=settings.development.PORT,
         reload=True,
     )

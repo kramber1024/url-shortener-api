@@ -1,0 +1,235 @@
+builtins = []
+cache-dir = ".ruff_cache"
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "venv"]
+extend-exclude = []
+extend-include = []
+fix = false
+fix-only = false
+force-exclude = false
+include = ["*.py", "*.pyi", "**/pyproject.toml"]
+indent-width = 4
+line-length = 80
+namespace-packages = []
+output-format = "full"
+preview = false
+required-version = ">=0.8.3"
+respect-gitignore = true
+show-fixes = false
+src = [".", "app", "tests"]
+target-version = "py312"
+unsafe-fixes = false
+
+[analyze]
+detect-string-imports = false
+direction = "Dependencies"
+exclude = []
+include-dependencies = {}
+preview = false
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+exclude = []
+indent-style = "space"
+line-ending = "lf"
+preview = false
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[lint]
+allowed-confusables = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+exclude = []
+explicit-preview-rules = false
+extend-fixable = []
+extend-per-file-ignores = {}
+extend-safe-fixes = []
+extend-select = []
+extend-unsafe-fixes = []
+external = []
+fixable = ["ALL"]
+ignore = [
+  "D100",   # Disable check for missing docstring in public module
+  "D101",   # Disable check for missing docstring in public class
+  "D102",   # Disable check for missing docstring in public method
+  "D103",   # Disable check for missing docstring in public function
+  "D104",   # Disable check for missing docstring in public package
+  "D105",   # Disable check for missing docstring in magic method
+  "D106",   # Disable check for missing docstring in public nested class
+  "D107",   # Disable check for missing docstring in __init__
+  "D203",   # Disable check for 1 blank line before class docstring
+  "D213",   # Disable check for 1 blank line before method/function docstring
+  "CPY001", # Disable check for copyright notice
+]
+logger-objects = []
+preview = false
+select = ["ALL"]
+task-tags = ["TODO", "FIXME", "HACK"]
+typing-modules = []
+unfixable = ["F401"] # Disable fix for unused imports
+
+[lint.per-file-ignores]
+"./tests/**/*.py" = [
+  "S101",   # Disable check for use of asserts
+  "SLF001", # Disable check for use of private members
+]
+
+[lint.flake8-annotations]
+allow-star-arg-any = false
+ignore-fully-untyped = false
+mypy-init-return = false
+suppress-dummy-args = false
+suppress-none-returning = false
+
+[lint.flake8-bandit]
+check-typed-exception = false
+hardcoded-tmp-directory = ["/tmp", "/src/tmp", "/app/tmp"]
+hardcoded-tmp-directory-extend = []
+
+[lint.flake8-boolean-trap]
+extend-allowed-calls = []
+
+[lint.flake8-bugbear]
+extend-immutable-calls = []
+
+[lint.flake8-builtins]
+builtins-allowed-modules = []
+builtins-ignorelist = []
+
+[lint.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = false
+
+[lint.flake8-copyright]
+author = "Karmanov Matvey"
+min-file-size = 0
+notice-rgx = "(?i)Copyright\\s+((?:\\(C\\)|©)\\s+)?\\d{4}((-|,\\s)\\d{4})*"
+
+[lint.flake8-errmsg]
+max-string-length = 20
+
+[lint.flake8-gettext]
+extend-function-names = []
+function-names = ["_", "gettext", "ngettext"]
+
+[lint.flake8-implicit-str-concat]
+allow-multiline = true
+
+[lint.flake8-import-conventions]
+aliases = {}
+banned-aliases = {}
+banned-from = []
+extend-aliases = {}
+
+[lint.flake8-pytest-style]
+fixture-parentheses = true
+mark-parentheses = true
+parametrize-names-type = "tuple"
+parametrize-values-row-type = "tuple"
+parametrize-values-type = "list"
+raises-extend-require-match-for = ["BaseException", "Exception", "ValueError"]
+
+[lint.flake8-quotes]
+avoid-escape = true
+docstring-quotes = "double"
+inline-quotes = "double"
+multiline-quotes = "double"
+
+[lint.flake8-self]
+extend-ignore-names = []
+ignore-names = []
+
+[lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
+banned-api = {}
+banned-module-level-imports = []
+
+[lint.flake8-type-checking]
+exempt-modules = ["typing"]
+quote-annotations = false
+runtime-evaluated-base-classes = []
+runtime-evaluated-decorators = []
+strict = false
+
+[lint.flake8-unused-arguments]
+ignore-variadic-names = false
+
+[lint.isort]
+case-sensitive = false
+classes = []
+combine-as-imports = false
+constants = []
+default-section = "third-party"
+detect-same-package = true
+extra-standard-library = []
+force-single-line = false
+force-sort-within-sections = false
+force-to-top = []
+force-wrap-aliases = false
+forced-separate = []
+from-first = false
+known-first-party = ["src", "app", "tests"]
+known-local-folder = []
+known-third-party = []
+length-sort = false
+length-sort-straight = false
+lines-after-imports = -1
+lines-between-types = 0
+no-lines-before = []
+no-sections = false
+order-by-type = true
+relative-imports-order = "furthest-to-closest"
+required-imports = []
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+sections = {}
+single-line-exclusions = []
+split-on-trailing-comma = true
+variables = []
+
+[lint.mccabe]
+max-complexity = 5
+
+[lint.pep8-naming]
+classmethod-decorators = []
+extend-ignore-names = []
+ignore-names = []
+staticmethod-decorators = []
+
+[lint.pycodestyle]
+ignore-overlong-task-comments = false
+max-doc-length = 80
+max-line-length = 80
+
+[lint.pydocstyle]
+convention = "google"
+ignore-decorators = []
+property-decorators = []
+
+[lint.pyflakes]
+allowed-unused-imports = []
+extend-generics = []
+
+[lint.pylint]
+allow-dunder-method-names = ["__tablename__"]
+allow-magic-value-types = ["str", "bytes"]
+max-args = 5
+max-bool-expr = 5
+max-branches = 10
+max-locals = 15
+max-nested-blocks = 5
+max-positional-args = 5
+max-public-methods = 15
+max-returns = 4
+max-statements = 45
+
+[lint.pyupgrade]
+keep-runtime-typing = false
+
+[lint.ruff]
+extend-markup-names = []
+parenthesize-tuple-in-subscript = false

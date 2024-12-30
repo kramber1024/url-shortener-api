@@ -3,8 +3,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv/
+htmlcov/
 venv/
 *.sqlite3
-*.pyc
 .coverage
-htmlcov/
+.env

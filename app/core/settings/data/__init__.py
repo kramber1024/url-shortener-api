@@ -5,9 +5,11 @@ constraint is defined as an ` Enum ` class.
 """
 
 from .address import Address
+from .country import Country
 from .first_name import FirstName
 from .last_name import LastName
 from .mail import Email
+from .mask import Mask
 from .name import Name
 from .page import Page
 from .password import Password
@@ -18,9 +20,11 @@ from .user import User
 
 __all__ = [
     "Address",
+    "Country",
     "Email",
     "FirstName",
     "LastName",
+    "Mask",
     "Name",
     "Page",
     "Password",

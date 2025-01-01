@@ -4,6 +4,7 @@ This module provides various data constraints for the application. Each
 constraint is defined as an ` Enum ` class.
 """
 
+from .address import Address
 from .first_name import FirstName
 from .last_name import LastName
 from .mail import Email
@@ -16,6 +17,7 @@ from .source import Source
 from .user import User
 
 __all__ = [
+    "Address",
     "Email",
     "FirstName",
     "LastName",

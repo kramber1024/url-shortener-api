@@ -10,12 +10,15 @@ from app.core.logger import logger
 from app.core.networks.fetch import fetch_download_urls, fetch_networks
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from app.core.database.models import Network
 
 
 async def parse() -> None:
     logger.info("Parsing network data from GitHub API.")
 
+    async_session: AsyncSession = await anext(database.get_async_session())
     async with AsyncClient(timeout=5) as async_client:
         download_urls: list[str] = await fetch_download_urls(
             directory="ipv4",
@@ -33,15 +36,15 @@ async def parse() -> None:
             ],
         )
         for i, networks in enumerate(results, start=1):
-            async with database.get_async_session() as async_session:
-                async_session.add_all(networks)
-                await async_session.commit()
+            async_session.add_all(networks)
 
             logger.info(
                 f"Successfully processed {len(networks)} networks from "
                 f"{download_urls[i - 1].split('/')[-1].split('.')[0]}. "
                 f"({i}/{len(download_urls)})",
             )
+        logger.info("Committing changes to the database.")
+        await async_session.commit()
 
 
 if __name__ == "__main__":

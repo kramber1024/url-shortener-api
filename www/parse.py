@@ -1,4 +1,4 @@
-"""Module for parsing data from the Github API."""
+"""Module for parsing data from the Github API responses."""
 
 from app.core.database.models import Network
 

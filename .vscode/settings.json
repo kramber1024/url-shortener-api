@@ -16,6 +16,7 @@
   // Python
   "python.analysis.autoImportCompletions": true,
   "python.testing.pytestEnabled": true,
+  "autoDocstring.docstringFormat": "google-notypes",
   // Mypy
   "mypy-type-checker.importStrategy": "fromEnvironment",
   // Ruff

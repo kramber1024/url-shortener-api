@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import desc, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database.models import Url
@@ -13,29 +13,30 @@ async def create_url(
     *,
     async_session: AsyncSession,
     user_id: int,
+    source: str,
     slug: str,
-    address: str,
 ) -> Url:
-    """Create a new url and commit it to the database.
+    """Create a new ` Url ` and commit it to the database.
 
     Args:
-        async_session (AsyncSession): The database session.
-        user_id (int): The ` id ` of the user that owns new url.
-        slug (str): The short URL address.
-        address (str): The long URL address.
+        async_session: The async database session.
+        user_id: The unique identifier of the ` User ` who created the ` Url `.
+        source: The original url.
+        slug: The unique slug that identifies the shortened url.
 
     Returns:
         The newly created ` Url ` instance.
     """
     url: Url = Url(
         user_id=user_id,
+        source=source,
         slug=slug,
-        address=address,
     )
 
     async_session.add(url)
     await async_session.commit()
     await async_session.refresh(url)
+
     return url
 
 
@@ -44,75 +45,49 @@ async def get_url_by_slug(
     async_session: AsyncSession,
     slug: str,
 ) -> Url | None:
-    """Retrieve a ` Url ` by its slug.
+    """Retrieve a ` Url ` from the database by it's slug.
 
     Args:
-        async_session (AsyncSession): The database session.
-        slug (str): The slug of the ` Url `.
+        async_session: The async database session.
+        slug: The unique slug of the ` Url ` to retrieve.
 
     Returns:
         The ` Url ` instance if found, otherwise ` None `.
     """
     result: Result[tuple[Url]] = await async_session.execute(
-        select(Url).filter(Url.slug == slug),
+        select(Url).where(Url.slug == slug),
     )
     url: Url | None = result.scalars().first()
 
     return url
 
 
-async def get_urls_by_page_and_limit(
-    *,
-    async_session: AsyncSession,
-    page: int,
-    limit: int,
-) -> list[Url]:
-    """Retrieve a paginated and sorted list of ` Url `.
-
-    Args:
-        async_session (AsyncSession): The database session.
-        page (int): The page number.
-        limit (int): The number of records per page.
-
-    Returns:
-        A list of ` Url ` records for the requested page.
-    """
-    result: Result[tuple[Url]] = await async_session.execute(
-        select(Url)
-        .order_by(desc(Url.created_at))
-        .offset((page - 1) * limit)
-        .limit(limit),
-    )
-    urls: list[Url] = list(result.scalars().all())
-
-    return urls
-
-
 async def update_url(
     *,
     async_session: AsyncSession,
     url: Url,
-    slug: str | None = None,
-    address: str | None = None,
-    total_clicks: int | None = None,
+    source: str,
+    slug: str,
+    total_clicks: int,
 ) -> Url:
-    """Update the ` Url ` attributes with the given values.
+    """Update a ` Url ` and commit the changes to the database.
 
     Args:
-        async_session (AsyncSession): The database session.
-        url (Url): The ` Url ` instance to update.
-        slug (str | None, optional): New slug.
-        address (str | None, optional): New address.
-        total_clicks (int | None, optional): New total_clicks value.
+        async_session: The async database session.
+        url: The ` Url ` to update.
+        source: The new original url.
+        slug: The new unique slug that identifies the shortened url.
+        total_clicks: The new total number of ` Click `'s.
 
     Returns:
         The updated ` Url ` instance.
     """
-    url.slug = slug or url.slug
-    url.address = address or url.address
-    url.total_clicks = total_clicks or url.total_clicks
+    url.source = source
+    url.slug = slug
+    url.total_clicks = total_clicks
 
     async_session.add(url)
     await async_session.commit()
     await async_session.refresh(url)
+
     return url

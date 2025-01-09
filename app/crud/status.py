@@ -8,15 +8,25 @@ async def create_status(
     async_session: AsyncSession,
     user_id: int,
     active: bool,
-    premium: bool,
 ) -> Status:
+    """Create a new ` Status ` and commit it to the database.
+
+    Args:
+        async_session: The async database session.
+        user_id: The unique identifier of the ` User ` to associate the
+            ` Status ` with.
+        active: Indicates whether the ` User ` is currently active.
+
+    Returns:
+        The newly created ` Status ` instance.
+    """
     status: Status = Status(
         user_id=user_id,
         active=active,
-        premium=premium,
     )
 
     async_session.add(status)
     await async_session.commit()
     await async_session.refresh(status)
+
     return status

@@ -13,8 +13,9 @@ async def create_tag(
 
     Args:
         async_session: The async database session.
-        url_id: The unique identifier of the ` Url ` to associate the tag with.
-        name: The name of the tag.
+        url_id: The unique identifier of the ` Url ` to associate the ` Tag `
+            with.
+        name: The name of the ` Tag `.
 
     Returns:
         The newly created ` Tag ` instance.

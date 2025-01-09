@@ -17,15 +17,14 @@ async def create_user(
     email: str,
     password: str,
 ) -> User:
-    """Create a new user and commit it to the database.
+    """Create a new ` User ` and commit it to the database.
 
     Args:
-        async_session (AsyncSession): The database session.
-        first_name (str): The first name of the user.
-        last_name (str | None): The last name of the user. Can be None.
-        email (str): The email address of the user.
-        password (str): Plain text password of the user. \
-            Password will be hashed before commiting it to the database.
+        async_session: The async database session.
+        first_name: The first name of the user.
+        last_name: The last name of the user.
+        email: The email address of the user.
+        password: The raw password of the user.
 
     Returns:
         The newly created ` User ` instance.
@@ -40,6 +39,7 @@ async def create_user(
     async_session.add(user)
     await async_session.commit()
     await async_session.refresh(user)
+
     return user
 
 
@@ -48,17 +48,17 @@ async def get_user_by_id(
     async_session: AsyncSession,
     user_id: int,
 ) -> User | None:
-    """Retrieve a user from the database by their ` id `.
+    """Retrieve a ` User ` from the database by their id.
 
     Args:
-        async_session (AsyncSession): The database session.
-        user_id (int): The ` id ` of the user to retrieve.
+        async_session: The async database session.
+        user_id: The unique identifier of the ` User ` to retrieve.
 
     Returns:
         The ` User ` instance if found, otherwise ` None `.
     """
     result: Result[tuple[User]] = await async_session.execute(
-        select(User).filter(User.id == user_id),
+        select(User).where(User.id == user_id),
     )
     user: User | None = result.scalars().first()
 
@@ -70,11 +70,11 @@ async def get_user_by_email(
     async_session: AsyncSession,
     email: str,
 ) -> User | None:
-    """Retrieve a user from the database by their ` email ` address.
+    """Retrieve a ` User ` from the database by their email address.
 
     Args:
-        async_session (AsyncSession): The database session.
-        email (str): The ` email ` address of the user to retrieve.
+        async_session: The async database session.
+        email: The email address of the ` User ` to retrieve.
 
     Returns:
         The ` User ` instance if found, otherwise ` None `.

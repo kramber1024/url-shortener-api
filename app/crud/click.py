@@ -10,9 +10,26 @@ async def create_click(
     ip: str | None,
     country: str | None,
 ) -> Click:
-    click: Click = Click(url_id=url_id, ip=ip, country=country)
+    """Create a new ` Click ` and commit it to the database.
+
+    Args:
+        async_session: The async database session.
+        url_id: The unique identifier of the ` Url ` to associate the
+            ` Click ` with.
+        ip: The IP address from which the click was made.
+        country: The two-letter country code of the origin of the click.
+
+    Returns:
+        The newly created ` Click ` instance.
+    """
+    click: Click = Click(
+        url_id=url_id,
+        ip=ip,
+        country=country,
+    )
 
     async_session.add(click)
     await async_session.commit()
     await async_session.refresh(click)
+
     return click

@@ -1,4 +1,4 @@
-"""Module for data constraints.
+"""Data constraints.
 
 This module provides various data constraints for the application. Each
 constraint is defined as an ` Enum ` class.

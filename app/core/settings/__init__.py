@@ -1,4 +1,4 @@
-"""App settings module.
+"""Application settings.
 
 This module contains the settings for the whole application.
 """

@@ -1,20 +1,20 @@
-from sqlalchemy import Integer
+from sqlalchemy import BigInteger
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database.id_generator import id_generator
 
 
-class IDMixin:
-    """Mixin for models that require an ` id ` primary column.
+class IdMixin:
+    """Mixin for models that require an id primary column.
 
-    It generates a unique identifier using
-    [Snowflake ID](https://en.wikipedia.org/wiki/Snowflake_ID).
+    Automatically sets the id of a record to a unique identifier when the record
+    is created.
     """
 
     _id: Mapped[int] = mapped_column(
         "id",
-        Integer(),
+        BigInteger(),
         default=id_generator,
         nullable=False,
         primary_key=True,
@@ -24,9 +24,5 @@ class IDMixin:
 
     @hybrid_property
     def id(self) -> int:
-        """Unique identifier for the record.
-
-        Returns:
-            int: The unique identifier for the record.
-        """
+        """The unique identifier of the record."""
         return self._id

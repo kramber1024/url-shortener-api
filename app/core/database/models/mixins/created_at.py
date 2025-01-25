@@ -6,10 +6,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 
 class CreatedAtMixin:
-    """Mixin for models that require a ` created_at ` timestamp column.
+    """Mixin for models that require a created_at timestamp column.
 
-    Automatically sets the creation time of a record to the current timestamp
-    when the record is created.
+    Automatically sets the creation time of a record.
     """
 
     _created_at: Mapped[datetime] = mapped_column(
@@ -22,9 +21,5 @@ class CreatedAtMixin:
 
     @hybrid_property
     def created_at(self) -> datetime:
-        """The timestamp indicating when the record was created.
-
-        Returns:
-            datetime: The timestamp indicating when the record was created.
-        """
+        """The timestamp indicating when the record was created."""
         return self._created_at

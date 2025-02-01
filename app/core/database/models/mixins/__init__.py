@@ -1,3 +1,5 @@
+"""Module for database model mixins."""
+
 from .created_at import CreatedAtMixin
 from .id import IdMixin
 from .tablename import TableNameMixin

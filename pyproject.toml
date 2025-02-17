@@ -24,7 +24,7 @@ httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9"
-mypy = "^1.10"
+mypy = "^1.15"
 
 [build-system]
 requires = ["poetry-core"]

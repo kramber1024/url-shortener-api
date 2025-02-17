@@ -1,42 +1,30 @@
 from sqlalchemy import ForeignKey, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .mixins import CreatedAtMixin, IDMixin, TableNameMixin
+from app.core.settings.data import IP, Country
+
+from .mixins import CreatedAtMixin, IdMixin, TableNameMixin
 from .model import Model
 from .url import Url
 
 
-class Click(Model, TableNameMixin, IDMixin, CreatedAtMixin):
-    """Represents a click event on a shortened URL.
+class Click(Model, TableNameMixin, IdMixin, CreatedAtMixin):
+    """Represents a click event on a shortened URL."""
 
-    See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
-
-    Attributes:
-        id (int): The unique identifier (See ` IDMixin `).
-        url_id (int): The unique identifier of the `Url` to which this click
-                      event is related. A foreign key to the Urls table.
-        ip (str | None): The IP address from which the click was made.
-                         Can be `None` if not available.
-        country (str | None): The two-character code indicating the
-                              country from which the click originated.
-                              Can be `None` if the country is not identified
-                              by ` ip `.
-        url (Url): The ` Url ` to which this click is associated.
-                   Establishes a relationship between the `Click` and
-                   the `Url` it belongs to.
-
-    """
-
-    url_id: Mapped[int] = mapped_column(
-        ForeignKey(f"{Url.__tablename__}.id"),
+    _url_id: Mapped[int] = mapped_column(
+        "url_id",
+        ForeignKey(Url.id),
         nullable=False,
     )
-    ip: Mapped[str | None] = mapped_column(
-        String(16),
+    _ip: Mapped[str | None] = mapped_column(
+        "ip",
+        String(length=IP.MAX_LENGTH),
         nullable=True,
     )
-    country: Mapped[str | None] = mapped_column(
-        String(2),
+    _country: Mapped[str | None] = mapped_column(
+        "country",
+        String(length=Country.MAX_LENGTH),
         nullable=True,
     )
 
@@ -53,6 +41,46 @@ class Click(Model, TableNameMixin, IDMixin, CreatedAtMixin):
         ip: str | None,
         country: str | None,
     ) -> None:
-        self.url_id = url_id
+        """Initialize a ` Click ` model instance.
+
+        Args:
+            url_id: The unique identifier of the ` Url ` the ` Click ` is
+                associated with.
+            ip: The IP address from which the ` Click ` was made.
+            country: The two-letter country code of the origin of the ` Click `.
+        """
+        self._url_id = url_id
         self.ip = ip
         self.country = country
+
+    @hybrid_property
+    def url_id(self) -> int:
+        """The unique identifier of the ` Url `."""
+        return self._url_id
+
+    @hybrid_property
+    def ip(self) -> str | None:
+        """The IP address from which the ` Click ` was made."""
+        return self._ip
+
+    @ip.inplace.setter
+    def _ip_setter(self, value: str | None) -> None:
+        if value is not None and not IP.validate_length(value):
+            raise ValueError
+
+        self._ip = value
+
+    @hybrid_property
+    def country(self) -> str | None:
+        """The two-letter country code of the origin of the ` Click `."""
+        return self._country
+
+    @country.inplace.setter
+    def _country_setter(self, value: str | None) -> None:
+        if value is not None and not Country.validate_length(value):
+            raise ValueError
+
+        self._country = value
+
+    def __repr__(self) -> str:
+        return f"<{type(self).__name__} {self.id} from {self.country}>"

@@ -2,7 +2,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 
 class Model(DeclarativeBase):
-    """Concrete base class for models.
+    """Base class for all models.
 
     Examples:
         >>> class User(Model): ...

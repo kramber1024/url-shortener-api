@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class Name(int, Enum):
+class Name(Data):
     """` Tag ` name length constraints."""
 
-    MIN_LENGTH = len("a")
-    MAX_LENGTH = 32
+    MIN_LENGTH: int = len("a")
+    MAX_LENGTH: int = 32

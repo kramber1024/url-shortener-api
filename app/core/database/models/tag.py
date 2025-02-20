@@ -4,13 +4,13 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.settings.data import Name
 
-from .mixins import CreatedAtMixin, IDMixin, TableNameMixin
+from .mixins import CreatedAtMixin, IdMixin, TableNameMixin
 from .model import Model
 from .url import Url
 
 
-class Tag(Model, TableNameMixin, IDMixin, CreatedAtMixin):
-    """Model for short ` URL ` tags."""
+class Tag(Model, TableNameMixin, IdMixin, CreatedAtMixin):
+    """Model for ` Url ` tags."""
 
     _url_id: Mapped[int] = mapped_column(
         "url_id",
@@ -27,39 +27,29 @@ class Tag(Model, TableNameMixin, IDMixin, CreatedAtMixin):
         """Initialize a ` Tag ` model instance.
 
         Arguments:
-            url_id (int): The unique identifier of the ` Url `
-                          ` Tag ` is associated with.
-            name (str): The ` Tag ` value. Used for categorization.
+            url_id: The unique identifier of the ` Url ` the ` Tag ` is
+                associated with.
+            name: The ` Tag ` value.
         """
         self._url_id = url_id
         self.name = name
 
     @hybrid_property
     def url_id(self) -> int:
-        """The unique identifier of the ` Url `.
-
-        Returns:
-            int: The unique identifier of the ` Url `.
-        """
+        """The unique identifier of the ` Url `."""
         return self._url_id
 
     @hybrid_property
     def name(self) -> str:
-        """The ` Tag ` value. Used for categorization.
-
-        Returns:
-            str: The ` Tag ` value.
-        """
+        """The ` Tag ` value."""
         return self._name
 
     @name.inplace.setter
     def _name_setter(self, value: str) -> None:
-        stripped_value: str = value.strip()
-
-        if not Name.MIN_LENGTH <= len(stripped_value) <= Name.MAX_LENGTH:
+        if not Name.validate_length(value):
             raise ValueError
 
-        self._name = stripped_value
+        self._name = value
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__} {self.name}>"

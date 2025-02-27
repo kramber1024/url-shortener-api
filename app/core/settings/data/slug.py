@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class Slug(int, Enum):
+class Slug(Data):
     """` Url ` slug length constraints."""
 
-    MIN_LENGTH = len("a")
-    MAX_LENGTH = 256
+    MIN_LENGTH: int = len("a")
+    MAX_LENGTH: int = 256

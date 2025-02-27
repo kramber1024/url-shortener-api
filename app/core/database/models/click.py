@@ -44,8 +44,7 @@ class Click(Model, TableNameMixin, IdMixin, CreatedAtMixin):
         """Initialize a ` Click ` model instance.
 
         Args:
-            url_id: The unique identifier of the ` Url ` the ` Click ` is
-                associated with.
+            url_id: The unique identifier of the ` Url `.
             ip: The IP address from which the ` Click ` was made.
             country: The two-letter country code of the origin of the ` Click `.
         """

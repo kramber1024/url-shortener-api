@@ -27,8 +27,7 @@ class Tag(Model, TableNameMixin, IdMixin, CreatedAtMixin):
         """Initialize a ` Tag ` model instance.
 
         Arguments:
-            url_id: The unique identifier of the ` Url ` the ` Tag ` is
-                associated with.
+            url_id: The unique identifier of the ` Url `.
             name: The ` Tag ` value.
         """
         self._url_id = url_id

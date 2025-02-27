@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class Source(int, Enum):
+class Source(Data):
     """` Url ` source length constraints."""
 
-    MIN_LENGTH = len("http://a.b")
-    MAX_LENGTH = 2048
+    MIN_LENGTH: int = len("http://a.b")
+    MAX_LENGTH: int = 2048

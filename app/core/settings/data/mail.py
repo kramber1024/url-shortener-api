@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class Email(int, Enum):
+class Email(Data):
     """` User ` email length constraints."""
 
-    MIN_LENGTH = len("a@b.c")
-    MAX_LENGTH = 64
+    MIN_LENGTH: int = len("a@b.c")
+    MAX_LENGTH: int = 64

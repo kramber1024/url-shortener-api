@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class LastName(int, Enum):
+class LastName(Data):
     """` User ` last name length constraints."""
 
-    MIN_LENGTH = 3
-    MAX_LENGTH = 16
+    MIN_LENGTH: int = 3
+    MAX_LENGTH: int = 16

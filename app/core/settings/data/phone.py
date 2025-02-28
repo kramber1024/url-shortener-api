@@ -1,8 +1,8 @@
-from enum import Enum
+from .data import Data
 
 
-class Phone(int, Enum):
+class Phone(Data):
     """` User ` phone number length constraints."""
 
-    MIN_LENGTH = 7
-    MAX_LENGTH = 16
+    MIN_LENGTH: int = 7
+    MAX_LENGTH: int = 16

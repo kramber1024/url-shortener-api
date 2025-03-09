@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, ForeignKey
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .mixins import TableNameMixin, UpdatedAtMixin
@@ -7,38 +8,25 @@ from .user import User
 
 
 class Status(Model, TableNameMixin, UpdatedAtMixin):
-    """The status of a user, tracking their verification and membership details.
+    """The status of a ` User `."""
 
-    Attributes:
-        user_id (int): The unique identifier of the user.
-                       This is a foreign key linked to the Users table.
-        email_verified (bool): Indicates whether the user's email address
-                               has been verified.
-        phone_verified (bool): Indicates whether the user's phone number
-                               has been verified.
-        active (bool): Indicates whether the user is currently active
-                       and allowed to log in.
-        premium (bool): Indicates whether the user has a premium membership.
-    """
-
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey(f"{User.__tablename__}.id"),
+    _user_id: Mapped[int] = mapped_column(
+        ForeignKey(User.id),
+        nullable=False,
         primary_key=True,
-        nullable=False,
     )
-    email_verified: Mapped[bool] = mapped_column(
+    _active: Mapped[bool] = mapped_column(
+        "active",
         Boolean(),
         nullable=False,
     )
-    phone_verified: Mapped[bool] = mapped_column(
+    _email_verified: Mapped[bool] = mapped_column(
+        "email_verified",
         Boolean(),
         nullable=False,
     )
-    active: Mapped[bool] = mapped_column(
-        Boolean(),
-        nullable=False,
-    )
-    premium: Mapped[bool] = mapped_column(
+    _phone_verified: Mapped[bool] = mapped_column(
+        "phone_verified",
         Boolean(),
         nullable=False,
     )
@@ -48,10 +36,47 @@ class Status(Model, TableNameMixin, UpdatedAtMixin):
         *,
         user_id: int,
         active: bool = True,
-        premium: bool = False,
     ) -> None:
-        self.user_id = user_id
+        """Initializes a new ` Status ` instance.
+
+        Args:
+            user_id: The unique identifier of the ` User `.
+            active: Indicates whether the user is currently active. Defaults to
+                ` True `.
+        """
+        self._user_id = user_id
+        self.active = active
         self.email_verified = False
         self.phone_verified = False
-        self.active = active
-        self.premium = premium
+
+    @hybrid_property
+    def user_id(self) -> int:
+        """The unique identifier of the ` User `."""
+        return self._user_id
+
+    @hybrid_property
+    def active(self) -> bool:
+        """Whether the ` User ` is currently active."""
+        return self._active
+
+    @active.inplace.setter
+    def _active_setter(self, value: object) -> None:
+        self._active = bool(value)
+
+    @hybrid_property
+    def email_verified(self) -> bool:
+        """Whether the ` User `'s email address has been verified."""
+        return self.email_verified
+
+    @email_verified.inplace.setter
+    def _email_verified_setter(self, value: object) -> None:
+        self._email_verified = bool(value)
+
+    @hybrid_property
+    def phone_verified(self) -> bool:
+        """Whether the ` User `'s phone number has been verified."""
+        return self.phone_verified
+
+    @phone_verified.inplace.setter
+    def _phone_verified_setter(self, value: object) -> None:
+        self._phone_verified = bool(value)

@@ -10,7 +10,7 @@ from .url import Url
 
 
 class Click(Model, TableNameMixin, IdMixin, CreatedAtMixin):
-    """Represents a click event on a shortened URL."""
+    """Click event on a shortened URL."""
 
     _url_id: Mapped[int] = mapped_column(
         "url_id",

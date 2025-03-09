@@ -1,3 +1,5 @@
+"""Database models."""
+
 from .click import Click
 from .model import Model
 from .network import Network

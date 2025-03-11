@@ -1,60 +1,107 @@
-import ipaddress
-from typing import Final
+from ipaddress import IPv4Network
 
-from sqlalchemy import Integer, String
+from sqlalchemy import BigInteger, Integer, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .mixins import TableNameMixin
+from app.core.settings.data import Country
+
+from .mixins import CreatedAtMixin, TableNameMixin
 from .model import Model
 
-_MAX_NETWORK_ADDRESS_LENGTH: Final[int] = len("255.255.255.255")
 
+class Network(Model, TableNameMixin, CreatedAtMixin):
+    """Model for network to country mapping."""
 
-class Network(Model, TableNameMixin):
-    """Model for network to country mapping.
-
-    See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)
-
-    Attributes:
-        address (str): The network address.
-        mask (int): The network mask.
-        country (str): The ISO 3166-1 country code.
-    """
-
-    address: Mapped[str] = mapped_column(
-        String(_MAX_NETWORK_ADDRESS_LENGTH),
-        primary_key=True,
-        nullable=False,
-    )
-    mask: Mapped[int] = mapped_column(
+    _id: Mapped[int] = mapped_column(
+        "id",
         Integer(),
         nullable=False,
+        primary_key=True,
+        autoincrement=True,
     )
-    country: Mapped[str] = mapped_column(
-        String(2),
+    _start_address: Mapped[int] = mapped_column(
+        "start_address",
+        BigInteger(),
+        nullable=False,
+    )
+    _end_address: Mapped[int] = mapped_column(
+        "end_address",
+        BigInteger(),
+        nullable=False,
+    )
+    _country: Mapped[str] = mapped_column(
+        "country",
+        String(length=Country.MAX_LENGTH),
         nullable=False,
     )
 
     def __init__(self, *, address: str, mask: int, country: str) -> None:
-        self.address = address
-        self.mask = mask
-        self.country = country
-
-    def __contains__(self, ip: str) -> bool:
-        """Check if the given ` ip ` is in the network.
+        """Initialize a ` Network ` model instance.
 
         Args:
-            ip (str): The IP address to check. (See [**IPv4**](https://en.wikipedia.org/wiki/IPv4))
+            address: The ` Network ` address.
+            mask: The ` Network ` mask.
+            country: The ISO 3166-1 country code.
 
-        Returns:
-            bool: ` True ` if the ` ip ` is in the network, otherwise ` False `.
+        Raises:
+            ValueError: If the input values are invalid.
         """
-        return ipaddress.ip_address(ip) in ipaddress.ip_network(
-            f"{self.address}/{self.mask}",
-        )
+        try:
+            network: IPv4Network = IPv4Network(f"{address}/{mask}")
+        except ValueError as value_error:
+            message: str = (
+                f"'{address}/{mask}' does not appear to be an IPv4 network"
+            )
+            raise ValueError(message) from value_error
 
-    def __str__(self) -> str:
+        if not Country.validate_length(country) or not country.isalpha():
+            message = f"Invalid country code '{country}'"
+            raise ValueError(message)
+
+        self._start_address = int(network.network_address)
+        self._end_address = int(network.broadcast_address)
+        self._country = country
+        self._address = address
+        self._mask = mask
+
+    @hybrid_property
+    def id(self) -> int:
+        """The auto-incremented identifier."""
+        return self._id
+
+    @hybrid_property
+    def start_address(self) -> int:
+        """The start address of the ` Network `."""
+        return self._start_address
+
+    @hybrid_property
+    def end_address(self) -> int:
+        """The end address of the ` Network `."""
+        return self._end_address
+
+    @hybrid_property
+    def country(self) -> str:
+        """The ISO 3166-1 country code.
+
+        See [**ISO 3166-1**](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2).
+        """
+        return self._country
+
+    @property
+    def address(self) -> str:
+        """The ` Network ` address."""
+        return self._address
+
+    @property
+    def mask(self) -> int:
+        """The ` Network ` mask."""
+        return self._mask
+
+    @property
+    def cidr(self) -> str:
+        """The CIDR representation of the ` Network `."""
         return f"{self.address}/{self.mask}"
 
     def __repr__(self) -> str:
-        return f"<Network {self.address}/{self.mask} is {self.country}>"
+        return f"<{type(self).__name__} {self.cidr} {self.country}>"

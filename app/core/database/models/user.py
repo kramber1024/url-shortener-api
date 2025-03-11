@@ -1,23 +1,22 @@
-from typing import TYPE_CHECKING, Final
+from typing import TYPE_CHECKING
 
 import bcrypt
 from sqlalchemy import String
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.data import Email, FirstName, LastName, Password, Phone
+from app.core.settings import settings
+from app.core.settings.data import Email, FirstName, LastName, Password, Phone
 
-from .mixins import CreatedAtMixin, IDMixin, TableNameMixin, UpdatedAtMixin
+from .mixins import CreatedAtMixin, IdMixin, TableNameMixin, UpdatedAtMixin
 from .model import Model
 
 if TYPE_CHECKING:
     from .status import Status
     from .url import Url
 
-_SPLITTED_EMAIL_LENGTH: Final[int] = 2
 
-
-class User(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
+class User(Model, TableNameMixin, IdMixin, UpdatedAtMixin, CreatedAtMixin):
     _first_name: Mapped[str] = mapped_column(
         "first_name",
         String(length=FirstName.MAX_LENGTH),
@@ -60,10 +59,18 @@ class User(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
         self,
         *,
         first_name: str,
-        last_name: str | None,
+        last_name: str | None = None,
         email: str,
         password: str,
     ) -> None:
+        """Initialize a ` User ` model instance.
+
+        Args:
+            first_name: The ` User `'s first name
+            last_name: The ` User `'s last name. Defaults to None.
+            email: The ` User `'s email address
+            password: The ` User `'s password
+        """
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -72,89 +79,82 @@ class User(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
 
     @hybrid_property
     def first_name(self) -> str:
+        """The ` User `'s first name."""
         return self._first_name
 
-    @first_name.setter
+    @first_name.inplace.setter
     def _first_name_setter(self, value: str) -> None:
-        self._first_name = self._format_string(
-            FirstName.MIN_LENGTH,
-            FirstName.MAX_LENGTH,
-            value,
-        )
+        if not FirstName.validate_length(value):
+            raise ValueError
+
+        self._first_name = value
 
     @hybrid_property
     def last_name(self) -> str | None:
+        """The ` User `'s last name."""
         return self._last_name
 
-    @last_name.setter
+    @last_name.inplace.setter
     def _last_name_setter(self, value: str | None) -> None:
-        if value is None:
-            self._last_name = None
-            return
+        if value is not None and not LastName.validate_length(value):
+            raise ValueError
 
-        self._last_name = self._format_string(
-            LastName.MIN_LENGTH,
-            LastName.MAX_LENGTH,
-            value,
-        )
+        self._last_name = value
 
     @hybrid_property
     def email(self) -> str:
+        """The ` User `'s email address."""
         return self._email
 
-    @email.setter
+    @email.inplace.setter
     def _email_setter(self, value: str) -> None:
-        splitted_value: list[str] = value.strip().split("@")
-
-        if (
-            len(splitted_value) != _SPLITTED_EMAIL_LENGTH
-            or not Email.MIN_LENGTH
-            <= len("@".join(splitted_value))
-            <= Email.MAX_LENGTH
-        ):
+        if Email.validate_length(value) or "@" not in value:
             raise ValueError
+
+        splitted_value: list[str] = value.strip().split("@")
 
         self._email = f"{splitted_value[0]}@{splitted_value[1].lower()}"
 
     @hybrid_property
     def phone(self) -> str | None:
+        """The ` User `'s phone number."""
         return self._phone
 
-    @phone.setter
+    @phone.inplace.setter
     def _phone_setter(self, value: str | None) -> None:
-        if value is None:
-            self._phone = None
-            return
+        if value is not None and not Phone.validate_length(value):
+            raise ValueError
 
-        self._phone = self._format_string(
-            Phone.MIN_LENGTH,
-            Phone.MAX_LENGTH,
-            value,
-        )
+        self._phone = value
 
     @hybrid_property
     def password(self) -> str:
+        """The ` User `'s hashed password."""
         return self._password
 
-    @password.setter
+    @password.inplace.setter
     def _password_setter(self, value: str) -> None:
-        if not Password.MIN_LENGTH <= len(value) <= Password.MAX_LENGTH:
+        if not Password.validate_length(value):
             raise ValueError
 
-        self._password = self._hash_password(value, rounds=16)
+        self._password = self._hash_password(
+            value,
+            rounds=settings.database.SALT_ROUNDS,
+        )
 
     @property
     def display_name(self) -> str:
-        return f"{self.first_name} {self.last_name or ""}".strip()
+        """The ` User `'s display name."""
+        return " ".join(filter(None, [self.first_name, self.last_name]))
 
     def is_password_valid(self, password: str, /) -> bool:
-        """Check if the password is valid for the user.
+        """Check if the password is valid for the ` User `.
 
         Args:
-            password (str): The password to check.
+            password: The password to check.
 
         Returns:
-            bool: ` True ` if the password is valid, ` False ` otherwise.
+            ` True ` if the password is valid, ` False ` otherwise.
         """
         return bcrypt.checkpw(
             password=password.encode("utf-8"),
@@ -162,38 +162,15 @@ class User(Model, TableNameMixin, IDMixin, UpdatedAtMixin, CreatedAtMixin):
         )
 
     @staticmethod
-    def _format_string(min_length: int, max_length: int, value: str, /) -> str:
-        """Check the length of the string and return stripped version of it.
-
-        Args:
-            min_length (int): Minimum length of the string.
-            max_length (int): Maximum length of the string.
-            value (str): The string to format.
-
-        Raises:
-            ValueError: If the length of the string is not between
-                        the min and max length.
-
-        Returns:
-            str: The stripped version of the string.
-        """
-        stripped_value: str = value.strip()
-
-        if not (min_length <= len(stripped_value) <= max_length):
-            raise ValueError
-
-        return stripped_value
-
-    @staticmethod
-    def _hash_password(password: str, /, *, rounds: int) -> str:
+    def _hash_password(password: str, *, rounds: int) -> str:
         """Hash the password using bcrypt library.
 
         Args:
-            password (str): The password to hash.
-            rounds (int): The number of rounds to hash the password.
+            password: The password to hash.
+            rounds: The number of rounds to hash the password.
 
         Returns:
-            str: The hashed password.
+            The hashed password.
         """
         return bcrypt.hashpw(
             password.encode(encoding="utf-8"),

@@ -1,0 +1,14 @@
+[run]
+omit =
+    tests/*
+    app/main.py
+    table_name.py
+concurrency =
+    greenlet
+    thread
+
+[report]
+exclude_lines =
+    if TYPE_CHECKING:
+    if __name__ == "__main__":
+    pragma: no cover

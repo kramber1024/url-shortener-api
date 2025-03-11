@@ -14,8 +14,8 @@ class CreatedAtMixin:
     _created_at: Mapped[datetime] = mapped_column(
         "created_at",
         DateTime(),
-        nullable=False,
         default=func.now(),
+        nullable=False,
         sort_order=1,
     )
 

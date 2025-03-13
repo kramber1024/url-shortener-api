@@ -3,17 +3,17 @@ import pytest
 from app.core.database.models import Network
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def address() -> str:
     return "168.217.152.0"
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def mask() -> int:
     return 24
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def country() -> str:
     return "xx"
 

@@ -66,7 +66,7 @@ class Status(Model, TableNameMixin, UpdatedAtMixin):
     @hybrid_property
     def email_verified(self) -> bool:
         """Whether the ` User `'s email address has been verified."""
-        return self.email_verified
+        return self._email_verified
 
     @email_verified.inplace.setter
     def _email_verified_setter(self, value: object) -> None:
@@ -75,7 +75,7 @@ class Status(Model, TableNameMixin, UpdatedAtMixin):
     @hybrid_property
     def phone_verified(self) -> bool:
         """Whether the ` User `'s phone number has been verified."""
-        return self.phone_verified
+        return self._phone_verified
 
     @phone_verified.inplace.setter
     def _phone_verified_setter(self, value: object) -> None:

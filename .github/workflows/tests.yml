@@ -18,15 +18,17 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     env:
-      NAME: ${{ vars.NAME }}
-      WORKER_ID: ${{ vars.WORKER_ID }}
-      SALT_ROUND: ${{ vars.SALT_ROUNDS }}
-      SECRET: ${{ secrets.SECRET }}
-      ACCESS_TOKEN_EXPIRES_IN_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRES_IN_MINUTES }}
-      REFRESH_TOKEN_EXPIRES_IN_DAYS: ${{ vars.REFRESH_TOKEN_EXPIRES_IN_DAYS }}
-      HOST: ${{ vars.HOST }}
-      PORT: ${{ vars.PORT }}
-      TEST_PORT: ${{ vars.TEST_PORT }}
+      APP_NAME: ${{ vars.APP_NAME }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_MACHINE_ID: ${{ vars.DATABASE_MACHINE_ID }}
+      DATABASE_SALT_ROUNDS: ${{ vars.DATABASE_SALT_ROUNDS }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES: ${{ vars.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES }}
+      JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS: ${{ vars.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS }}
+      DEVELOPMENT_HOST: ${{ vars.DEVELOPMENT_HOST }}
+      DEVELOPMENT_PORT: ${{ vars.DEVELOPMENT_PORT }}
+      DEVELOPMENT_TEST_PORT: ${{ vars.DEVELOPMENT_TEST_PORT }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

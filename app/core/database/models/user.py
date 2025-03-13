@@ -108,7 +108,7 @@ class User(Model, TableNameMixin, IdMixin, UpdatedAtMixin, CreatedAtMixin):
 
     @email.inplace.setter
     def _email_setter(self, value: str) -> None:
-        if Email.validate_length(value) or "@" not in value:
+        if not Email.validate_length(value) or "@" not in value:
             raise ValueError
 
         splitted_value: list[str] = value.strip().split("@")

@@ -1,6 +1,6 @@
 import pytest
 
-from app.core.database.models.url import Url
+from app.core.database.models import Url
 from app.core.settings.data import Slug, Source
 
 

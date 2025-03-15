@@ -82,4 +82,4 @@ class Click(Model, TableNameMixin, IdMixin, CreatedAtMixin):
         self._country = value
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.id} from {self.country}>"
+        return f"<{type(self).__name__} {self.ip} from {self.country}>"

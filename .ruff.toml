@@ -49,17 +49,17 @@ extend-unsafe-fixes = []
 external = []
 fixable = ["ALL"]
 ignore = [
-  "D100",   # Disable check for missing docstring in public module
-  "D101",   # Disable check for missing docstring in public class
-  "D102",   # Disable check for missing docstring in public method
-  "D103",   # Disable check for missing docstring in public function
-  "D104",   # Disable check for missing docstring in public package
-  "D105",   # Disable check for missing docstring in magic method
-  "D106",   # Disable check for missing docstring in public nested class
-  "D107",   # Disable check for missing docstring in __init__
-  "D203",   # Disable check for 1 blank line before class docstring
-  "D213",   # Disable check for 1 blank line before method/function docstring
-  "CPY001", # Disable check for copyright notice
+    "D100",   # Disable check for missing docstring in public module
+    "D101",   # Disable check for missing docstring in public class
+    "D102",   # Disable check for missing docstring in public method
+    "D103",   # Disable check for missing docstring in public function
+    "D104",   # Disable check for missing docstring in public package
+    "D105",   # Disable check for missing docstring in magic method
+    "D106",   # Disable check for missing docstring in public nested class
+    "D107",   # Disable check for missing docstring in __init__
+    "D203",   # Disable check for 1 blank line before class docstring
+    "D213",   # Disable check for 1 blank line before method/function docstring
+    "CPY001", # Disable check for copyright notice
 ]
 logger-objects = []
 preview = false
@@ -70,8 +70,9 @@ unfixable = []
 
 [lint.per-file-ignores]
 "./tests/**/*.py" = [
-  "S101",   # Disable check for use of asserts
-  "SLF001", # Disable check for use of private members
+    "S101",   # Disable check for use of asserts
+    "SLF001", # Disable check for use of private members
+    "FBT001", # Disable boolean-typed positional argument in function definition
 ]
 
 [lint.flake8-annotations]
@@ -180,11 +181,11 @@ order-by-type = true
 relative-imports-order = "furthest-to-closest"
 required-imports = []
 section-order = [
-  "future",
-  "standard-library",
-  "third-party",
-  "first-party",
-  "local-folder",
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
 ]
 sections = {}
 single-line-exclusions = []

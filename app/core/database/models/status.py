@@ -80,3 +80,6 @@ class Status(Model, TableNameMixin, UpdatedAtMixin):
     @phone_verified.inplace.setter
     def _phone_verified_setter(self, value: object) -> None:
         self._phone_verified = bool(value)
+
+    def __repr__(self) -> str:
+        return f"<{type(self).__name__} {self.user_id}>"

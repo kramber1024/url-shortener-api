@@ -47,17 +47,10 @@ class Network(Model, TableNameMixin, CreatedAtMixin):
         Raises:
             ValueError: If the input values are invalid.
         """
-        try:
-            network: IPv4Network = IPv4Network(f"{address}/{mask}")
-        except ValueError as value_error:
-            message: str = (
-                f"'{address}/{mask}' does not appear to be an IPv4 network"
-            )
-            raise ValueError(message) from value_error
+        network: IPv4Network = IPv4Network(f"{address}/{mask}")
 
         if not Country.validate_length(country) or not country.isalpha():
-            message = f"Invalid country code '{country}'"
-            raise ValueError(message)
+            raise ValueError
 
         self._start_address = int(network.network_address)
         self._end_address = int(network.broadcast_address)

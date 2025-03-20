@@ -38,4 +38,4 @@ class IdGenerator:
 id_generator: IdGenerator = IdGenerator(
     machine_id=settings.database.MACHINE_ID,
 )
-"""The single instance of the IdGenerator."""
+"""The id generator."""

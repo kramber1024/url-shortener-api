@@ -19,6 +19,11 @@ class Database:
     """
 
     def __init__(self, url: str) -> None:
+        """Initialize the database manager.
+
+        Args:
+            url: The database URL.
+        """
         self._async_engine: AsyncEngine = create_async_engine(
             url=url,
             echo=False,
@@ -51,6 +56,12 @@ class Database:
         await self._async_engine.dispose(close=True)
 
     async def create_tables(self, *, hard_reset: bool = False) -> None:
+        """Create database tables.
+
+        Args:
+            hard_reset: Whether to drop existing tables before creating new
+                ones. Defaults to ` False `.
+        """
         async with self._async_engine.begin() as async_connection:
             if hard_reset:
                 await async_connection.run_sync(Model.metadata.drop_all)
@@ -61,3 +72,4 @@ class Database:
 database: Database = Database(
     url=settings.database.URL,
 )
+"""Database manager."""

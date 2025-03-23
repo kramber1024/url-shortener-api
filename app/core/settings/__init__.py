@@ -1,6 +1,6 @@
 """Application settings.
 
-This module contains the settings for the whole application.
+This module contains settings for the whole application.
 """
 
 from . import data

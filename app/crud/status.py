@@ -9,12 +9,11 @@ async def create_status(
     user_id: int,
     active: bool,
 ) -> Status:
-    """Create a new ` Status ` and commit it to the database.
+    """Initialize a new ` Status ` and commit it to the database.
 
     Args:
         async_session: The async database session.
-        user_id: The unique identifier of the ` User ` to associate the
-            ` Status ` with.
+        user_id: The unique identifier of the ` User `.
         active: Indicates whether the ` User ` is currently active.
 
     Returns:

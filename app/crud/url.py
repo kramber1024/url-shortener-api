@@ -16,13 +16,13 @@ async def create_url(
     source: str,
     slug: str,
 ) -> Url:
-    """Create a new ` Url ` and commit it to the database.
+    """Initialize a new ` Url ` and commit it to the database.
 
     Args:
         async_session: The async database session.
-        user_id: The unique identifier of the ` User ` who created the ` Url `.
-        source: The original url.
-        slug: The unique slug that identifies the shortened url.
+        user_id: The unique identifier of the ` User `.
+        source: The original URL address.
+        slug: The unique slug that identifies the shortened URL.
 
     Returns:
         The newly created ` Url ` instance.
@@ -45,11 +45,11 @@ async def get_url_by_slug(
     async_session: AsyncSession,
     slug: str,
 ) -> Url | None:
-    """Retrieve a ` Url ` from the database by it's slug.
+    """Retrieve a ` Url ` from the database by its slug.
 
     Args:
         async_session: The async database session.
-        slug: The unique slug of the ` Url ` to retrieve.
+        slug: The unique slug that identifies the shortened URL.
 
     Returns:
         The ` Url ` instance if found, otherwise ` None `.
@@ -75,8 +75,8 @@ async def update_url(
     Args:
         async_session: The async database session.
         url: The ` Url ` to update.
-        source: The new original url.
-        slug: The new unique slug that identifies the shortened url.
+        source: The new original URL address.
+        slug: The new unique slug that identifies the shortened URL.
         total_clicks: The new total number of ` Click `'s.
 
     Returns:

@@ -9,13 +9,12 @@ async def create_tag(
     url_id: int,
     name: str,
 ) -> Tag:
-    """Create a new ` Tag ` and commit it to the database.
+    """Initialize a new ` Tag ` and commit it to the database.
 
     Args:
         async_session: The async database session.
-        url_id: The unique identifier of the ` Url ` to associate the ` Tag `
-            with.
-        name: The name of the ` Tag `.
+        url_id: The unique identifier of the ` Url `.
+        name: The ` Tag ` value.
 
     Returns:
         The newly created ` Tag ` instance.

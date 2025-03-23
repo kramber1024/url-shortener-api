@@ -17,14 +17,14 @@ async def create_user(
     email: str,
     password: str,
 ) -> User:
-    """Create a new ` User ` and commit it to the database.
+    """Initialize a new ` User ` and commit it to the database.
 
     Args:
         async_session: The async database session.
-        first_name: The first name of the user.
-        last_name: The last name of the user.
-        email: The email address of the user.
-        password: The raw password of the user.
+        first_name: The ` User `'s first name.
+        last_name: The ` User `'s last name.
+        email: The ` User `'s email address.
+        password: The ` User `'s password.
 
     Returns:
         The newly created ` User ` instance.

@@ -41,8 +41,8 @@ class Status(Model, TableNameMixin, UpdatedAtMixin):
 
         Args:
             user_id: The unique identifier of the ` User `.
-            active: Indicates whether the user is currently active. Defaults to
-                ` True `.
+            active: Indicates whether the ` User ` is currently active. Defaults
+                to ` True `.
         """
         self._user_id = user_id
         self.active = active

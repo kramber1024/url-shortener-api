@@ -1,38 +1,42 @@
 {
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/.mypy_cache": true,
-    "**/.pytest_cache": true,
-    "**/.ruff_cache/": true,
-    "**/.venv": true,
-    "**/htmlcov": true,
-    "**/.coverage": true,
-  },
-  "files.eol": "\n",
-  "files.insertFinalNewline": true,
-  "files.trimFinalNewlines": true,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false,
-  // Python
-  "python.analysis.autoImportCompletions": true,
-  "python.testing.pytestEnabled": true,
-  "autoDocstring.docstringFormat": "google-notypes",
-  // Mypy
-  "mypy-type-checker.importStrategy": "fromEnvironment",
-  // Ruff
-  "ruff.enable": true,
-  "ruff.lint.preview": true,
-  "ruff.importStrategy": "fromEnvironment",
-  "ruff.fixAll": true,
-  "[python]": {
-    "editor.tabSize": 4,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "editor.codeActionsOnSave": {
-      "source.ruff": "explicit",
-      "source.fixAll": "explicit",
-      "source.organizeImports": "explicit",
-      "source.unusedImports": "explicit",
-      "source.sortImports": "explicit",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/.ruff_cache/": true,
+        "**/.venv": true,
+        "**/htmlcov": true,
+        "**/.coverage": true,
     },
-  }
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    // Mypy
+    "mypy-type-checker.importStrategy": "fromEnvironment",
+    // Ruff
+    "ruff.enable": true,
+    "ruff.lint.preview": true,
+    "ruff.importStrategy": "fromEnvironment",
+    "ruff.fixAll": true,
+    // Python
+    "python.createEnvironment.contentButton": "show",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.analysis.autoImportCompletions": true,
+    "python.testing.pytestEnabled": true,
+    "[python]": {
+        "editor.tabSize": 4,
+        "diffEditor.ignoreTrimWhitespace": false,
+        "editor.codeActionsOnSave": {
+            "source.ruff": "explicit",
+            "source.fixAll.ruff": "explicit",
+            "source.sortImports": "explicit",
+            "source.organizeImports": "explicit",
+            "source.unusedImports": "never",
+            "source.organizeImports.ruff": "explicit"
+        },
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
 }

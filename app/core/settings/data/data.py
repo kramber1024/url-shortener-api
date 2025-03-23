@@ -1,10 +1,5 @@
 class Data:
-    """Base class for data classes.
-
-    Raises:
-        AttributeError: If MIN_LENGTH or MAX_LENGTH is not defined in the
-            subclass.
-    """
+    """Base class for data classes."""
 
     MIN_LENGTH: int = 0
     MAX_LENGTH: int = 0

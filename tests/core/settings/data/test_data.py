@@ -6,7 +6,8 @@ from app.core.settings.data import Data
 def test_data_without_attributes() -> None:
     with pytest.raises(AttributeError):
 
-        class InvalidData(Data): ...
+        class InvalidData(Data):
+            pass
 
 
 def test_data_with_extra_attributes() -> None:
@@ -44,6 +45,10 @@ def test_data_with_min_length_max_length_and_extra_attributes() -> None:
         MIN_LENGTH: int = 0
         MAX_LENGTH: int = 1
         EXTRA_ATTRIBUTE: str = "EXTRA_ATTRIBUTE"
+
+    assert ValidData.MIN_LENGTH == 0
+    assert ValidData.MAX_LENGTH == 1
+    assert ValidData.EXTRA_ATTRIBUTE == "EXTRA_ATTRIBUTE"
 
 
 def test_data_validate_length_with_invalid_length() -> None:

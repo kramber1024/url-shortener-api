@@ -66,10 +66,10 @@ class User(Model, TableNameMixin, IdMixin, UpdatedAtMixin, CreatedAtMixin):
         """Initialize a ` User ` model instance.
 
         Args:
-            first_name: The ` User `'s first name
+            first_name: The ` User `'s first name.
             last_name: The ` User `'s last name. Defaults to None.
-            email: The ` User `'s email address
-            password: The ` User `'s password
+            email: The ` User `'s email address.
+            password: The ` User `'s password.
         """
         self.first_name = first_name
         self.last_name = last_name

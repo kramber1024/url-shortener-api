@@ -37,7 +37,6 @@ async def test_create_tag(
         select(Tag).where(Tag.id == tag.id),
     )
     database_tag: Tag | None = result.scalars().first()
-
     assert database_tag
     assert database_tag.id == tag.id
     assert database_tag.url_id == url_id

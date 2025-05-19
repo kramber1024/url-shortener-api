@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -27,7 +27,7 @@ class JWTSettings(BaseSettings):
     SECRET: Annotated[str, Field(min_length=1)] = ""
     ACCESS_TOKEN_EXPIRES_IN_MINUTES: Annotated[int, Field(ge=15)] = -1
     REFRESH_TOKEN_EXPIRES_IN_DAYS: Annotated[int, Field(ge=1)] = -1
-    ALGORITHM: str = "HS256"
+    ALGORITHM: Literal["HS256"] = "HS256"
 
     model_config = SettingsConfigDict(
         env_prefix="JWT_",

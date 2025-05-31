@@ -2,6 +2,9 @@
 name = "url-shortener-api"
 description = "API for URL shortener"
 authors = ["kramber1024 <kramber268@gmail.com>"]
+readme = "README.md"
+version = "0.1.0"
+license = "MIT"
 package-mode = false
 
 [tool.poetry.dependencies]

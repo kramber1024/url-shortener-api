@@ -4,7 +4,9 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app import crud
 from app.core.database import Database
+from app.core.database.models import User
 from app.core.settings import settings
 
 
@@ -34,3 +36,14 @@ async def async_session(
         yield async_session
     finally:
         await async_session.close()
+
+
+@pytest_asyncio.fixture()
+async def user(async_session: AsyncSession) -> User:
+    return await crud.create_user(
+        async_session=async_session,
+        first_name="John",
+        last_name="Doe",
+        email="john.doe@example.com",
+        password="password" * 8,
+    )

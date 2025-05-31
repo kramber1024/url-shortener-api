@@ -1,33 +1,32 @@
-from fastapi import Request, status
+from fastapi import HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.api import schemes
-from app.api.exceptions import HTTPError
+
+_ERRORS_MAP: dict[str, str] = {
+    "string_pattern_mismatch": "The {} value is invalid",
+    "string_too_short": "The {} length is invalid",
+    "string_too_long": "The {} length is invalid",
+    "string_type": "The {} should be a string",
+    "literal_error": "The {} value is invalid",
+    "value_error": "The {} format is invalid",
+    "json_invalid": "Request should be a valid JSON",
+    "missing": "The {} field is required",
+    "url_parsing": "The {} format is invalid",
+    "url_too_long": "The {} length is invalid",
+}
 
 
 def request_validation_error_handler(
-    _: Request,
+    _request: Request,
     exc: RequestValidationError,
 ) -> JSONResponse:
-    errors_map: dict[str, str] = {
-        "string_pattern_mismatch": "The {} value is invalid",
-        "string_too_short": "The {} length is invalid",
-        "string_too_long": "The {} length is invalid",
-        "string_type": "The {} should be a string",
-        "literal_error": "The {} value is invalid",
-        "value_error": "The {} format is invalid",
-        "json_invalid": "Request should be a valid JSON",
-        "missing": "The {} field is required",
-        "url_parsing": "The {} format is invalid",
-        "url_too_long": "The {} length is invalid",
-    }
     errors: list[schemes.Error] = []
-
     for error in exc.errors():
-        message: str = errors_map.get(
+        message: str = _ERRORS_MAP.get(
             error["type"],
-            f"Invalid value ({error["type"]})",
+            f"Invalid value ({error['type']})",
         ).format(error["loc"][1])
 
         errors.append(
@@ -37,31 +36,33 @@ def request_validation_error_handler(
             ),
         )
 
-    response: schemes.ErrorResponse = schemes.ErrorResponse(
-        errors=errors,
-        message="Validation error",
-        status=422,
-    )
-
     return JSONResponse(
-        content=response.model_dump(mode="json"),
+        content=schemes.ErrorResponse(
+            errors=errors,
+            message="Validation error",
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        ).model_dump(mode="json"),
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
     )
 
 
-def http_error_handler(
-    _: Request,
-    exc: HTTPError,
+def http_exception_handler(
+    _request: Request,
+    exc: HTTPException,
 ) -> JSONResponse:
     return JSONResponse(
-        content=exc.response,
+        content=schemes.ErrorResponse(
+            status=exc.status_code,
+            errors=[],
+            message=exc.detail,
+        ).model_dump(mode="json"),
         status_code=exc.status_code,
     )
 
 
 def exception_handler(
-    _: Request,
-    __: Exception,
+    _request: Request,
+    _exc: Exception,
 ) -> JSONResponse:
     return JSONResponse(
         content=schemes.ErrorResponse(

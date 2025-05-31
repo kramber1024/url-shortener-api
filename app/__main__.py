@@ -4,14 +4,13 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 
 from app.api import api
-from app.api.exceptions import HTTPError
 from app.api.handlers import (
     exception_handler,
-    http_error_handler,
+    http_exception_handler,
     request_validation_error_handler,
 )
 from app.core.database import database
@@ -40,8 +39,8 @@ app.add_exception_handler(
     request_validation_error_handler,  # type: ignore[arg-type]
 )
 app.add_exception_handler(
-    HTTPError,
-    http_error_handler,  # type: ignore[arg-type]
+    HTTPException,
+    http_exception_handler,  # type: ignore[arg-type]
 )
 app.add_exception_handler(
     Exception,

@@ -1,11 +1,9 @@
-from typing import Any, TypeAlias
+from typing import Any
 
 from fastapi import status
 from pydantic import BaseModel
 
 from app.api import schemes
-
-_Response: TypeAlias = dict[str, Any]
 
 
 def response(
@@ -13,22 +11,18 @@ def response(
     description: str,
     model: type[BaseModel],
     example: dict[str, Any] | None = None,
-) -> _Response:
-    """Constructs a standardized response object for documenting API endpoints.
+) -> dict[str, Any]:
+    """Construct a standardized response for ` FastAPI ` endpoint documentation.
 
     Args:
-        description (str): A brief description of the response.
-        model (type[BaseModel]): The Pydantic model that represents the
-                                 response structure.
-        example (dict[str, Any] | None, optional): Example of a endpoint JSON
-                                                   response. Optional.
+        description: A brief description of the response.
+        model: The ` Pydantic ` model that represents the response structure.
+        example: Example JSON response data for documentation.
 
     Returns:
-        _Response: A dictionary-like response object that includes
-                   the description, model, and example (if provided).
-                   Should be used for ` responses ` dict of an endpoint.
+        A dictionary containing documentation.
     """
-    response: _Response = {
+    response: dict[str, Any] = {
         "description": description,
         "model": model,
     }
@@ -47,28 +41,23 @@ def response(
     return response
 
 
-def validation_response(*, example: dict[str, Any]) -> _Response:
-    """Constructs a standardized response object for documenting 422 error.
+def validation_response(*, example: dict[str, Any]) -> dict[str, Any]:
+    """Construct a standardized response for ` FastAPI ` validation errors.
 
     Args:
-        example (dict[str, Any]): Example of a endpoint JSON response.
+        example: Example JSON response data for documentation.
 
     Returns:
-        _Response: A dictionary-like response object that includes
-                   the description, model, and example. Should be
-                   used for documenting 422 error of an endpoint.
+        A dictionary containing documentation.
     """
     return response(
-        description=(
-            "A validation error occurs when the input data provided does not "
-            "meet the required scheme or format specified by the endpoint."
-        ),
+        description="Request data validation failed.",
         model=schemes.ErrorResponse,
         example=example,
     )
 
 
-UNAUTHORIZED: _Response = response(
+UNAUTHORIZED: dict[str, Any] = response(
     description="Authorization required. Provide a valid token in cookies.",
     model=schemes.ErrorResponse,
     example={
@@ -78,7 +67,7 @@ UNAUTHORIZED: _Response = response(
     },
 )
 
-INVALID_TOKEN: _Response = response(
+INVALID_TOKEN: dict[str, Any] = response(
     description="Provided token is not valid.",
     model=schemes.ErrorResponse,
     example={
@@ -88,7 +77,7 @@ INVALID_TOKEN: _Response = response(
     },
 )
 
-INTERNAL_SERVER_ERROR: _Response = response(
+INTERNAL_SERVER_ERROR: dict[str, Any] = response(
     description="Something went very wrong. Please report this.",
     model=schemes.ErrorResponse,
     example={

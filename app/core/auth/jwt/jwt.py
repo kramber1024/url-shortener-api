@@ -1,10 +1,8 @@
-from typing import Any, TypedDict
+from typing import Any, Literal, TypedDict
 
 import jwt as pyjwt
 
 from app.core.settings import settings
-
-from .enums import TokenType
 
 
 class _UserData(TypedDict):
@@ -18,7 +16,7 @@ class _TokenPayload(_UserData):
 
 
 def _encode_token(
-    token_type: TokenType,
+    token_type: Literal["access", "refresh"],
     /,
     *,
     payload: _UserData,
@@ -27,10 +25,10 @@ def _encode_token(
     current_time: int,
 ) -> str:
     expire: int = current_time
-    if token_type == TokenType.ACCESS:
-        expire += settings.jwt.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60
+    if (token_type,) == ("access",):
+        expire += settings.jwt.ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60
     else:
-        expire += settings.jwt.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60
+        expire += settings.jwt.REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60
 
     token_payload: _TokenPayload = {
         "sub": payload["sub"],
@@ -44,14 +42,14 @@ def _encode_token(
         key=key,
         algorithm=algorithm,
         headers={
-            "typ": token_type.value,
+            "typ": token_type,
         },
         sort_headers=True,
     )
 
 
 def generate_token(
-    token_type: TokenType,
+    token_type: Literal["access", "refresh"],
     /,
     *,
     user_id: int,
@@ -62,14 +60,14 @@ def generate_token(
     """Generate a JWT token.
 
     Arguments:
-        token_type (TokenType): The type of JWT token.
-        user_id (int): The ` User ` id.
-        email (str): The ` User ` email.
-        key (str): The key to encode the JWT token.
-        current_time (int): The current time in seconds since the epoch.
+        token_type: The type of JWT token.
+        user_id: The ` User ` id.
+        email: The ` User ` email.
+        key: The key to encode the JWT token with.
+        current_time: The current time in seconds.
 
     Returns:
-        str: The encoded JWT token.
+        The encoded JWT token.
     """
     return _encode_token(
         token_type,
@@ -84,7 +82,7 @@ def generate_token(
 
 
 def get_token_payload(
-    token_type: TokenType,
+    token_type: Literal["access", "refresh"],
     /,
     *,
     token: str,
@@ -93,20 +91,16 @@ def get_token_payload(
     """Get payload from a JWT token.
 
     Arguments:
-        token_type (TokenType): The type of JWT token.
-        token (str): The JWT token.
-        key (str): The key to decode the JWT token.
+        token_type: The type of JWT token.
+        token: The JWT token.
+        key: The key to decode the JWT token with.
 
     Returns:
-        dict[str, Any] | None: The payload of the JWT token if the
-                               token type matches and signature is valid,
-                               otherwise None.
+        The payload of the JWT token if the token type matches and signature
+            is valid, otherwise ` None `.
     """
     try:
-        if (
-            pyjwt.get_unverified_header(token).get("typ", None)
-            != token_type.value
-        ):
+        if pyjwt.get_unverified_header(token).get("typ", None) != token_type:
             return None
 
         token_payload: dict[str, Any] = pyjwt.decode(

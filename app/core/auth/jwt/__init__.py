@@ -1,10 +1,9 @@
 from .dependencies import get_current_user, get_refreshed_user
-from .enums import TokenType
-from .jwt import generate_token
+from .jwt import generate_token, get_token_payload
 
 __all__ = [
-    "TokenType",
     "generate_token",
     "get_current_user",
     "get_refreshed_user",
+    "get_token_payload",
 ]

@@ -1,16 +1,14 @@
 from typing import Annotated, Any
 
-from fastapi import Cookie, Depends, status
+from fastapi import Cookie, Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
-from app.api.exceptions import HTTPError
 from app.core.database import database
 from app.core.database.models import User
 from app.core.settings import settings
 
-from .enums import TokenType
 from .jwt import get_token_payload
 
 api_key_cookie: APIKeyCookie = APIKeyCookie(
@@ -30,24 +28,33 @@ async def get_current_user(
         Depends(api_key_cookie),
     ],
 ) -> User:
+    """Get the current user from the access token.
+
+    This is a ` FastAPI ` dependency.
+
+    Args:
+        async_session: The async database session.
+        access_token: The access token from the cookie.
+
+    Returns:
+        The current user.
+    """
     if access_token is None:
-        raise HTTPError(
-            errors=[],
-            message="Authorization required",
-            status=status.HTTP_401_UNAUTHORIZED,
+        raise HTTPException(
+            detail="Authorization required",
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
     token_payload: dict[str, Any] | None = get_token_payload(
-        TokenType.ACCESS,
+        "access",
         token=access_token,
-        key=settings.jwt.JWT_SECRET,
+        key=settings.jwt.SECRET,
     )
 
     if token_payload is None:
-        raise HTTPError(
-            errors=[],
-            message="Invalid token",
-            status=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(
+            detail="Invalid token",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     user: User | None = await crud.get_user_by_id(
@@ -56,10 +63,9 @@ async def get_current_user(
     )
 
     if not user:
-        raise HTTPError(
-            errors=[],
-            message="Invalid token",
-            status=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(
+            detail="Invalid token",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     return user
@@ -77,24 +83,33 @@ async def get_refreshed_user(
         ),
     ] = None,
 ) -> User:
+    """Get the current user from the refresh token.
+
+    This is a ` FastAPI ` dependency.
+
+    Args:
+        async_session: The async database session.
+        refresh_token: The refresh token from the cookie.
+
+    Returns:
+        The current user.
+    """
     if refresh_token is None:
-        raise HTTPError(
-            errors=[],
-            message="Authorization required",
-            status=status.HTTP_401_UNAUTHORIZED,
+        raise HTTPException(
+            detail="Authorization required",
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
     token_payload: dict[str, Any] | None = get_token_payload(
-        TokenType.REFRESH,
+        "refresh",
         token=refresh_token,
-        key=settings.jwt.JWT_SECRET,
+        key=settings.jwt.SECRET,
     )
 
     if token_payload is None:
-        raise HTTPError(
-            errors=[],
-            message="Invalid token",
-            status=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(
+            detail="Invalid token",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     user: User | None = await crud.get_user_by_id(
@@ -103,10 +118,9 @@ async def get_refreshed_user(
     )
 
     if not user:
-        raise HTTPError(
-            errors=[],
-            message="Invalid token",
-            status=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(
+            detail="Invalid token",
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
 
     return user

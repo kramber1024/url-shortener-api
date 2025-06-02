@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
 app: FastAPI = FastAPI(
     title=f"{settings.app.NAME} - API",
     docs_url="/api/docs",
-    redoc_url="/api/redoc",
+    redoc_url=None,
     lifespan=lifespan,
     root_path_in_servers=False,
 )

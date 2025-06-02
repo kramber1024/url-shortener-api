@@ -36,8 +36,6 @@ def test_network_init(address: str, mask: int, country: str) -> None:
     assert network._start_address == int(ipv4_network.network_address)
     assert network._end_address == int(ipv4_network.broadcast_address)
     assert network._country == country
-    assert network._address == address
-    assert network._mask == mask
 
 
 @pytest.mark.parametrize("address", ["1227.9.9.9", "256.256.256.256", "1.1.1."])
@@ -111,36 +109,10 @@ def test_network_property_country(
     assert network.country == country
 
 
-@pytest.mark.parametrize("address", ["192.168.1.0", "10.20.30.0", "172.16.1.0"])
-def test_network_property_address(
-    address: str,
-    mask: int,
-    country: str,
-) -> None:
-    network: Network = Network(address=address, mask=mask, country=country)
-
-    assert network.address == address
-
-
-@pytest.mark.parametrize("mask", [16, 24, 32])
-def test_network_property_mask(address: str, mask: int, country: str) -> None:
-    network: Network = Network(address=address, mask=mask, country=country)
-
-    assert network.mask == mask
-
-
-@pytest.mark.parametrize("address", ["192.168.1.0", "10.20.30.0", "172.16.1.0"])
-@pytest.mark.parametrize("mask", [24, 32])
-def test_network_property_cidr(address: str, mask: int, country: str) -> None:
-    network: Network = Network(address=address, mask=mask, country=country)
-
-    assert network.cidr == f"{address}/{mask}"
-
-
 @pytest.mark.parametrize("address", ["192.168.0.0", "127.0.0.0", "172.0.0.0"])
 @pytest.mark.parametrize("mask", [16, 24, 32])
 @pytest.mark.parametrize("country", ["ru", "en", "ca"])
 def test_network_repr(address: str, mask: int, country: str) -> None:
     network: Network = Network(address=address, mask=mask, country=country)
 
-    assert repr(network) == f"<Network {address}/{mask} {country}>"
+    assert repr(network) == f"<Network {country}>"

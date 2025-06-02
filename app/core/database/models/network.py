@@ -55,8 +55,6 @@ class Network(Model, TableNameMixin, CreatedAtMixin):
         self._start_address = int(network.network_address)
         self._end_address = int(network.broadcast_address)
         self._country = country
-        self._address = address
-        self._mask = mask
 
     @hybrid_property
     def id(self) -> int:
@@ -81,20 +79,5 @@ class Network(Model, TableNameMixin, CreatedAtMixin):
         """
         return self._country
 
-    @property
-    def address(self) -> str:
-        """The ` Network ` address."""
-        return self._address
-
-    @property
-    def mask(self) -> int:
-        """The ` Network ` mask."""
-        return self._mask
-
-    @property
-    def cidr(self) -> str:
-        """The CIDR representation of the ` Network `."""
-        return f"{self.address}/{self.mask}"
-
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.cidr} {self.country}>"
+        return f"<{type(self).__name__} {self.country}>"

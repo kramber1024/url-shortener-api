@@ -1,13 +1,17 @@
 from typing import Annotated
 
-from pydantic import Field
+from pydantic import Field, StringConstraints
 
 Id = Annotated[
     str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=len("7335256174294515712"),
+        max_length=len("7335256174294515712"),
+        pattern=r"^\d+$",
+    ),
     Field(
-        description="A unique identifier.",
-        examples=["7205626878688008192"],
-        max_length=len("7205626878688008192"),
-        min_length=len("7205626878688008192"),
+        description="The unique identifier of the record.",
+        examples=["7335256174294515712"],
     ),
 ]

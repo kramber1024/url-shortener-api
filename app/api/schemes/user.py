@@ -17,11 +17,8 @@ class _BaseUser(BaseModel):
             max_length=Email.MAX_LENGTH,
         ),
         Field(
-            description=(
-                "The user's email address, used for login and receiving "
-                "notifications."
-            ),
-            examples=["email@domain.tld"],
+            description="User's email address for login and notifications.",
+            examples=["john.doe@example.com"],
         ),
     ]
 
@@ -35,10 +32,7 @@ class _BaseUserWithName(_BaseUser):
             max_length=FirstName.MAX_LENGTH,
         ),
         Field(
-            description=(
-                "The user's first name, used in official emails and displayed "
-                "as part of the full name."
-            ),
+            description="User's first name.",
             examples=["John"],
         ),
     ]
@@ -50,9 +44,7 @@ class _BaseUserWithName(_BaseUser):
             max_length=LastName.MAX_LENGTH,
         ),
         Field(
-            description=(
-                "The user's last name, displayed as part of the full name."
-            ),
+            description="User's last name.",
             examples=["Doe"],
         ),
     ] = None
@@ -79,11 +71,8 @@ class LoginUser(_BaseUser):
             max_length=Password.MAX_LENGTH,
         ),
         Field(
-            description=(
-                "The user's password, used for authentication. "
-                "It should be kept secure."
-            ),
-            examples=["My$uper$ecretPa$$word"],
+            description="User's password for authentication.",
+            examples=["password"],
         ),
     ]
 
@@ -93,8 +82,8 @@ class CreateUser(LoginUser, _BaseUserWithName):
         Literal["on"],
         Field(
             description=(
-                "Confirmation that the user agrees to the terms of use. "
-                "Only accepted value is 'on'."
+                "Confirmation of terms of service acceptance."
+                "Only accepted value is **on**."
             ),
             examples=["on"],
         ),

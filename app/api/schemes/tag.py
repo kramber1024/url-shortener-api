@@ -15,16 +15,11 @@ class Tag(BaseModel):
             max_length=Name.MAX_LENGTH,
         ),
         Field(
-            description=(
-                "A tag associated with a URL. "
-                "Used for categorization or labeling."
-            ),
+            description="A descriptive label for categorizing URLs.",
             examples=["python"],
         ),
     ]
 
     @classmethod
     def from_model(cls: type["Tag"], model: models.Tag) -> "Tag":
-        return cls(
-            name=model.name,
-        )
+        return cls(name=model.name)

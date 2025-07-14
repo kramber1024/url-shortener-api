@@ -4,13 +4,27 @@ from fastapi import status
 from pydantic import BaseModel, Field
 
 
+class _BaseResponse(BaseModel):
+    status: Annotated[
+        int,
+        Field(
+            description=(
+                "The HTTP status code indicating the outcome of the request."
+            ),
+            examples=[status.HTTP_422_UNPROCESSABLE_ENTITY],
+            ge=100,
+            le=599,
+        ),
+    ]
+
+
 class Error(BaseModel):
     message: Annotated[
         str,
         Field(
             description=(
-                "A detailed error message. This should not be displayed "
-                "directly to users."
+                "Technical error description for developers. Not intended for "
+                "end-user display."
             ),
             examples=["Password length is incorrect"],
         ),
@@ -27,24 +41,13 @@ class Error(BaseModel):
     ]
 
 
-class _BaseResponse(BaseModel):
-    status: Annotated[
-        int,
-        Field(
-            description="The HTTP status code for the response.",
-            examples=[status.HTTP_422_UNPROCESSABLE_ENTITY],
-            ge=100,
-            le=599,
-        ),
-    ]
-
-
 class ErrorResponse(_BaseResponse):
     errors: Annotated[
         list[Error],
         Field(
             description=(
-                "A list of specific errors encountered during the request."
+                "Collection of specific validation or processing errors with "
+                "type identifiers."
             ),
         ),
     ]

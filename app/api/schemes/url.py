@@ -9,7 +9,7 @@ from pydantic import (
 )
 
 from app.core.database import models
-from app.core.settings.data import Address, Slug, User
+from app.core.settings.data import Slug, Source, User
 
 from .fields import Id
 from .tag import Tag
@@ -42,16 +42,16 @@ class CreateUrl(BaseModel):
         ),
     ]
     slug: _Slug | None = None
-    address: Annotated[
+    source: Annotated[
         HttpUrl,
         UrlConstraints(
-            max_length=Address.MAX_LENGTH,
+            max_length=Source.MAX_LENGTH,
             allowed_schemes=["http", "https"],
         ),
         Field(
             description=(
-                "The original URL that will be shortened. "
-                "Must be a valid HTTP or HTTPS URL."
+                "The original URL that will be shortened. Must be a valid "
+                "HTTP or HTTPS URL."
             ),
             examples=["https://example.com/i-am-a-very-long-url"],
         ),
@@ -78,34 +78,6 @@ class Url(CreateUrl):
             id=str(model.id),
             total_clicks=model.total_clicks,
             slug=model.slug,
-            address=HttpUrl(url=model.address),
+            source=HttpUrl(url=model.source),
             tags=[Tag.from_model(tag) for tag in model.tags],
-        )
-
-
-class UrlList(BaseModel):
-    urls: Annotated[
-        list[Url],
-        Field(
-            description="A collection of unique shortened URLs.",
-            examples=[123],
-            min_length=0,
-            max_length=User.MAX_URL_AMOUNT,
-        ),
-    ]
-    length: Annotated[
-        int,
-        Field(
-            description="The number of URLs in the list.",
-            examples=[6],
-            ge=0,
-            le=User.MAX_URL_AMOUNT,
-        ),
-    ]
-
-    @classmethod
-    def from_model(cls: type["UrlList"], model: list[models.Url]) -> "UrlList":
-        return cls(
-            urls=[Url.from_model(url) for url in model],
-            length=len(model),
         )

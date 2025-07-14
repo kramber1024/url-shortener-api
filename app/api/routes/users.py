@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
 from app.api import responses, schemes
@@ -41,65 +41,5 @@ def get_users_me(
 ) -> JSONResponse:
     return JSONResponse(
         content=schemes.User.from_model(user).model_dump(mode="json"),
-        status_code=status.HTTP_200_OK,
-    )
-
-
-@router.get(
-    "/me/urls",
-    summary="Get URL's created by the current user",
-    description=(
-        "Retrieve a list of URLs created by the currently authenticated user."
-    ),
-    responses={
-        status.HTTP_200_OK: responses.response(
-            description=(
-                "The URLs created by the current user were successfully "
-                "retrieved."
-            ),
-            model=schemes.UrlList,
-            example={
-                "urls": [
-                    {
-                        "tags": [
-                            {
-                                "name": "python",
-                            },
-                        ],
-                        "address": "https://example.com/i-am-a-very-long-url",
-                        "id": "7250096963688906752",
-                        "slug": "sjaKA",
-                        "total_clicks": 2,
-                    },
-                ],
-                "length": 1,
-            },
-        ),
-    },
-)
-async def get_users_me_urls(
-    user: Annotated[
-        User,
-        Depends(jwt.get_current_user),
-    ],
-    page: Annotated[
-        int,
-        Query(
-            description="The page number",
-            ge=0,
-        ),
-    ] = 0,
-    limit: Annotated[
-        int,
-        Query(
-            title="Limit",
-            description="The number of records per page",
-            ge=1,
-            le=10,
-        ),
-    ] = 10,
-) -> JSONResponse:
-    return JSONResponse(
-        content=schemes.UrlList.from_model(user.urls).model_dump(mode="json"),
         status_code=status.HTTP_200_OK,
     )

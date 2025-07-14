@@ -12,11 +12,11 @@ def response(
     model: type[BaseModel],
     example: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Construct a standardized response for ` FastAPI ` endpoint documentation.
+    """Build a standardized OpenAPI response schema for documentation.
 
     Args:
-        description: A brief description of the response.
-        model: The ` Pydantic ` model that represents the response structure.
+        description: Human-readable explanation of the response scenario.
+        model: The ` Pydantic ` model defining the response structure.
         example: Example JSON response data for documentation.
 
     Returns:
@@ -41,34 +41,34 @@ def response(
     return response
 
 
-def validation_response(*, example: dict[str, Any]) -> dict[str, Any]:
-    """Construct a standardized response for ` FastAPI ` validation errors.
+def unprocessable_entity_response(*, example: dict[str, Any]) -> dict[str, Any]:
+    """Build a standardized OpenAPI response for validation errors.
 
     Args:
-        example: Example JSON response data for documentation.
+        example: JSON example showing validation error structure.
 
     Returns:
         A dictionary containing documentation.
     """
     return response(
-        description="Request data validation failed.",
+        description="Input validation failed.",
         model=schemes.ErrorResponse,
         example=example,
     )
 
 
 UNAUTHORIZED: dict[str, Any] = response(
-    description="Authorization required. Provide a valid token in cookies.",
+    description="Authentication required. Provide a valid token in cookies.",
     model=schemes.ErrorResponse,
     example={
         "errors": [],
-        "message": "Authorization required",
+        "message": "Authentication required",
         "status": status.HTTP_401_UNAUTHORIZED,
     },
 )
 
 INVALID_TOKEN: dict[str, Any] = response(
-    description="Provided token is not valid.",
+    description="Authentication token is not valid.",
     model=schemes.ErrorResponse,
     example={
         "errors": [],
@@ -78,7 +78,7 @@ INVALID_TOKEN: dict[str, Any] = response(
 )
 
 INTERNAL_SERVER_ERROR: dict[str, Any] = response(
-    description="Something went very wrong. Please report this.",
+    description="Unexpected error occurred. Please report this issue.",
     model=schemes.ErrorResponse,
     example={
         "errors": [],

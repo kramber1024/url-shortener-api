@@ -1,15 +1,13 @@
+import time
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import crud
 from app.api import responses, schemes
-from app.api.exceptions import HTTPError
-from app.core import utils
 from app.core.auth import jwt
-from app.core.auth.jwt import TokenType
 from app.core.database import database
 from app.core.database.models import User
 from app.core.settings import settings
@@ -19,7 +17,7 @@ router: APIRouter = APIRouter(prefix="/auth")
 
 @router.post(
     "/register",
-    summary="Create a new user account",
+    summary="Register new user account",
     description="Registers new user account in the system.",
     status_code=status.HTTP_201_CREATED,
     responses={
@@ -33,8 +31,8 @@ router: APIRouter = APIRouter(prefix="/auth")
         ),
         status.HTTP_409_CONFLICT: responses.response(
             description=(
-                "The email is already in use. "
-                "User should use a different email or login."
+                "The email is already in use. User must use a different email "
+                "or login with existing account."
             ),
             model=schemes.ErrorResponse,
             example={
@@ -43,32 +41,60 @@ router: APIRouter = APIRouter(prefix="/auth")
                 "status": status.HTTP_409_CONFLICT,
             },
         ),
-        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_response(
-            example={
-                "errors": [
-                    {
-                        "message": "The last_name length is invalid",
-                        "type": "last_name",
-                    },
-                    {
-                        "message": "The email format is invalid",
-                        "type": "email",
-                    },
-                    {
-                        "message": "The password field is required",
-                        "type": "password",
-                    },
-                ],
-                "message": "Validation error",
-                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
-            },
+        status.HTTP_422_UNPROCESSABLE_ENTITY: (
+            responses.unprocessable_entity_response(
+                example={
+                    "errors": [
+                        {
+                            "message": "The last_name length is invalid",
+                            "type": "last_name",
+                        },
+                        {
+                            "message": "The email format is invalid",
+                            "type": "email",
+                        },
+                        {
+                            "message": "The password field is required",
+                            "type": "password",
+                        },
+                    ],
+                    "message": "Validation error",
+                    "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
+                },
+            )
         ),
     },
 )
 async def register_user(
     create_user: Annotated[
         schemes.CreateUser,
-        Body(),
+        Body(
+            openapi_examples={
+                "John Doe": {
+                    "summary": "John Doe",
+                    "description": "Example of a new user registration.",
+                    "value": {
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "email": "john.doe@example.com",
+                        "password": "password",
+                        "terms": "on",
+                    },
+                },
+                "Jane Doe": {
+                    "summary": "Jane Doe",
+                    "description": (
+                        "Example of a new user registration without last name."
+                    ),
+                    "value": {
+                        "first_name": "Jane",
+                        "email": "jane.doe@example.com",
+                        "password": "password",
+                        "terms": "on",
+                    },
+                },
+            },
+        ),
     ],
     async_session: Annotated[
         AsyncSession,
@@ -79,10 +105,9 @@ async def register_user(
         async_session=async_session,
         email=create_user.email,
     ):
-        raise HTTPError(
-            errors=[],
-            message="The email is already in use",
-            status=status.HTTP_409_CONFLICT,
+        raise HTTPException(
+            detail="The email is already in use",
+            status_code=status.HTTP_409_CONFLICT,
         )
 
     user: User = await crud.create_user(
@@ -96,7 +121,6 @@ async def register_user(
         async_session=async_session,
         user_id=user.id,
         active=True,
-        premium=False,
     )
 
     return JSONResponse(
@@ -111,7 +135,7 @@ async def register_user(
 @router.post(
     "/login",
     summary="Authenticate user",
-    description="Authenticates a user in the system using email and password.",
+    description="Authenticates user in the system with email and password.",
     status_code=status.HTTP_200_OK,
     responses={
         status.HTTP_200_OK: responses.response(
@@ -131,28 +155,45 @@ async def register_user(
                 "status": status.HTTP_401_UNAUTHORIZED,
             },
         ),
-        status.HTTP_422_UNPROCESSABLE_ENTITY: responses.validation_response(
-            example={
-                "errors": [
-                    {
-                        "message": "The email format is invalid",
-                        "type": "email",
-                    },
-                    {
-                        "message": "The password length is invalid",
-                        "type": "password",
-                    },
-                ],
-                "message": "Validation error",
-                "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
-            },
+        status.HTTP_422_UNPROCESSABLE_ENTITY: (
+            responses.unprocessable_entity_response(
+                example={
+                    "errors": [
+                        {
+                            "message": "The email format is invalid",
+                            "type": "email",
+                        },
+                    ],
+                    "message": "Validation error",
+                    "status": status.HTTP_422_UNPROCESSABLE_ENTITY,
+                },
+            )
         ),
     },
 )
 async def authenticate_user(
     login_user: Annotated[
         schemes.LoginUser,
-        Body(),
+        Body(
+            openapi_examples={
+                "John Doe": {
+                    "summary": "John Doe",
+                    "description": "Example of user login.",
+                    "value": {
+                        "email": "john.doe@example.com",
+                        "password": "password",
+                    },
+                },
+                "Jane Doe": {
+                    "summary": "Jane Doe",
+                    "description": "Example of user login with wrong password.",
+                    "value": {
+                        "email": "jane.doe@example.com",
+                        "password": "wrongpass",
+                    },
+                },
+            },
+        ),
     ],
     async_session: Annotated[
         AsyncSession,
@@ -165,10 +206,9 @@ async def authenticate_user(
     )
 
     if not user or not user.is_password_valid(login_user.password):
-        raise HTTPError(
-            errors=[],
-            message="The email or password is incorrect",
-            status=status.HTTP_401_UNAUTHORIZED,
+        raise HTTPException(
+            detail="The email or password is incorrect",
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
     response: JSONResponse = JSONResponse(
@@ -181,26 +221,26 @@ async def authenticate_user(
     response.set_cookie(
         key="access_token",
         value=jwt.generate_token(
-            TokenType.ACCESS,
+            "access",
             user_id=user.id,
             email=user.email,
-            key=settings.jwt.JWT_SECRET,
-            current_time=utils.now(),
+            key=settings.jwt.SECRET,
+            current_time=int(time.time()),
         ),
-        max_age=settings.jwt.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
+        max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
         value=jwt.generate_token(
-            TokenType.REFRESH,
+            "refresh",
             user_id=user.id,
             email=user.email,
-            key=settings.jwt.JWT_SECRET,
-            current_time=utils.now(),
+            key=settings.jwt.SECRET,
+            current_time=int(time.time()),
         ),
-        max_age=settings.jwt.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
+        max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,
     )
@@ -242,26 +282,26 @@ def refresh_user(
     response.set_cookie(
         key="access_token",
         value=jwt.generate_token(
-            TokenType.ACCESS,
+            "access",
             user_id=user.id,
             email=user.email,
-            key=settings.jwt.JWT_SECRET,
-            current_time=utils.now(),
+            key=settings.jwt.SECRET,
+            current_time=int(time.time()),
         ),
-        max_age=settings.jwt.JWT_ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
+        max_age=settings.jwt.ACCESS_TOKEN_EXPIRES_IN_MINUTES * 60,
         secure=True,
         httponly=True,
     )
     response.set_cookie(
         key="refresh_token",
         value=jwt.generate_token(
-            TokenType.REFRESH,
+            "refresh",
             user_id=user.id,
             email=user.email,
-            key=settings.jwt.JWT_SECRET,
-            current_time=utils.now(),
+            key=settings.jwt.SECRET,
+            current_time=int(time.time()),
         ),
-        max_age=settings.jwt.JWT_REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
+        max_age=settings.jwt.REFRESH_TOKEN_EXPIRES_IN_DAYS * 24 * 60 * 60,
         secure=True,
         httponly=True,
     )

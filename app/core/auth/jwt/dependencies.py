@@ -41,7 +41,7 @@ async def get_current_user(
     """
     if access_token is None:
         raise HTTPException(
-            detail="Authorization required",
+            detail="Authentication required",
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
@@ -96,7 +96,7 @@ async def get_refreshed_user(
     """
     if refresh_token is None:
         raise HTTPException(
-            detail="Authorization required",
+            detail="Authentication required",
             status_code=status.HTTP_401_UNAUTHORIZED,
         )
 

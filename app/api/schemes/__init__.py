@@ -1,13 +1,15 @@
+"""API schemes."""
+
 from .response import (
     Error,
     ErrorResponse,
     SuccessResponse,
 )
 from .tag import Tag
-from .url import CreateUrl, Url, UrlList
+from .url import CreateUrl, Url
 from .user import CreateUser, LoginUser, User
 
-__all__ = (
+__all__ = [
     "CreateUrl",
     "CreateUser",
     "Error",
@@ -16,6 +18,5 @@ __all__ = (
     "SuccessResponse",
     "Tag",
     "Url",
-    "UrlList",
     "User",
-)
+]
